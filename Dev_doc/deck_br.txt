@@ -1,0 +1,237 @@
+1
+Mud Slinging
+-4 Voters 
+ to both players
+
+2
+Poll Uptick
++2 Swing Voters
+
+3
+Positive Mention
++3 Swing Voters
+
+4
+Press Lunch
++2 Swing Voters 
+ +4 Funds
+
+5
+Press Conference
++1 Media per turn
+
+6
+Shake Hands
++1 Partisans
+
+7
+Viral Video
++2 Partisans
+
+8
+YouTube Channel
++4 Partisans
+
+9
+Empty Promises
++1 Charisma per turn
+
+10
+Volunteers
+-2 Opp Voters
+
+11
+Spin Doctors
++2 Swing Voters
++4 Media
+
+12
+Kim Kardashian
++2 Swing Voters
++4 Charisma
+
+13
+Candidate Dinner
++1 Funds per turn
+
+14
+Blame ISIS
+-4 Opp Voters
+
+15
+Colbert
+-5 Opp Voters
+
+16
+Publicity stunt
+-9 Opp Voters
+
+17
+Debates
++2 Media per turn
+
+18
+Shift the blame
++8 Swing Voters
++3 Partisans
+
+19
+Lipstick on a Pig
++16 Swing Voters
++5 Partisans
+
+20
+Mock Opponent
++15 Partisans
+
+21
+Tweetstorm
++2 Charisma per turn
+
+22
+Crowdfunding
++4 Swing Voters
+
+23
+Reality Check
+-2 Swing Voters
++6 Partisans
+
+24
+Tax Rich
+-2 Opp Voters
+
+25
+Campaign Finance Reform
++2 Funds per turn
+
+26
+Cash Shortage
+-10 Voters to you
++5 Opp Swing Voters
+
+27
+Angry Face
+-2 Opp Swing Voters
+
+28
+Blame Media Bias
+-2 Opp Swing Voters
+
+29
+Praise Putin
++4 Swing Voters
++6 Partisans
+-1 Media per turn
+
+30
+Pro-Gun
++1 Funds per turn
+-2 Opp Voters
+
+31
+Obamacare
+-2 Opp Voters
+
+32
+Shooter's iPhone
++1 Media per turn
+
+33
+Blame Muslims
++5 Swing Voters
++5 Partisans
+-1 Charisma per turn
+
+34
+Crooked Hillary
++4 Partisans
+
+35
+Red Baseball Cap
++2 Swing Voters
+
+36
+Make America Great Again
++2 Swing Voters
++1 Charisma per turn
+
+37
+Blame Chinese
++6 Swing Voters
++4 Partisans
+-1 Funds per turn
+
+38
+Birthers
++6 Partisans-4 Opp Partisans
+
+39
+Neocons
+-2 Swing Voters
++8 Partisans
+-1 Opp Media per turn
+
+40
+Shoot people in the street
++4 Swing Voters
++12 Partisans
+
+41
+The Apprentice
++2 Media per turn
+
+42
+Subway card
+-9 Opp Partisans
+
+43
+Mass Deportations
++12 Partisans
+-1 Opp Funds per turn
+
+44
+Mexican Wall
++2 Charisma per turn
+
+45
+Tea Party
+-8 Opp Voters
+
+46
+Praise Brexit
+-12 Opp Voters
+-1 Opp Charisma per turn
+
+47
+Trump Casino
++2 Funds per turn
+
+48
+Liberal Outrage
++20 Swing Voters to you
++ Opp Swing Voters
+
+49
+Libya Embassy
++5 Swing Voters
++15 Partisans
+-20 Opp Partisans
+
+50
+Emailgate
++15 Swing Voters
+-2 Opp Voters
+
+52
+Snowden
+-15 Voters
+-1 all resources per turn 
+to both players
+
+99
+Denver Airport
+Both players lose all voters. Round over.
+
+
+

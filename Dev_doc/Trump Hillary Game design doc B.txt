@@ -1,0 +1,61 @@
+Trump Hillary Game design doc B
+
+
+
+STORY
+
+Player joins either Trump or Hillary camp. The goal is to win enough electoral voters to win the White House. Every location is won in a card game, based on Arcomage. 
+
+Card game rules
+
+At start 
+
+Assets
+# Partisans (ak tower) 
+# Swing Voters (ak wall). 
+
+Resources: 
+Propaganda (ak bricks)
+Supporters (ak gems)
+Campaign Finance (ak beasts)
+
+Generators 
+Media (ak quarry)
+Public Support (ak magic) 
+Campaign Funds (ak dungeons)
+
+SCREEN SEQUENCE
+
+Load 
+Trump-Hillary Choice (menu + settings)
+Briefing (dialog)
+State Selector 
+	Displ. current score
+Location Selector
+	Displ. current score
+Gameplay
+Ending
+	Success - advance
+	Failure - replay
+
+GAMEPLAY
+
+Player vs AI
+
+Bottom – 6 player cards
+Center left – player counters (current/max)
+Center center – where cards are placed
+Center right – opponent counters (current/max)
+Top – 6 opponent cards
+
+To play a card player clicks it. 
+Delay after each action - 0.5s
+
+Loss conditions
+Player has no Partisans left
+AI meets a win condition at the end of its turn
+
+Win conditions
+Partisans reach a certain number
+One of the assets reaches a certain level
+

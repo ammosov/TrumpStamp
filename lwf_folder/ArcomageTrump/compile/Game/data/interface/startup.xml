@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- Startup Screen and Intro -->
+<UI name="Startup">
+
+	<!-- Background -->
+	<Component type="Image">
+		<file name="00_startup.png" /> 
+		<position x="-320" y="-240" align="center" />
+		<visible value="true" />
+	</Component>
+
+</UI>
+

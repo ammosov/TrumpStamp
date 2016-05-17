@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- Gamescreen -->
+<UI name="Gamescreen">
+
+	<!-- Background -->
+	<Component type="Image">
+		<file name="00_gamescreen.jpg" /> 
+		<position x="0" y="0" align="none" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Image">
+		<file name="discard_overlay.png" /> 
+		<position x="-100" y="-150" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<!-- Player Text -->
+	<Component type="Text">
+		<name value="Player Text" />
+		<caption value="Player" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="20" y="5" align=none />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Bricks" />
+		<caption value="10" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="25" y="130" align=none />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Gems" />
+		<caption value="10" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="25" y="260" align="none" />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Beasts" />
+		<caption value="10" /> 
+		<font size=25 />
+		<color r=255 g=255 b=255 />
+		<position x=20 y="385" align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Brick Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=30 y=60 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Gem Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=30 y=190 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Beast Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=30 y=315 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Tower" />
+		<caption value="10" /> 
+		<font size=22 />
+		<color r=255 g=255 b=255 />
+		<position x=240 y=484 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Player Wall" />
+		<caption value="25" /> 
+		<font size=22 />
+		<color r=255 g=255 b=255 />
+		<position x=320 y=484 align=none />
+		<visible value=true />
+	</Component>
+	
+	<!-- Player Images -->
+	<Component type=Image>
+		<file name="01_wall_player.png" /> 
+		<position x=312 y=210 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="01_tower_player.png" /> 
+		<position x=197 y=210 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="player_tower_top.png" /> 
+		<position x=180 y=69 align=none />
+		<visible value=true />
+	</Component>
+
+
+	<Component type=Image>
+		<file name="box_player_tower.png" /> 
+		<position x=230 y=480 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="box_player_wall.png" /> 
+		<position x=310 y=480 align=none />
+		<visible value=true />
+	</Component>
+
+	<!-- Enemy Text -->
+	<Component type="Text">
+		<name value="Enemy Text" />
+		<caption value="Player" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="892" y="5" align=none />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Bricks" />
+		<caption value="10" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="895" y="130" align=none />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Gems" />
+		<caption value="10" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="895" y="260" align="none" />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Beasts" />
+		<caption value="10" /> 
+		<font size=25 />
+		<color r=255 g=255 b=255 />
+		<position x=895 y=385 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Brick Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=900 y=60 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Gem Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=900 y=190 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Beast Modifier" />
+		<caption value="2" /> 
+		<font size=60 />
+		<color r=100 g=90 b=0 />
+		<position x=900 y=315 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Tower" />
+		<caption value="10" /> 
+		<font size=22 />
+		<color r=255 g=255 b=255 />
+		<position x=770 y=484 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type="Text">
+		<name value="Enemy Wall" />
+		<caption value="25" /> 
+		<font size=22 />
+		<color r=255 g=255 b=255 />
+		<position x=670 y=484 align=none />
+		<visible value=true />
+	</Component>
+	
+	<!-- Enemy Images -->
+	<Component type=Image>
+		<file name="01_wall_enemy.png" /> 
+		<position x=312 y=210 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="01_tower_enemy.png" /> 
+		<position x=197 y=210 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="enemy_tower_top.png" /> 
+		<position x=180 y=69 align=none />
+		<visible value=true />
+	</Component>
+
+
+	<Component type=Image>
+		<file name="box_enemy_tower.png" /> 
+		<position x=760 y=480 align=none />
+		<visible value=true />
+	</Component>
+
+	<Component type=Image>
+		<file name="box_enemy_wall.png" /> 
+		<position x=660 y=480 align=none />
+		<visible value=true />
+	</Component>
+	
+	<!-- Text Overlay -->
+		<Component type="Text">
+		<name value="DiscardTextOverlay" />
+		<caption value="Discard a Card" /> 
+		<font size="32" />
+		<color r="255" g="40" b="40" />
+		<position x="-100" y="-200" align="center" />
+		<visible value="false" />
+	</Component>
+
+</UI>
+

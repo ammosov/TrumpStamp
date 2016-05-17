@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- Main Menu -->
+<UI name="Main Menu">
+
+	<!-- Background -->
+	<Component type="Image">
+		<file name="title.jpg" /> 
+		<position x="0" y="0" align="none" />
+		<visible value="true" />
+	</Component>
+
+	<!-- Buttons -->
+	<Component type="Button">
+		<name value="New Game" />
+		<file normal="newgame_n.png" hover="newgame_o.png" /> 
+		<position x="85" y="-35" align="center" />
+		<visible value="true" />
+		<action name="start_new_game()" />
+	</Component>
+
+	<Component type="Button">
+		<name value="Credits" />
+		<file normal="credits_n.png" hover="credits_o.png" /> 
+		<position x="125" y="32" align="center" />
+		<visible value="true" />
+		<action name="show_credits()" />
+	</Component>
+
+	<Component type="Button">
+		<name value="Exit Game" />
+		<file normal="exitgame_n.png" hover="exitgame_o.png" /> 
+		<position x="90" y="100" align="center" />
+		<visible value="true" />
+		<action name="exit_game()" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Version Text" />
+		<caption value="%V" /> 
+		<font size="18" />
+		<color r="255" g="255" b="255" />
+		<position x="10" y="10" align="none" />
+		<visible value="true" />
+	</Component>
+
+
+</UI>

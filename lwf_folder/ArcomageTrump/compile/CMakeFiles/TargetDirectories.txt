@@ -1,0 +1,5 @@
+C:/Games/ArcomageTrump/compile/CMakeFiles/edit_cache.dir
+C:/Games/ArcomageTrump/compile/CMakeFiles/rebuild_cache.dir
+C:/Games/ArcomageTrump/compile/Game/CMakeFiles/rebuild_cache.dir
+C:/Games/ArcomageTrump/compile/Game/CMakeFiles/ArcomageTribute.dir
+C:/Games/ArcomageTrump/compile/Game/CMakeFiles/edit_cache.dir

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- Pause Menu -->
+<UI name="Pause Menu">
+
+	<!-- Background -->
+	<Component type="Image">
+		<file name="pause.jpg" /> 
+		<position x="0" y="0" align="none" />
+		<visible value="true" />
+	</Component>
+
+	<!-- Buttons -->
+	<Component type="Button">
+		<name value="Main Menu" />
+		<file normal="mainmenu_n.png" hover="mainmenu_o.png" /> 
+		<position x="-100" y="150" align="center" />
+		<visible value="true" />
+		<action name="main_menu()" />
+	</Component>
+	
+	<!-- Text -->
+	<Component type="Text">
+		<name value="Pause" />
+		<caption value="Game paused" /> 
+		<font size="44" />
+		<color r="0" g="0" b="0" />
+		<position x="-95" y="0" align="center" />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Pause Text" />
+		<caption value="Press ESC again to resume" /> 
+		<font size="18" />
+		<color r="0" g="0" b="0" />
+		<position x="-80" y="82" align="center" />
+		<visible value="true" />
+	</Component>
+</UI>

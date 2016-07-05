@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!-- Credits Screen -->
+<UI name="Startup">
+
+	<!-- Background -->
+	<Component type="Image">
+		<file name="credits.jpg" /> 
+		<position x="0" y="0" align="none" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Button">
+		<name value="Main Menu C" />
+		<file normal="mm_credits_n.png" hover="mm_credits_o.png" /> 
+		<position x="-360" y="260" align="center" />
+		<visible value="true" />
+		<action name="back()" />
+	</Component>
+	
+	<!-- Text -->
+	<Component type="Text">
+		<name value="Created By Label" />
+		<caption value="Created by" /> 
+		<font size="35" />
+		<color r="255" g="255" b="255" />
+		<position x="140" y="-100" align="center" />
+		<visible value="true" />
+	</Component>
+
+	<Component type="Text">
+		<name value="Author Label 1" />
+		<caption value="Felix 'Xography' Bruckner" /> 
+		<font size="25" />
+		<color r="255" g="255" b="255" />
+		<position x="100" y="-60" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Text">
+		<name value="Contributor Label" />
+		<caption value="Additional Graphics, Testing" /> 
+		<font size="30" />
+		<color r="255" g="255" b="255" />
+		<position x="45" y="0" align="center" />
+		<visible value="true" />
+	</Component>
+	
+		<Component type="Text">
+		<name value="Author Label 2" />
+		<caption value="Nicholas DeLaRosa" /> 
+		<font size="22" />
+		<color r="255" g="255" b="255" />
+		<position x="130" y="40" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Text">
+		<name value="contact Label" />
+		<caption value="Contact the Author:" /> 
+		<font size="20" />
+		<color r="255" g="255" b="255" />
+		<position x="127" y="95" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Text">
+		<name value="mail Label" />
+		<caption value="xography@gatewayheaven.com" /> 
+		<font size="20" />
+		<color r="255" g="255" b="255" />
+		<position x="90" y="125" align="center" />
+		<visible value="true" />
+	</Component>
+	
+
+	<Component type="Text">
+		<name value="GNU Text" />
+		<caption value="GNU GPL (CC)" /> 
+		<font size="17" />
+		<color r="255" g="255" b="255" />
+		<position x="115" y="190" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Text">
+		<name value="CC Text" />
+		<caption value="Creative Commons 3.0" /> 
+		<font size="17" />
+		<color r="255" g="255" b="255" />
+		<position x="75" y="240" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Image">
+		<file name="img_gpl.png" /> 
+		<position x="230" y="170" align="center" />
+		<visible value="true" />
+	</Component>
+	
+	<Component type="Image">
+		<file name="img_cc.png" /> 
+		<position x="230" y="240" align="center" />
+		<visible value="true" />
+	</Component>
+	
+
+	
+	<Component type="Text">
+		<name value="Copyright Notice" />
+		<caption value="(c) 2007 - 2011 by www.gatewayheaven.com. Some Rights reserved." />
+		<font size="17" />
+		<color r="255" g="255" b="255" />
+		<position x="-15" y="290" align="center" />
+		<visible value="true" />
+	</Component>
+
+</UI>
+

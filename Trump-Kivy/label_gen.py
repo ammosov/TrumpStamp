@@ -19,6 +19,14 @@ def label_line(value, act_type, side):
     value - INT, require
     type - INT in range(8) - per types tuple, required
     side - INT in range(2) - per side type, required
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    turn - binary next turn switch, optional
+    other inputs must be STR
+>>>>>>> 3a3b40ea4915749080978eb7280dc053753b8319
+>>>>>>> f837a98b9c2824664b84be8f801f345c49c4d45c
     """
     lbl_val = '{0:+}'.format(value)  # card value is formatted with a sign as -1|+1
     lbl_type = types[act_type]  # from types tuple, take a specific label

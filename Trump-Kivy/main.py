@@ -58,6 +58,12 @@ Builder.load_string("""
 
 <FieldScreen>:
     FloatLayout:
+        canvas:
+            Color:
+                rgb: 1, 1, 1
+            Rectangle:
+                source: 'assets/field-mockup1.png'
+                size: self.size
         Button:
             size_hint: None, None
             text: 'STUB:Stub button'

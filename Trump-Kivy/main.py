@@ -3,7 +3,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 
 
 class LoginScreen(GridLayout):
@@ -34,8 +34,9 @@ Builder.load_string("""
         cols:  1
         Button:
             text: 'Play'
+            on_press: root.manager.current = 'field'
         Button:
-            text: 'Goto settings'
+            text: 'Settings'
             on_press: root.manager.current = 'settings'
         Button:
             text: 'About...'
@@ -45,12 +46,31 @@ Builder.load_string("""
 
 
 <SettingsScreen>:
-    BoxLayout:
+    GridLayout:
+        cols: 1
         Button:
-            text: 'My settings button'
+            text: 'STUB:My settings button'
         Button:
             text: 'Back to menu'
             on_press: root.manager.current = 'menu'
+
+
+
+<FieldScreen>:
+    FloatLayout:
+        Button:
+            size_hint: None, None
+            text: 'STUB:Stub button'
+            size: 50, 50
+            pos: 0, 0
+        Button:
+            size_hint: None, None
+            size: 50, 50
+            pos: 100, 100
+            text: 'Back to menu'
+            on_press: root.manager.current = 'menu'
+
+
 """)
 
 
@@ -62,10 +82,15 @@ class MenuScreen(Screen):
 class SettingsScreen(Screen):
     pass
 
+
+class FieldScreen(Screen):
+    pass
+
 # Create the screen manager
-sm = ScreenManager()
+sm = ScreenManager( transition=WipeTransition() )
 sm.add_widget(MenuScreen(name='menu'))
 sm.add_widget(SettingsScreen(name='settings'))
+sm.add_widget(FieldScreen(name='field'))
 
 
 class TestApp(App):

@@ -45,14 +45,23 @@ ScreenManager:
         cols:  1
         Button:
             text: 'Play'
+            border: [0, 0, 0, 0]
+            background_normal: 'assets/stubs/newgame.png'
+            background_down: 'assets/stubs/newgame.png'
             on_press: root.manager.current = 'field'
-        Button:
-            text: 'Settings'
-            on_press: root.manager.current = 'settings'
+        # Button:
+        #     text: 'Settings'
+        #     on_press: root.manager.current = 'settings'
         Button:
             text: 'About...'
+            border: [0, 0, 0, 0]
+            background_normal: 'assets/stubs/credits.png'
+            background_down: 'assets/stubs/credits.png'
         Button:
             text: 'Quit'
+            border: [0, 0, 0, 0]
+            background_normal: 'assets/stubs/exit.png'
+            background_down: 'assets/stubs/exit.png'
             on_release: exit()
 
 
@@ -74,20 +83,22 @@ ScreenManager:
             Color:
                 rgb: 1, 1, 1
             Rectangle:
-                source: 'assets/field-mockup1.png'
+                source: 'assets/green.png'
                 size: self.size
-        Button:
-            size_hint: 0.1, 0.1
-            text: 'STUB:Stub button'
+        # Button:
+            # size_hint: 0.1, 0.1
+            # text: 'STUB:Stub button'
             #size: 50, 50
             #pos: 0, 0
-            pos_hint: {'x':.2, 'y':.2}
+            # pos_hint: {'x':.5, 'y':.5}
         Button:
-            size_hint: 0.1, 0.1
-            #size: 50, 50
-            pos: 100, 100
-            # pos_hint: 0.2, 0.2
-            text: 'Back to menu'
+
+            border: [0, 0, 0, 0]
+            background_normal: 'assets/buttons/gear.png'
+            background_down: 'assets/buttons/gear.png'
+            size_hint: (107/2049), (89/1537)
+            pos_hint: {'right':2017/2049, 'top':(1537-18)/1537}
+            # text: 'Back to menu'
             on_press: root.manager.current = 'menu'
 
 

@@ -1,28 +1,39 @@
 Screens:
-	Menu
+	-Menu
 		Buttons:
 			Play
 			Settings (Do we need one?)
 			About...
 			Quit
 	
-	Rules
+	-Rules
 		Texts:
 			Game rules
 		Images:
 			Main image
-	State Selector
+	-State Selector
 		Images:
 			Background
 		Rules:
 			General understanding how it should work
 	Game Field (present)
 		(Seems okay for now)
-	Victory Field
+	-Victory Field
 		Images:
 			Some really cool picture
-	Credits
+	-Credits
 		Texts:
 			Some text about ourselves
 		Images:
 			(Our own pictures ?)
+
+
+Main parts of the game:
+
+1)GUI Skeleton 
+2)Animation
+3)Indicators
+4)Turn processing
+5)Game result screen
+6)Images
+7)

@@ -91,8 +91,8 @@ ScreenManager:
             #size: 50, 50
             #pos: 0, 0
             # pos_hint: {'x':.5, 'y':.5}
-        Button:
 
+        Button:
             border: [0, 0, 0, 0]
             background_normal: 'assets/buttons/gear.png'
             background_down: 'assets/buttons/gear.png'
@@ -100,6 +100,27 @@ ScreenManager:
             pos_hint: {'right':2017/2049, 'top':(1537-18)/1537}
             # text: 'Back to menu'
             on_press: root.manager.current = 'menu'
+
+        Card:
+            pos_hint: {'x':420/2049.0, 'y':(1537-1488.0)/1537}
+        Card:
+            pos_hint: {'x':688/2049.0, 'y':(1537-1488.0)/1537}
+        Card:
+            pos_hint: {'x':957/2049.0, 'y':(1537-1488.0)/1537}
+        Card:
+            pos_hint: {'x':1225/2049.0, 'y':(1537-1488.0)/1537}
+        Card:
+            pos_hint: {'x':1495/2049.0, 'y':(1537-1488.0)/1537}
+        Card:
+            pos_hint: {'x':1764/2049.0, 'y':(1537-1488.0)/1537}
+
+
+<Card@Button>:
+    border: [0,0,0,0]
+    size_hint: (250/2049), (350/1537)
+    background_normal: 'assets/stubs/card.png'
+    background_down: 'assets/stubs/card.png'
+    on_press: print('Card pressed.')
 
 
 """

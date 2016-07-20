@@ -1,0 +1,28 @@
+Screens:
+	Menu
+		Buttons:
+			Play
+			Settings (Do we need one?)
+			About...
+			Quit
+	
+	Rules
+		Texts:
+			Game rules
+		Images:
+			Main image
+	State Selector
+		Images:
+			Background
+		Rules:
+			General understanding how it should work
+	Game Field (present)
+		(Seems okay for now)
+	Victory Field
+		Images:
+			Some really cool picture
+	Credits
+		Texts:
+			Some text about ourselves
+		Images:
+			(Our own pictures ?)

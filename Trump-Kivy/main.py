@@ -96,31 +96,31 @@ ScreenManager:
             border: [0, 0, 0, 0]
             background_normal: 'assets/buttons/gear.png'
             background_down: 'assets/buttons/gear.png'
-            # size_hint: (107/2048), (89/1536)
-            size_hint: (50/2048), (45/1536)
-            # pos_hint: {'right':2017/2048, 'top':(1536-18)/1536}
-            pos_hint: {'right':2017.0/2048, 'top':1500.0/1536}
+            size_hint: (107.0/2048.0), (89.0/1536.0)
+            # size_hint: (50.0/2048.0), (45.0/1536.0)
+            pos_hint: {'right':2017.0/2048.0, 'top':(1536.0-18.0)/1536.0}
+            # pos_hint: {'right':2017.0/2048.0, 'top':1500.0/1536.0}
             # pos: 600,300
             # text: 'Back to menu'
             on_press: root.manager.current = 'menu'
 
         Card:
-            pos_hint: {'x':420/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         Card:
-            pos_hint: {'x':688/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         Card:
-            pos_hint: {'x':957/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         Card:
-            pos_hint: {'x':1225/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':1225.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         Card:
-            pos_hint: {'x':1495/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':1495.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         Card:
-            pos_hint: {'x':1764/2048.0, 'y':(1536-1488.0)/1536}
+            pos_hint: {'x':1764.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
 
 
 <Card@Button>:
     border: [0,0,0,0]
-    size_hint: (250/2049), (350/1536)
+    size_hint: (250.0/2048.0), (350.0/1536.0)
     background_normal: 'assets/stubs/card.png'
     background_down: 'assets/stubs/card.png'
     on_press: print('Card pressed.')

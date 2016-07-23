@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 
@@ -30,6 +31,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 
 gui_kv_string = """
 #: import WipeTransition kivy.uix.screenmanager.WipeTransition
+#: import Animation kivy.animation.Animation
+
 ScreenManager:
     transition: WipeTransition()
     MenuScreen:
@@ -123,10 +126,29 @@ ScreenManager:
     size_hint: (250.0/2048.0), (350.0/1536.0)
     background_normal: 'assets/stubs/card.png'
     background_down: 'assets/stubs/card.png'
-    on_press: print('Card pressed.')
+    on_press:
+        print('Card pressed.')
+        # anim = Animation(pos_hint={'x':1064.0/2048.0, 'y':(1536.0-1188.0)/1536.0})
+        # anim.start(self)
+        Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}).start(self)
+
 
 
 """
+
+
+# class Card(Button):
+#     pass
+#
+#
+# class CardSix(Card):
+#     def on_press2(self):
+#         print( 'Class overloading.')
+#
+#     def __init__(self):
+#         self.bind(on_press=self.on_press2)
+
+
 
 
 # Declare both screens

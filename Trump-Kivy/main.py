@@ -32,6 +32,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
 gui_kv_string = """
 #: import WipeTransition kivy.uix.screenmanager.WipeTransition
 #: import Animation kivy.animation.Animation
+#: import time time
 
 ScreenManager:
     transition: WipeTransition()
@@ -130,7 +131,8 @@ ScreenManager:
         print('Card pressed.')
         # anim = Animation(pos_hint={'x':1064.0/2048.0, 'y':(1536.0-1188.0)/1536.0})
         # anim.start(self)
-        Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}).start(self)
+        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] )) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}))).start(self)
+
 
 
 

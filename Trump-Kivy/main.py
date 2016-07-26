@@ -5,6 +5,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, WipeTransition
+from kivy.core.audio import SoundLoader
 
 
 # class LoginScreen(GridLayout):
@@ -33,6 +34,7 @@ gui_kv_string = """
 #: import WipeTransition kivy.uix.screenmanager.WipeTransition
 #: import Animation kivy.animation.Animation
 #: import time time
+#: import SoundLoader kivy.core.audio.SoundLoader
 
 ScreenManager:
     transition: WipeTransition()
@@ -42,6 +44,7 @@ ScreenManager:
         name: 'settings'
     FieldScreen:
         name: 'field'
+        id: 'scrnField'
 
 
 <MenuScreen@Screen>:
@@ -131,26 +134,12 @@ ScreenManager:
         print('Card pressed.')
         # anim = Animation(pos_hint={'x':1064.0/2048.0, 'y':(1536.0-1188.0)/1536.0})
         # anim.start(self)
-        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] )) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}))).start(self)
-
+        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))).start(self)
+        self.parent.parent.myWavSound.play()
 
 
 
 """
-
-
-# class Card(Button):
-#     pass
-#
-#
-# class CardSix(Card):
-#     def on_press2(self):
-#         print( 'Class overloading.')
-#
-#     def __init__(self):
-#         self.bind(on_press=self.on_press2)
-
-
 
 
 # Declare both screens
@@ -162,8 +151,15 @@ ScreenManager:
 #     pass
 #
 #
-# class FieldScreen(Screen):
-#     pass
+class FieldScreen(Screen):
+    #need to make a soundbank
+    myWavSound = None
+
+    def __init__(self, ** kwargs):
+        Screen.__init__(self, **kwargs)
+        self.myWavSound = SoundLoader.load('assets/stubs/Sounds/harp.wav')
+
+    pass
 
 
 class TrumpStampApp(App):

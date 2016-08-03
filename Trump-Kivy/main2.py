@@ -17,15 +17,9 @@ from kivy.core.audio import SoundLoader
 
 class TrumpCard( Button ):
     myWavSound = SoundLoader.load('assets/stubs/Sounds/harp.wav')
-    # shirt = ObjectProperty(None)
-    # myWavSound = ObjectProperty(None)
-
-    # def __init__(self, **kwargs):
-    #
-    #     Button.__init__(self, **kwargs)
-    #     self.myWavSound = SoundLoader.load('assets/stubs/Sounds/harp.wav')
 
     def play_card(self):
+
         self.parent.scoreTrump += 1
         self.myWavSound.play()
 

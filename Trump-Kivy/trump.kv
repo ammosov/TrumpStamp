@@ -1,0 +1,44 @@
+#:kivy 1.9.1
+#: import Animation kivy.animation.Animation
+#: import time time
+#: import SoundLoader kivy.core.audio.SoundLoader
+
+<TrumpCard>:
+    border: [0,0,0,0]
+    size_hint: (250.0/2048.0), (350.0/1536.0)
+    background_normal: 'assets/stubs/card.png'
+    background_down: 'assets/stubs/card.png'
+    on_press:
+        print('Card pressed.')
+        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))).start(self)
+        self.play_card( )
+
+<TrumpGame>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/green.png'
+            size: self.size
+    TrumpCard:
+        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':1225.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':1495.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':1764.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    Label:
+        pos_hint: {'x':125.0/2048.0, 'y':(1536.0-800.0)/1536.0}
+        size_hint: (250.0/2048.0), (350.0/1536.0)
+        font_size: 70
+        text: str(root.scoreTrump)
+    Label:
+        pos_hint: {'x':1825.0/2048.0, 'y':(1536.0-800.0)/1536.0}
+        size_hint: (250.0/2048.0), (350.0/1536.0)
+        font_size: 70
+        text: str(root.scoreHillary)

@@ -48,6 +48,8 @@ cards_db = "cards.csv"
 
 # FUNCTIONS
 
+path_t = '' # path to images of Trump cards, default - same dir
+path_h = '' # path to images of Hillary cards, default - same dir
 
 def index_to_type(index):
     """shorthand for getting a type name from index"""
@@ -160,8 +162,13 @@ class Player:
 
     def status(self):
         str1 = '{} has {} voters, of them {} swing voters and {} partisans, {} news, {} hype, {} cash, {} media, {} mojo, {} money.'
+        str2 = ''
+        if self.active == 0:
+            str2 = '{} waits for turn'.format(self.name)
+        elif self.active == 1:
+            str2 = '{} makes next turn'.format(self.name)
         return str1.format(self.name, self.voters, self.swing, self.partisans, self.news, self.hype, self.cash,
-                           self.media, self.mojo, self.money)
+                           self.media, self.mojo, self.money) + '\n' + str2
 
     def get_player_data(self, data_id):  # returns value according to type, needed to check card playablility
         if data_id == 0 or data_id == 'voters':
@@ -182,10 +189,10 @@ class Player:
             return self.mojo
         elif data_id == 8 or data_id == 'money':
             return self.money
-        elif data_id == 9 or data_id == 'active':
+        elif data_id == 11 or data_id == 'active':
             return self.active
         else:
-            print 'invalid data_id, must be 0...9 or string param name'
+            print 'invalid data_id, must be 0...8..11 or string param name'
             pass
 
     def card_playable(self, cost_color,
@@ -236,33 +243,41 @@ class Player:
     def set_active(self, code):
         self.active = code
 
-'''
+
 class Card:
     """
     an object with n parameters
     for the time being Trump and Hillary use the same card values with different names
+
     """
 
-    def __init__(self, name, player, cost_value, cost_color, image, action1, action2=None,
-                 action3=None):  # action1-3 are tuple of 3 elements
-        self.name = name
-        self.player = player
-        self.cost_value = cost_value
-        self.cost_color = cost_color
-        self.action1 = action1
-        self.action2 = action2
-        self.action3 = action3
-        self.image = image
+    def __init__(self, player_id, card_params):  # csv is processed outside card, card is fed params as a dict
+        self.player_id = player_id
+        self.card_id = card_params['id']
+        if self.player_id == 0:
+            self.name = card_params['ttitle']
+            self.image = path_t + str(card_params['img_t'])
+        elif self.player_id == 1:
+            self.name = card_params['htitle']
+            self.image = path_h + str(card_params['img_t'])
+        self.cost_color = card_params['cost_color']
+        self.cost_value = card_params['cost_value']
+        self.action1 = [card_params['act1_value'], card_params['act1_type'], card_params['act1_side']]
+        self.action2 = [card_params['act2_value'], card_params['act2_type'], card_params['act2_side']]
+        self.action3 = [card_params['act3_value'], card_params['act3_type'], card_params['act3_side']]
         self.playable = 0
 
     def __str__(self):
-        return str(self.name)
+        return 'name = ' + str(self.name) + '\n color = ' + str(self.cost_color) + '\n cost = ' + str(self.cost_value) + '\n action3 = ' + str(self.action3)
+
+    def get_card_id(self):
+        return self.card_id
 
     def get_name(self):
         return self.name
 
-    def get_player(self):
-        return self.player
+    def get_player_id(self):
+        return self.player_id
 
     def get_cost_color(self):
         return self.cost_color
@@ -287,7 +302,7 @@ class Card:
     def get_playable(self):
         return self.playable
 
-
+'''
 class Deck:
     """docstring"""
 
@@ -326,9 +341,51 @@ class Hand(Deck):
 
 '''
 
+# TEST OF CREATE_ROUND() and Player class
+
 t, h = create_round(2)
 
 print t, h
 
 print t.status()
 print h.status()
+
+print t.get_player_data('active')
+print h.get_player_data(11)
+
+# TEST OF Cards class
+
+card101 = Card(0,get_row(cards_db,47))
+card201 = Card(1,get_row(cards_db,47))
+
+print card101
+print card201
+
+print card201.get_card_id()
+print card201.get_actions(1)
+
+print 'actions for card # ' + str(card201.get_card_id()) + ' are:' + str(card201.get_actions(1))
+
+'''
+EXPECTED OUTPUT OF THE TEST
+[0, 15, 5, 0, 0, 0, 1, 1, 1]
+[1, 15, 5, 0, 0, 0, 1, 1, 1]
+Trump Hillary
+Trump has 20 voters, of them 15 swing voters and 5 partisans, 0 news, 0 hype, 0 cash, 1 media, 1 mojo, 1 money.
+Trump waits for turn
+Hillary has 20 voters, of them 15 swing voters and 5 partisans, 0 news, 0 hype, 0 cash, 1 media, 1 mojo, 1 money.
+Hillary makes next turn
+0
+1
+name = Trump Casino
+ color = 3
+ cost = 19
+ action3 = [0, 0, 0]
+name = Clinton*Foundation
+ color = 3
+ cost = 19
+ action3 = [0, 0, 0]
+47
+[2, 8, 0]
+actions for card # 47 are:[2, 8, 0]
+'''

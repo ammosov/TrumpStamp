@@ -1,7 +1,7 @@
 import kivy
-
-
 kivy.require('1.9.1')
+from kivy.config import Config
+Config.set('kivy', 'log_level', 'debug')
 
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -13,6 +13,27 @@ from kivy.clock import Clock
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.audio import SoundLoader
+
+import csv
+import os.path
+# import logging
+from kivy.logger import Logger
+Logger.info('title: This is a info message.')
+Logger.debug('title: This is a debug message.')
+
+
+class TrumpAssetStorage(object):
+
+    def __init__(self):
+        print( "bla")
+        cards_address = 'assets' + os.path.sep + 'cards'
+        Logger.debug("TrumpApp: Cards address: %s", cards_address)
+        listfile = cards_address + os.path.sep + 'DECK_1_4.csv'
+        Logger.debug( "TrumpApp: Csv file loading: %s", listfile)
+        with open( listfile ) as csvfile:
+            reader = csv.DictReader(csvfile, delimiter=';')
+            for row in reader:
+                print('Loaded card: trump:', row['trump'], 'hillary:', row['hillary'])
 
 
 class TrumpCard( Button ):
@@ -49,10 +70,11 @@ class TrumpPlayerHillary(TrumpPlayer):
 
 class TrumpGame(FloatLayout):
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other
-    objects. As general class it stores all the stuff in the game.
+    objects. As a general class it stores all the stuff in the game.
     """
     myPlayerTrump = TrumpPlayerTrump()
     myPlayerHillary = TrumpPlayerHillary()
+    myAssetStorage = TrumpAssetStorage()
 
 
 class TrumpApp(App):

@@ -14,45 +14,6 @@ players = (trump, hillary)
 td, hd = create_decks(players, card_lists)
 # td, hd = create_simple_decks(players, card_lists)
 
-'''
-# TEST OF DECK AND HAND FUNCTIONS
-
-# Shuffle decks
-td.shuffle()
-hd.shuffle()
-
-# Init Hands
-th = Hand(0)
-hh = Hand(1)
-# Set Hand owners
-th.set_player(trump)
-hh.set_player(hillary)
-# fill initial Hands
-for i in range(6):
-    th.take_card(td.pop_card())
-    hh.take_card(hd.pop_card())
-
-# Verify that players were created properly
-# print trump.status()
-# print hillary.status()
-# print Decks
-# print 'Trump deck - \n {}'.format(th)
-# print 'Hillary deck - \n {}'.format(hh)
-# print trump.get_resources()
-# print hillary.get_resources()
-
-# check playability
-
-th.set_playables()
-hh.set_playables()
-
-# print Hands and Decks
-# print '{} \n\n {}'.format(th, td)
-# print '\n\n'
-# print '{} \n\n {}'.format(hh, hd)
-
-'''
-
 # TEST OF CARDS BEING PROCESSED ACCURATELY
 
 print 'TRUMP CARDS TEST'

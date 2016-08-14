@@ -219,24 +219,24 @@ class Player:
         return [0, self.news, self.hype, self.cash]
 
     def card_action(self, value, action_type):  # card arguments modify player data per appropriate resource id, probably easiest way
-        if action_type == 0:  # voters = swing + partisans, if damage greater than swing voters, only then partisans are damaged by the remainder
-            self.partisans += min(0, self.swing + value)
+        if action_type == 0:  # voters = swing + partisans, min value = 0; if damage greater than swing voters, only then partisans are damaged by the remainder
+            self.partisans = max(0, self.partisans + self.swing + value)
             self.swing = max(0, self.swing + value)
-        elif action_type == 1:  # swing voters
+        elif action_type == 1:  # swing voters, min = 0
             self.swing = max(0, self.swing + value)
-        elif action_type == 2:  # partisans
+        elif action_type == 2:  # partisans, min = 0
             self.partisans = max(0, self.partisans + value)
-        elif action_type == 3:  # news
+        elif action_type == 3:  # news, min = 0
             self.news = max(0, self.news + value)
-        elif action_type == 4:  # hype
+        elif action_type == 4:  # hype, min = 0
             self.hype = max(0, self.hype + value)
-        elif action_type == 5:  # cash
+        elif action_type == 5:  # cash, min = 0
             self.cash = max(0, self.cash + value)
-        elif action_type == 6:  # media
+        elif action_type == 6:  # media, min = 1
             self.media = max(1, self.media + value)
-        elif action_type == 7:  # mojo
+        elif action_type == 7:  # mojo, min = 1
             self.mojo = max(1, self.mojo + value)
-        elif action_type == 8:  # money
+        elif action_type == 8:  # money, min = 1
             self.money = max(1, self.money + value)
         elif action_type == 9:  # all resources
             self.news = max(0, self.news + value)
@@ -259,14 +259,14 @@ class Player:
         return self.active
 
     def reset(self):
-        self.swing = 100
-        self.partisans = 100
-        self.news = 100
-        self.hype = 100
-        self.cash = 100
-        self.media = 100
-        self.mojo = 100
-        self.money = 100
+        self.swing = 0
+        self.partisans = 0
+        self.news = 0
+        self.hype = 0
+        self.cash = 0
+        self.media = 4
+        self.mojo = 4
+        self.money = 4
 
 
     def update_resources(self):  # at the end of turn, update resources of players

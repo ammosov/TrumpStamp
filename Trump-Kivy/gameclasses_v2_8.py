@@ -145,9 +145,9 @@ class GameMaster:
         # every card is therefore created twice, for each of players
         for i in id_list:
             card0 = Card(self.trump, self.hillary, self.trump_deck, get_row(cards_db, i))
-            self.trump_deck.append(card0)
+            self.trump_deck.append_card(card0)
             card1 = Card(self.hillary, self.trump, self.hillary_deck, get_row(cards_db, i))
-            self.hillary_deck.append(card1)
+            self.hillary_deck.append_card(card1)
         # shuffle Decks
         self.trump_deck.shuffle()
         self.hillary_deck.shuffle()
@@ -160,7 +160,9 @@ class GameMaster:
 
     def __repr__(self):
         # should print smth about the game. will decide later.
-        return 'Active = {} - {}\n\n{} - {}'.format(self.trump.get_active(), self.trump_hand, self.hillary.get_active(), self.hillary_hand)
+        str0 = '{}\n{}\n'.format(self.trump.status(), self.hillary.status())
+        str1 = '\n{}\n\n{}\n'.format(self.trump_hand, self.hillary_hand)
+        return str0 + str1
 
     def get_active_player(self):
         # probably can be rid of
@@ -172,45 +174,28 @@ class GameMaster:
             print 'GameMaster.get_active_player says: ' \
                   'Trump active = {} ; Hillary active = {}'.format(self.trump.get_active(), self.hillary.get_active())
 
-    def switch_active_players(self):
-        """changes active status to passive and back
-        !! check for correct not notation! """
-        # case 1 - make Trump active
-        if not self.trump.get_active() and self.hillary.get_active():
-            self.trump.set_active(True)
-            self.hillary.set_active(False)
-        # case 2 - make Hillary active
-        elif self.trump.get_active() and not self.hillary.get_active():
-            self.trump.set_active(False)
-            self.hillary.set_active(True)
-        else:
-            print 'GameMaster.switch_active_players says: ERROR!'
-
     def declare_victory(self):
-        """checks if victory is achieved"""
+        """checks if victory is achieved
+        !! Current problem - what if both players are hit with one card?"""
         # if Trump wins
-        if (self.trump.get_player_data('voters') == self.victory['destr']
-            or self.trump.get_player_data('news') == self.victory['res']
-            or self.trump.get_player_data('hype') == self.victory['res']
-            or self.trump.get_player_data('cash') == self.victory['res']
-            ):
+        if self.hillary.get_player_data('voters') == self.victory['destr'] - 1: # destruction is true/false
             self.trump.set_winner(True)
+            print 'Trump won'
             self.game_over = True
             return True
         # if Hillary wins
-        elif (self.hillary.get_player_data('voters') == self.victory['destr']
-              or self.hillary.get_player_data('news') == self.victory['res']
-              or self.hillary.get_player_data('hype') == self.victory['res']
-              or self.hillary.get_player_data('cash') == self.victory['res']
-              ):
+        elif self.trump.get_player_data('voters') == self.victory['destr'] - 1:
             self.hillary.set_winner(True)
+            print 'Hillary won'
             self.game_over = True
             return True
         # No winner yet
         else:
+            print 'No winner yet'
             return False
 
-    def turn_if_switch(self):
+    def turn_if_passturn(self):
+        """Will abandon"""
         if self.declare_victory():
             pass
         # Keep in mind - every card after play
@@ -222,7 +207,7 @@ class GameMaster:
                     print ' GM.switch turn branch 1'
                     self.switch_active_players()
                     # break
-                self.trump_hand.play_random_card()  # assumes Trump is not human - random playable card
+                self.trump_hand.play_passturn_random_card()  # assumes Trump is not human - random playable card
                 # self.trump_hand.play_selected_card(raw_input())  # assumes Trump is human - HID actions to select a card
                 if self.declare_victory():
                     break
@@ -231,7 +216,7 @@ class GameMaster:
                     print ' GM.switch turn branch 2'
                     self.switch_active_players()
                     # break
-                self.hillary_hand.play_random_card()  # assumes Hillary is not human - random playable card
+                self.hillary_hand.play_passturn_random_card()  # assumes Hillary is not human - random playable card
                 if self.declare_victory():
                     break
         elif self.hillary.get_active():
@@ -240,7 +225,7 @@ class GameMaster:
                     print ' GM.switch turn branch 3'
                     self.switch_active_players()
                     # break
-                self.hillary_hand.play_random_card()  # assumes Hillary is not human - random playable card
+                self.hillary_hand.play_passturn_random_card()  # assumes Hillary is not human - random playable card
                 if self.declare_victory():
                     break
             while self.trump.get_active():
@@ -248,7 +233,7 @@ class GameMaster:
                     print ' GM.switch turn branch 4'
                     self.switch_active_players()
                     # break
-                self.trump_hand.play_random_card()  # assumes Trump is not human - random playable card
+                self.trump_hand.play_passturn_random_card()  # assumes Trump is not human - random playable card
                 # self.trump_hand.play_selected_card(raw_input())  # assumes Trump is human - HID actions to select a card
                 if self.declare_victory():
                     break
@@ -263,42 +248,56 @@ class GameMaster:
         print '{}'.format(self.hillary.status())
 
     def turn_if_discard(self):
-        if self.declare_victory():
-            pass
+        """Plays a single turn of two players playing all their cards"""
         # Keep in mind - every card after play
         # sets itself its owner's player_active to False
         # unless it's a free turn card
-        elif self.trump.get_active():
+        if self.trump.get_active():
             while self.trump.get_active():
                 self.trump_hand.play_discard_random_card()  # assumes Trump is not human - random playable card
                 if self.declare_victory():
+                    self.end_game()
                     break
             while self.hillary.get_active():
                 self.hillary_hand.play_discard_random_card()  # assumes Hillary is not human - random playable card
                 if self.declare_victory():
+                    self.end_game()
                     break
         elif self.hillary.get_active():
             while self.hillary.get_active():
                 self.hillary_hand.play_discard_random_card()  # assumes Hillary is not human - random playable card
                 if self.declare_victory():
-                    break
+                    self.end_game()
             while self.trump.get_active():
                 self.trump_hand.play_discard_random_card()  # assumes Trump is not human - random playable card
                 if self.declare_victory():
-                    break
+                    self.end_game()
         else:
-            print 'GameMaster.turn says: ' \
+            print 'GM.turn_d says: ' \
                   'Trump active = {} ; Hillary active = {}'.format(self.trump.get_active(), self.hillary.get_active())
-        self.trump.update_resources()
-        self.hillary.update_resources()
-        print 'Res upd'
-        self.trump_hand.refill()
-        self.hillary_hand.refill()
-        self.trump_hand.set_playables()
-        self.hillary_hand.set_playables()
-        print 'Crd dlt'
-        print '{}'.format(self.trump.status())
-        print '{}'.format(self.hillary.status())
+        if self.declare_victory():
+            pass
+        else:
+            self.trump.update_resources()
+            self.hillary.update_resources()
+            self.trump_hand.refill()
+            self.hillary_hand.refill()
+            self.trump_hand.set_playables()
+            self.hillary_hand.set_playables()
+            print '\nGM.turn_d says: Begin new turn'
+            print 'GM.turn_d says: {}'.format(self.trump.status())
+            print 'GM.turn_d says: {}'.format(self.hillary.status())
+
+    def play_game(self):
+        while not self.declare_victory():
+            self.turn_if_discard()
+        print self.trump.status()
+        print self.hillary.status()
+
+    def end_game(self):
+        """Sets both Players to active=False to prevent playing further cards"""
+        self.trump.set_active(False)
+        self.hillary.set_active(False)
 
 
 class Player:
@@ -396,7 +395,7 @@ class Player:
         # fast check of card playability; zero added to account for free cards
         return [0, self.news, self.hype, self.cash]
 
-    def set_resources(self, type, value):
+    def pay_for_card(self, type, value):
         # COLOR COST: when a card is played, it 'pays' its resource price
         if type == 0:
             if value == 99:  # THREE COLOR the priciest killer card
@@ -527,13 +526,14 @@ class Card:
         self.inplay = False  # Only Hand can declare a Card in play, one at a time
 
     def __repr__(self):
-        return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name, self.cost_color, self.cost_value,
-                                               '-!-' if self.playable else '')
-        # return 'name = ' + str(self.name) + '\n color = ' + str(self.cost_color) + '\n cost = ' + str(self.cost_value) + '\n action3 = ' + str(self.action3)
+        str0 = '{0} = '.format(self.card_id)
+        str1 = '{3}{0} ({1}/{2})'.format(self.name, self.cost_color, self.cost_value, '-!-' if self.playable else '')
+        str3 = ' ({})'.format(self.description)
+        return str0 + str1 + str3
 
     def play(self):
         # subtracts card resources
-        self.player.set_resources(self.cost_color, self.cost_value)
+        self.player.pay_for_card(self.cost_color, self.cost_value)
         # changes turn order: player inactive, opp active
         self.player.set_active(0)
         self.opponent.set_active(1)
@@ -550,7 +550,7 @@ class Card:
             pass
         elif self.action2[2] == 0:
             if self.action2[1] == 11:
-                print 'Card creates free turn in Action 2'
+                print 'C.play says: Card creates free turn in Action 2, did {} play again?'.format(self.player)
                 self.player.set_active(1)
                 self.opponent.set_active(0)
             else:
@@ -565,7 +565,7 @@ class Card:
             pass
         elif self.action3[2] == 0:
             if self.action3[1] == 11:
-                print 'Card creats free turn in Action 3'
+                print 'C.play says: Card creats free turn in Action 3, did {} play again?'.format(self.player)
                 self.player.set_active(1)
                 self.opponent.set_active(0)
             else:
@@ -660,9 +660,15 @@ class Deck:
         """Pulls the first Card out of the Deck; normally passes it it Hand"""
         return self.cards.pop()
 
-    def append(self, card):
-        """Adds a Card to the Deck"""
+    def append_card(self, card):
+        """Adds a Card to the Deck
+        Card will be the first to pop() from Deck"""
         self.cards.append(card)
+
+    def insert_card(self, card):
+        """Insert a Card to the Deck
+        Card will be the last to pop() from Deck"""
+        self.cards.insert(0, card)
 
     def not_empty(self):
         """mostly for testing, probably not needed in the game"""
@@ -687,8 +693,6 @@ class Hand:
             self.cards.append(0)  # 0 stands for -here Card is missing-
 
     def __repr__(self):
-        # return '[%s]' % '\n '.join(map(str, self.cards))
-        # return '\n '.join(map(str, self.cards))
         return 'Hand owner - {}'.format(str(self.player)) + '\n {}'.format('\n '.join(map(str, self.cards)))
 
     def set_player(self, player):
@@ -758,50 +762,33 @@ class Hand:
         for i in range(6):
             if self.list_playable()[i]:
                 index.append(i)
-        # prev version, gave errors on empty cards
-        # for i in range(6):
-        #     if self.cards[i].get_playable():
-        #         index.append(i)
         return index
-
-    def play_random_card(self):
-        playable_cards_indices = self.index_playable()
-        if not playable_cards_indices:  # ATT !! Discard not implemented
-            print 'Hand.play_random_card says: {} has no playable cards, GM will pass the turn'.format(self.player)
-        else:
-            index = random.choice(playable_cards_indices)
-            active_card = self.cards[index]
-            self.cards[index] = 0
-            print 'Hand.play_random_card prepares to play card {}'.format(active_card)
-            active_card.play()
-            self.deck.append(active_card)
 
     def play_discard_random_card(self):
         playable_cards_indices = self.index_playable()
         if not playable_cards_indices:  # discard a card and pass a turn
-            print 'Hand.play_random_card says: {} has no playable cards, will discard a random card'.format(self.player)
             index = random.choice(range(6))
             active_card = self.cards[index]
-            print 'Preparing to discard {}'.format(active_card)
+            if active_card == 0:
+                active_card = self.cards[index - 1]
+            print 'H.play_random_card says: {} has no playable cards, will discard card {}'.format(self.player, active_card)
+            # since no card is played, manually pass turn to another
+            # get player and opponent from Card metadata
             active_card.get_player().set_active(False)
             active_card.get_opponent().set_active(True)
-            self.cards[index] = 0
-            self.deck.append(active_card)  # becomes card 1
-            self.deck.shuffle()  # get rid of this
-            print '{}'.format(self.cards)
-            print 'Hand.play_random_card says: player {} set to {}'.format(self.player, self.player.get_active())
+            self.cards[index] = 0 # change the selected card to empty hole
+            self.deck.insert_card(active_card)  # becomes last card to pop
+            # print 'Hand.play_random_card says: player {} set to {}'.format(self.player, self.player.get_active())
         else:
             index = random.choice(playable_cards_indices)
             active_card = self.cards[index]
             self.cards[index] = 0
-            print 'Hand.play_random_card says: {} prepares to play card {}'.format(self.player, active_card)
+            print 'H.play_random_card says: {} prepares to play card {}'.format(self.player, active_card)
             active_card.play()
-            self.deck.append(active_card)  # becomes card 1
-            self.deck.shuffle()  # get rid of this
+            self.deck.insert_card(active_card)  # becomes last card to pop
 
     def play_selected_card(self, card_index):
-        """Plays a Card referred by card_index; 0-5 index of card in deck
-        Validation here raises errors because self.cards init as list of INT, not Card obj """
+        """Plays a Card referred by card_index; 0-5 index of card in deck"""
         card = self.cards[card_index]
         if card.get_playable():
             self.cards[card_index] = 0

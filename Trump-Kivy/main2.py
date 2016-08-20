@@ -38,10 +38,12 @@ class TrumpAssetStorage(object):
 
 class TrumpCard( Button ):
     """" This is a GUI class, representing a game field object."""
-    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+
+    def __init__(self, **kwargs):
+        super(Button, self).__init__(**kwargs)
+        self.myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
 
     def play_card(self):
-
         # self.parent.scoreTrump += 1
         self.myWavSound.play()
 
@@ -82,5 +84,5 @@ class TrumpApp(App):
         game = TrumpGame()
         return game
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # condition: "If I am executed as a file, not throught 'import'"
     TrumpApp().run()

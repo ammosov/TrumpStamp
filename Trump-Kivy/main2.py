@@ -26,24 +26,24 @@ class TrumpAssetStorage(object):
 
     def __init__(self):
         print( "bla")
-        cards_address = 'assets' + os.path.sep + 'cards'
-        Logger.debug("TrumpApp: Cards address: %s", cards_address)
-        listfile = cards_address + os.path.sep + 'DECK_1_4.csv'
+        # cards_address = 'assets' + os.path.sep + 'cards'
+        # Logger.debug("TrumpApp: Cards address: %s", cards_address)
+        # listfile = cards_address + os.path.sep + 'DECK_1_4.csv'
+        listfile = 'cards.csv'
         Logger.debug( "TrumpApp: Csv file loading: %s", listfile)
         with open( listfile ) as csvfile:
             reader = csv.DictReader(csvfile, delimiter=';')
             for row in reader:
-                print('Loaded card: trump:', row['trump'], 'hillary:', row['hillary'])
+                pass
+                # print('Loaded card: trump:', row['trump'], 'hillary:', row['hillary'])
 
 
 class TrumpCard( Button ):
     """" This is a GUI class, representing a game field object."""
-
-    def __init__(self, **kwargs):
-        super(Button, self).__init__(**kwargs)
-        self.myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
 
     def play_card(self):
+
         # self.parent.scoreTrump += 1
         self.myWavSound.play()
 
@@ -84,5 +84,5 @@ class TrumpApp(App):
         game = TrumpGame()
         return game
 
-if __name__ == '__main__':  # condition: "If I am executed as a file, not throught 'import'"
+if __name__ == '__main__':
     TrumpApp().run()

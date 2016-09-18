@@ -41,6 +41,7 @@ class TrumpAssetStorage(object):
 class TrumpCard( Button ):
     """" This is a GUI class, representing a game field object."""
     myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+    background_normal = 'assets/cards/hillary/101.png'
 
     def play_card(self):
 

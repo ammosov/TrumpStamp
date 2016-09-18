@@ -5,5 +5,3 @@ game = GameMaster(4)
 # print game
 
 game.play_game()
-
-

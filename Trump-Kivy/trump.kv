@@ -22,8 +22,10 @@
             size: self.size
     TrumpCard:
         pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/101.png'
     TrumpCard:
         pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/102.png'
     TrumpCard:
         pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
     TrumpCard:
@@ -94,14 +96,14 @@
         pos_hint: {'x':1032.0/2048.0, 'y':956.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 24
-        text: str(root.myPlayerHillary.partisans)
+        text: str(root.myPlayerHillary.swing_voters)
     Label:
         id: 'hillary_news'
         pos_hint: {'x': 1790.0/2048.0, 'y': 826.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
-        # text: str(root.myPlayerhillary.partisans)
-        text: str('nw')
+        text: str(root.myPlayerHillary.news)
+        # text: str('nw')
     Label:
         id: 'hillary_hype'
         pos_hint: {'x':1790.0/2048.0, 'y':701.0/1536.0}
@@ -139,28 +141,28 @@
 #    TrumpPlayerHillary:
 
 
-#    TrumpCard:
-#        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-#    TrumpCard:
-#        pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-#    TrumpCard:
-#        pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-#    TrumpCard:
-#        pos_hint: {'x':1225.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-#    TrumpCard:
-#        pos_hint: {'x':1495.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-#    TrumpCard:
-#        pos_hint: {'x':1764.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':34/2048.0, 'y':(1536.0-488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':302/2048.0, 'y':(1536.0-488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':570/2048.0, 'y':(1536.0-488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':838/2048.0, 'y':(1536.0-488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':1106/2048.0, 'y':(1536.0-488.0)/1536.0}
+    TrumpCard:
+        pos_hint: {'x':1374/2048.0, 'y':(1536.0-488.0)/1536.0}
 #    Label:
 #        pos_hint: {'x':720.0/2048.0, 'y':(1536.0-1085.0)/1536.0}
 #        size_hint: (50.0/2048.0), (50.0/1536.0)
-##        size_hint: 1, 1
+#        size_hint: 1, 1
 #        font_size: 50
-##        text: str(root.scoreTrump)
+#        text: str(root.scoreTrump)
 #        text: str( 1 )
 #    Label:
 #        pos_hint: {'x':325.0/2048.0, 'y':(1536.0-570.0)/1536.0}
 #        size_hint: (50.0/2048.0), (50.0/1536.0)
 #        font_size: 50
-##        text: str(root.scoreHillary)
+#        text: str(root.scoreHillary)
 #        text: str( 2 )

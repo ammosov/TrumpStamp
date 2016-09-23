@@ -8,36 +8,13 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 
 from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
+from gameclasses_v3_0 import Player, Card
 
 kivy.require('1.9.1')
 Config.set('kivy', 'log_level', 'debug')
 
 Logger.info('title: This is a info message.')
 Logger.debug('title: This is a debug message.')
-
-
-class Card(Button, Widget):
-    """" This is a GUI class, representing a game field object."""
-    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
-    background_normal = 'assets/cards/hillary/101.png'
-
-    def play_card(self):
-        # self.parent.scoreTrump += 1
-        self.myWavSound.play()
-
-
-class Player(Widget):
-    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
-    swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
-
-    media = BoundedNumericProperty(1, min=1, max=100)
-    news = BoundedNumericProperty(1, min=0, max=300)
-    mojo = BoundedNumericProperty(1, min=1, max=100)
-    charisma = BoundedNumericProperty(1, min=0, max=300)
-    donors = BoundedNumericProperty(1, min=1, max=100)
-    cash = BoundedNumericProperty(1, min=0, max=300)
-
-    cards_actions = ListProperty()  # Should have a list of card actions
 
 
 class ElectionsGame(FloatLayout):

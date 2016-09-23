@@ -9,7 +9,21 @@
 
 import random
 # import csv
+from kivy.uix.boxlayout import BoxLayout
+
 import processing_functions
+import kivy
+from kivy.app import App
+from kivy.config import Config
+from kivy.core.audio import SoundLoader
+from kivy.logger import Logger
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.widget import Widget
+
+from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
+
+kivy.require('1.9.1')
 
 # VARIABLES
 
@@ -295,7 +309,7 @@ class GameMaster:
         self.hillary.set_active(False)
 
 
-class Player:
+class Player(Widget):
     """CONTAINER FOR PLAYER PARAMETERS
     initiated with id = 0/1 and player_data = (0-7)
     player_data sequence: Swing Voters, Partisans, News, Hype, Cash, Media, Mojo, Money
@@ -495,7 +509,7 @@ class Player:
         self.money = 4
 
 
-class Card:
+class Card(Widget, Button):
     """CONTAINER FOR CARD PARAMETERS
     for the time being Trump and Hillary use the same card values with different names
     """
@@ -685,7 +699,7 @@ class Deck:
         self.cards.insert(0, card)
 
 
-class Hand:
+class Hand(BoxLayout):
     """LIST OF CARDS ON PLAYING FIELD"""
 
     def __init__(self):
@@ -803,3 +817,12 @@ class Hand:
 
 
 # ** THE END **
+
+class GameApp(App):
+    def build(self):
+        game_master = GameMaster
+        return game_master
+
+
+if __name__ == '__main__':
+    GameApp().run()

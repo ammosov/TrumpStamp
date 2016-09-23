@@ -124,6 +124,9 @@ class GameMaster:
         """Plays a Card referred by card_index; 0-5 index of card in deck"""
         if self.trump.get_active():
             active_card = self.trump.get_hand().cards[card_index]
+            if active_card == 0:
+                print '{} wants to play an empty place, lol'.format(self.trump)
+                return
             active_card.set_inplay(True)
             if active_card.get_playable():
                 print '{} plays {}'.format(self.trump, active_card)
@@ -137,6 +140,9 @@ class GameMaster:
             self.trump.get_hand().cards[card_index] = 0  # active card replaced by a hole
         elif self.hillary.get_active():
             active_card = self.hillary.get_hand().cards[card_index]
+            if active_card == 0:
+                print '{} wants to play an empty place, lol'.format(self.hillary)
+                return
             active_card.set_inplay(True)
             if active_card.get_playable():
                 print '{} plays {}'.format(self.hillary, active_card)
@@ -232,7 +238,8 @@ class GameMaster:
                 # print 'GM.turn_d says:\n{}'.format(self.trump.status())
                 print '\nGM.turn_d b1 says:\n{}'.format(self)
                 # assumes Trump is human - random playable card
-                self.play_selected_card(int(raw_input('Trump: Select card 0-5 ')))
+                # self.play_selected_card(int(raw_input('Trump: Select card 0-5 ')))
+                self.play_selected_card(random.randint(0, 5))
                 if self.declare_victory():
                     self.end_game()
                     break
@@ -241,7 +248,8 @@ class GameMaster:
                 # print 'GM.turn_d says:\n{}'.format(self.hillary.status())
                 print '\nGM.turn_d b2 says:\n{}'.format(self)
                 # assumes Hillary is human - random playable card
-                self.play_selected_card(int(raw_input('Hillary: Select card 0-5 ')))
+                # self.play_selected_card(int(raw_input('Hillary: Select card 0-5 ')))
+                self.play_selected_card(random.randint(0, 5))
                 if self.declare_victory():
                     self.end_game()
                     break
@@ -726,6 +734,8 @@ class Hand:
         Validation here raises errors because self.cards init as list of INT, not Card obj """
         res = self.player.get_resources()
         for card in self.cards:
+            if card == 0:
+                continue
             color = card.get_cost_color()
             value = card.get_cost_value()
             if color == 0 and value == 99:

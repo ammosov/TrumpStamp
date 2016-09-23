@@ -8,7 +8,7 @@
     size_hint: (250.0/2048.0), (350.0/1536.0)
     on_press:
         print('Card pressed.')
-        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))).start(self)
+        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1000.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))).start(self)
         self.play_card( )
 
 <Player>:

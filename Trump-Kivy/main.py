@@ -8,7 +8,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.widget import Widget
 
 from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
-from gameclasses_v3_0 import Player, Card
+from gameclasses_v3_0 import *
 
 kivy.require('1.9.1')
 Config.set('kivy', 'log_level', 'debug')

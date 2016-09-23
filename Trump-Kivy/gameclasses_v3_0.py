@@ -38,28 +38,6 @@ path_h = ''  # path to images of Hillary cards, default - same dir
 
 
 # CLASSES
-class Player(Widget):
-    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
-    swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
-
-    media = BoundedNumericProperty(1, min=1, max=100)
-    news = BoundedNumericProperty(1, min=0, max=300)
-    mojo = BoundedNumericProperty(1, min=1, max=100)
-    charisma = BoundedNumericProperty(1, min=0, max=300)
-    donors = BoundedNumericProperty(1, min=1, max=100)
-    cash = BoundedNumericProperty(1, min=0, max=300)
-
-    cards_actions = ListProperty()  # Should have a list of card actions
-
-class Card(Button, Widget):
-    """" This is a GUI class, representing a game field object."""
-    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
-    background_normal = 'assets/cards/hillary/101.png'
-
-    def play_card(self):
-        # self.parent.scoreTrump += 1
-        self.myWavSound.play()
-
 class GameMaster:
     """CONTAINER FOR GAME VARIABLES, PROCESSES AND FUNCTIONS
     """
@@ -319,355 +297,373 @@ class GameMaster:
         self.trump.set_active(False)
         self.hillary.set_active(False)
 
-
-class Player:
+class Player(Widget):
     """CONTAINER FOR PLAYER PARAMETERS
     initiated with id = 0/1 and player_data = (0-7)
     player_data sequence: Swing Voters, Partisans, News, Hype, Cash, Media, Mojo, Money
     in ROUNDS.CSV, voters param in database is replaced by first turn ID - 1 starts the game
     """
 
+    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
+
+    media = BoundedNumericProperty(1, min=1, max=100)
+    news = BoundedNumericProperty(1, min=0, max=300)
+    mojo = BoundedNumericProperty(1, min=1, max=100)
+    charisma = BoundedNumericProperty(1, min=0, max=300)
+    donors = BoundedNumericProperty(1, min=1, max=100)
+    cash = BoundedNumericProperty(1, min=0, max=300)
+
+    cards_actions = ListProperty()
+
     # def __init__(self, player_id, swing, partisans, news, hype, cash, media, mojo, money):
-    def __init__(self, player_params):
-        self.id = player_params[0]  # 0 = Trump, 1 = Hillary;
-        # 0 / 1 id is used to assign to Cards proper titles and images
-        # note: for Cards, 0 is a code for 'voters' actions; voters is computed
-        # column zero codes a player to keep other codes consistent between CSVs
-        if self.id == 0:
-            self.name = 'Trump'
-        elif self.id == 1:
-            self.name = 'Hillary'
-        else:
-            self.name = 'self.id not defined'
-        self.swing = player_params[1]
-        self.partisans = player_params[2]
-        self.news = player_params[3]
-        self.hype = player_params[4]
-        self.cash = player_params[5]
-        self.media = player_params[6]
-        self.mojo = player_params[7]
-        self.money = player_params[8]
-        # Relationships with other objects in game
-        self.opponent = None
-        self.deck = Deck()  # pointer to Deck that Player owns
-        self.deck.set_player(self)
-        self.hand = Hand()  # pointer to Hand that Player owns
-        self.hand.set_player(self)
-        self.hand.set_deck(self.deck)
-        self.deck.set_hand(self.hand)
-        # Game related parameters
-        self.active = False  # Active Player plays the next Card
-        self.human = False  # Human player == True gets HID input, False = algorithm plays
-        self.winner = None
+    def __init__(self, **kwargs):
+        super(Player, self).__init__(**kwargs)
+        # self.id = player_params[0]  # 0 = Trump, 1 = Hillary;
+        # # 0 / 1 id is used to assign to Cards proper titles and images
+        # # note: for Cards, 0 is a code for 'voters' actions; voters is computed
+        # # column zero codes a player to keep other codes consistent between CSVs
+        # if self.id == 0:
+        #     self.name = 'Trump'
+        # elif self.id == 1:
+        #     self.name = 'Hillary'
+        # else:
+        #     self.name = 'self.id not defined'
+        # self.swing = player_params[1]
+        # self.partisans = player_params[2]
+        # self.news = player_params[3]
+        # self.hype = player_params[4]
+        # self.cash = player_params[5]
+        # self.media = player_params[6]
+        # self.mojo = player_params[7]
+        # self.money = player_params[8]
+        # # Relationships with other objects in game
+        # self.opponent = None
+        # self.deck = Deck()  # pointer to Deck that Player owns
+        # self.deck.set_player(self)
+        # self.hand = Hand()  # pointer to Hand that Player owns
+        # self.hand.set_player(self)
+        # self.hand.set_deck(self.deck)
+        # self.deck.set_hand(self.hand)
+        # # Game related parameters
+        # self.active = False  # Active Player plays the next Card
+        # self.human = False  # Human player == True gets HID input, False = algorithm plays
+        # self.winner = None
 
-    def __str__(self):  # string method for class
-        return self.name
+#     def __str__(self):  # string method for class
+#         return self.name
 
-    def status(self):
-        """Extended printout of player parameters to console"""
-        str0 = '{} has {} voters, of them {} swing voters and {} partisans, '
-        str1 = '{} news, {} hype, {} cash, {} media, {} mojo, {} money.'
-        str2 = ''
-        if not self.active:
-            str2 = '{} waits for turn'.format(self.name)
-        elif self.active:
-            str2 = '{} makes next turn'.format(self.name)
-        return (str0 + str1).format(self.name, self.swing + self.partisans, self.swing, self.partisans, self.news,
-                                    self.hype, self.cash, self.media, self.mojo, self.money) + '\n' + str2
+#     def status(self):
+#         """Extended printout of player parameters to console"""
+#         str0 = '{} has {} voters, of them {} swing voters and {} partisans, '
+#         str1 = '{} news, {} hype, {} cash, {} media, {} mojo, {} money.'
+#         str2 = ''
+#         if not self.active:
+#             str2 = '{} waits for turn'.format(self.name)
+#         elif self.active:
+#             str2 = '{} makes next turn'.format(self.name)
+#         return (str0 + str1).format(self.name, self.swing + self.partisans, self.swing, self.partisans, self.news,
+#                                     self.hype, self.cash, self.media, self.mojo, self.money) + '\n' + str2
 
-    def set_opponent(self, opponent):
-        """Sets opponents at once for Player and all his objects"""
-        self.opponent = opponent
-        self.deck.set_opponent(self.opponent)
-        self.hand.set_opponent(self.opponent)
+#     def set_opponent(self, opponent):
+#         """Sets opponents at once for Player and all his objects"""
+#         self.opponent = opponent
+#         self.deck.set_opponent(self.opponent)
+#         self.hand.set_opponent(self.opponent)
 
-    def get_deck(self):
-        return self.deck
+#     def get_deck(self):
+#         return self.deck
 
-    def get_hand(self):
-        return self.hand
+#     def get_hand(self):
+#         return self.hand
 
-    def get_resources(self):
-        # fast check of card playability; zero added to account for free cards
-        return [0, self.news, self.hype, self.cash]
+#     def get_resources(self):
+#         # fast check of card playability; zero added to account for free cards
+#         return [0, self.news, self.hype, self.cash]
 
-    def update_resources(self):  # at the end of turn, update resources of players
-        self.news += self.media
-        self.hype += self.mojo
-        self.cash += self.money
+#     def update_resources(self):  # at the end of turn, update resources of players
+#         self.news += self.media
+#         self.hype += self.mojo
+#         self.cash += self.money
 
-    def get_player_data(self, data_id):  # returns a single parameter by name or id, needed to check card playablility
-        if data_id == 0 or data_id == 'voters':
-            return self.swing + self.partisans
-        elif data_id == 1 or data_id == 'swing':
-            return self.swing
-        elif data_id == 2 or data_id == 'partisans':
-            return self.partisans
-        elif data_id == 3 or data_id == 'news':
-            return self.news
-        elif data_id == 4 or data_id == 'hype':
-            return self.hype
-        elif data_id == 5 or data_id == 'cash':
-            return self.cash
-        elif data_id == 6 or data_id == 'media':
-            return self.media
-        elif data_id == 7 or data_id == 'mojo':
-            return self.mojo
-        elif data_id == 8 or data_id == 'money':
-            return self.money
-        elif data_id == 9 or data_id == 'all resources':
-            return [self.news, self.hype, self.cash]
-        elif data_id == 10 or data_id == 'all assets':
-            return [self.media, self.mojo, self.money]
-        elif data_id == 11 or data_id == 'active':
-            return self.active
-        elif data_id == 12 or data_id == 'id':
-            return self.id
-        else:
-            print 'invalid data_id, must be 0...11 or string param name'
-            pass
+#     def get_player_data(self, data_id):  # returns a single parameter by name or id, needed to check card playablility
+#         if data_id == 0 or data_id == 'voters':
+#             return self.swing + self.partisans
+#         elif data_id == 1 or data_id == 'swing':
+#             return self.swing
+#         elif data_id == 2 or data_id == 'partisans':
+#             return self.partisans
+#         elif data_id == 3 or data_id == 'news':
+#             return self.news
+#         elif data_id == 4 or data_id == 'hype':
+#             return self.hype
+#         elif data_id == 5 or data_id == 'cash':
+#             return self.cash
+#         elif data_id == 6 or data_id == 'media':
+#             return self.media
+#         elif data_id == 7 or data_id == 'mojo':
+#             return self.mojo
+#         elif data_id == 8 or data_id == 'money':
+#             return self.money
+#         elif data_id == 9 or data_id == 'all resources':
+#             return [self.news, self.hype, self.cash]
+#         elif data_id == 10 or data_id == 'all assets':
+#             return [self.media, self.mojo, self.money]
+#         elif data_id == 11 or data_id == 'active':
+#             return self.active
+#         elif data_id == 12 or data_id == 'id':
+#             return self.id
+#         else:
+#             print 'invalid data_id, must be 0...11 or string param name'
+#             pass
 
-    def get_player_id(self):
-        # fast player id retrieval
-        return self.id
+#     def get_player_id(self):
+#         # fast player id retrieval
+#         return self.id
 
-    # Card playing functions
-    def pay_for_card(self, card_type, card_value):
-        """COLOR COST: when a card is played, it 'pays' its resource price"""
-        if card_type == 0:
-            if card_value == 99:  # THREE COLOR the priciest killer card
-                self.news -= card_value
-                self.hype -= card_value
-                self.cash -= card_value
-            else:  # GREY free cards
-                pass
-        elif card_type == 1:  # RED news cards
-            self.news -= card_value
-        elif card_type == 2:  # BLUE hype cards
-            self.hype -= card_value
-        elif card_type == 3:  # GREEN cash cards
-            self.cash -= card_value
-        else:
-            print 'Card cost type is not recognized!'
+#     # Card playing functions
+#     def pay_for_card(self, card_type, card_value):
+#         """COLOR COST: when a card is played, it 'pays' its resource price"""
+#         if card_type == 0:
+#             if card_value == 99:  # THREE COLOR the priciest killer card
+#                 self.news -= card_value
+#                 self.hype -= card_value
+#                 self.cash -= card_value
+#             else:  # GREY free cards
+#                 pass
+#         elif card_type == 1:  # RED news cards
+#             self.news -= card_value
+#         elif card_type == 2:  # BLUE hype cards
+#             self.hype -= card_value
+#         elif card_type == 3:  # GREEN cash cards
+#             self.cash -= card_value
+#         else:
+#             print 'Card cost type is not recognized!'
 
-    def card_action(self, value, action_type):
-        """Processes a single action according to game rules
-        action type number == Player parameter that is modified
-        card arguments modify player data per appropriate resource id, probably easiest way"""
-        if action_type == 0:
-            # voters = swing + partisans, min value = 0;
-            # if damage greater than swing voters, only then partisans are damaged by the remainder
-            # add voters branch
-            if value > 0:
-                self.swing += value
-            # lose voters branch
-            elif value < 0:
-                self.partisans = max(0, self.partisans + self.swing + value)
-                self.swing = max(0, self.swing + value)
-            else:
-                pass
-        elif action_type == 1:  # swing voters, min = 0
-            self.swing = max(0, self.swing + value)
-        elif action_type == 2:  # partisans, min = 0
-            self.partisans = max(0, self.partisans + value)
-        elif action_type == 3:  # news, min = 0
-            self.news = max(0, self.news + value)
-        elif action_type == 4:  # hype, min = 0
-            self.hype = max(0, self.hype + value)
-        elif action_type == 5:  # cash, min = 0
-            self.cash = max(0, self.cash + value)
-        elif action_type == 6:  # media, min = 1
-            self.media = max(1, self.media + value)
-        elif action_type == 7:  # mojo, min = 1
-            self.mojo = max(1, self.mojo + value)
-        elif action_type == 8:  # money, min = 1
-            self.money = max(1, self.money + value)
-        elif action_type == 9:  # all resources
-            self.news = max(0, self.news + value)
-            self.hype = max(0, self.hype + value)
-            self.cash = max(0, self.cash + value)
-        elif action_type == 10:  # all assets
-            self.media = max(1, self.media + value)
-            self.mojo = max(1, self.mojo + value)
-            self.money = max(1, self.money + value)
-        elif action_type == 11:  # new turn, nothing is changed, Card already changed everything
-            pass
-        else:
-            print 'invalid action type, must be 0...11'
-            pass
+#     def card_action(self, value, action_type):
+#         """Processes a single action according to game rules
+#         action type number == Player parameter that is modified
+#         card arguments modify player data per appropriate resource id, probably easiest way"""
+#         if action_type == 0:
+#             # voters = swing + partisans, min value = 0;
+#             # if damage greater than swing voters, only then partisans are damaged by the remainder
+#             # add voters branch
+#             if value > 0:
+#                 self.swing += value
+#             # lose voters branch
+#             elif value < 0:
+#                 self.partisans = max(0, self.partisans + self.swing + value)
+#                 self.swing = max(0, self.swing + value)
+#             else:
+#                 pass
+#         elif action_type == 1:  # swing voters, min = 0
+#             self.swing = max(0, self.swing + value)
+#         elif action_type == 2:  # partisans, min = 0
+#             self.partisans = max(0, self.partisans + value)
+#         elif action_type == 3:  # news, min = 0
+#             self.news = max(0, self.news + value)
+#         elif action_type == 4:  # hype, min = 0
+#             self.hype = max(0, self.hype + value)
+#         elif action_type == 5:  # cash, min = 0
+#             self.cash = max(0, self.cash + value)
+#         elif action_type == 6:  # media, min = 1
+#             self.media = max(1, self.media + value)
+#         elif action_type == 7:  # mojo, min = 1
+#             self.mojo = max(1, self.mojo + value)
+#         elif action_type == 8:  # money, min = 1
+#             self.money = max(1, self.money + value)
+#         elif action_type == 9:  # all resources
+#             self.news = max(0, self.news + value)
+#             self.hype = max(0, self.hype + value)
+#             self.cash = max(0, self.cash + value)
+#         elif action_type == 10:  # all assets
+#             self.media = max(1, self.media + value)
+#             self.mojo = max(1, self.mojo + value)
+#             self.money = max(1, self.money + value)
+#         elif action_type == 11:  # new turn, nothing is changed, Card already changed everything
+#             pass
+#         else:
+#             print 'invalid action type, must be 0...11'
+#             pass
 
-    def set_active(self, true_false):
+#     def set_active(self, true_false):
 
-        self.active = true_false
+#         self.active = true_false
 
-    def get_active(self):
-        """Active player plays the next card"""
-        return self.active
+#     def get_active(self):
+#         """Active player plays the next card"""
+#         return self.active
 
-    def set_winner(self, true_false):
-        """End of game states. True == Player won the game; False == lost"""
-        self.winner = true_false
+#     def set_winner(self, true_false):
+#         """End of game states. True == Player won the game; False == lost"""
+#         self.winner = true_false
 
-    def reset(self):
-        """method for testing only; returns player to some hard coded base state"""
-        self.swing = 0
-        self.partisans = 0
-        self.news = 0
-        self.hype = 0
-        self.cash = 0
-        self.media = 4
-        self.mojo = 4
-        self.money = 4
+#     def reset(self):
+#         """method for testing only; returns player to some hard coded base state"""
+#         self.swing = 0
+#         self.partisans = 0
+#         self.news = 0
+#         self.hype = 0
+#         self.cash = 0
+#         self.media = 4
+#         self.mojo = 4
+#         self.money = 4
 
-
-class Card:
+class Card(Button, Widget):
     """CONTAINER FOR CARD PARAMETERS
     for the time being Trump and Hillary use the same card values with different names
     """
+    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+    background_normal = 'assets/cards/hillary/101.png'
 
-    def __init__(self, player, opponent, deck, card_params):
-        # csv is processed outside Card, Card is fed params already as a dict
-        self.player = player
-        self.opponent = opponent
-        self.deck = deck  # Deck that Card belongs to
-        # process card_params
-        self.card_id = card_params['id']
-        self.description = card_params['descr'].replace('*', '; ')
-        # !! reference by id seems excessive
-        if self.player.get_player_id() == 0:
-            self.name = card_params['ttitle'].replace('*', ' ')
-            self.image = path_t + str(card_params['img_t']) + '.png'
-        elif self.player.get_player_id() == 1:
-            self.name = card_params['htitle'].replace('*', ' ')
-            self.image = path_h + str(card_params['img_t']) + '.png'
-        else:
-            print 'error in card init, player id unrecognized'
-        # check if card swallowed the player class
-        # print 'player = {}, card id = {}'.format(self.player, self.card_id)
-        self.cost_color = card_params['cost_color']
-        self.cost_value = card_params['cost_value']
-        # set actions and ignore empty actions
-        self.action1 = [card_params['act1_value'], card_params['act1_type'], card_params['act1_side']]
-        if card_params['act2_value'] == 0:
-            self.action2 = None
-        else:
-            self.action2 = [card_params['act2_value'], card_params['act2_type'], card_params['act2_side']]
-        if card_params['act3_value'] == 0:
-            self.action3 = None
-        else:
-            self.action3 = [card_params['act3_value'], card_params['act3_type'], card_params['act3_side']]
-        # Only Hand can declare a Card playable; True if player's resource equal or greater than cost
-        self.playable = False
-        self.inplay = False  # Only Hand can declare a Card in play, one at a time
+    def play_card(self):
+        # self.parent.scoreTrump += 1
+        self.myWavSound.play()
 
-    def __repr__(self):
-        str0 = '{0} = '.format(self.card_id)
-        str1 = '{3}{0} ({1}/{2})'.format(self.name, self.cost_color, self.cost_value, '-!-' if self.playable else '')
-        str3 = ' ({})'.format(self.description)
-        return str0 + str1 + str3
+    # def __init__(self, player, opponent, deck, card_params, **kwargs):
+    #     # csv is processed outside Card, Card is fed params already as a dict
+    #     super(Button, self).__init__(**kwargs)
+    #     self.player = player
+    #     self.opponent = opponent
+    #     self.deck = deck  # Deck that Card belongs to
+    #     # process card_params
+    #     self.card_id = card_params['id']
+    #     self.description = card_params['descr'].replace('*', '; ')
+    #     # !! reference by id seems excessive
+    #     if self.player.get_player_id() == 0:
+    #         self.name = card_params['ttitle'].replace('*', ' ')
+    #         self.image = path_t + str(card_params['img_t']) + '.png'
+    #     elif self.player.get_player_id() == 1:
+    #         self.name = card_params['htitle'].replace('*', ' ')
+    #         self.image = path_h + str(card_params['img_t']) + '.png'
+    #     else:
+    #         print 'error in card init, player id unrecognized'
+    #     # check if card swallowed the player class
+    #     # print 'player = {}, card id = {}'.format(self.player, self.card_id)
+    #     self.cost_color = card_params['cost_color']
+    #     self.cost_value = card_params['cost_value']
+    #     # set actions and ignore empty actions
+    #     self.action1 = [card_params['act1_value'], card_params['act1_type'], card_params['act1_side']]
+    #     if card_params['act2_value'] == 0:
+    #         self.action2 = None
+    #     else:
+    #         self.action2 = [card_params['act2_value'], card_params['act2_type'], card_params['act2_side']]
+    #     if card_params['act3_value'] == 0:
+    #         self.action3 = None
+    #     else:
+    #         self.action3 = [card_params['act3_value'], card_params['act3_type'], card_params['act3_side']]
+    #     # Only Hand can declare a Card playable; True if player's resource equal or greater than cost
+    #     self.playable = False
+    #     self.inplay = False  # Only Hand can declare a Card in play, one at a time
 
-    def play(self):
-        # subtracts card resources
-        self.player.pay_for_card(self.cost_color, self.cost_value)
-        # changes turn order: player inactive, opp active
-        self.player.set_active(False)
-        self.opponent.set_active(True)
-        # action 1
-        if self.action1[2] == 0:
-            self.player.card_action(self.action1[0], self.action1[1])
-        elif self.action1[2] == 1:
-            self.opponent.card_action(self.action1[0], self.action1[1])
-        elif self.action1[2] == 2:
-            self.player.card_action(self.action1[0], self.action1[1])
-            self.opponent.card_action(self.action1[0], self.action1[1])
-        # action 2
-        if self.action2 is None:
-            pass
-        elif self.action2[2] == 0:
-            if self.action2[1] == 11:
-                print 'C.play says: Card creates free turn in Action 2, did {} play again?'.format(self.player)
-                self.player.set_active(1)
-                self.opponent.set_active(0)
-            else:
-                self.player.card_action(self.action2[0], self.action2[1])
-        elif self.action2[2] == 1:
-            self.opponent.card_action(self.action2[0], self.action2[1])
-        elif self.action2[2] == 2:
-            self.player.card_action(self.action2[0], self.action2[1])
-            self.opponent.card_action(self.action2[0], self.action2[1])
-        # action 3
-        if self.action3 is None:
-            pass
-        elif self.action3[2] == 0:
-            if self.action3[1] == 11:
-                print 'C.play says: Card creats free turn in Action 3, did {} play again?'.format(self.player)
-                self.player.set_active(1)
-                self.opponent.set_active(0)
-            else:
-                self.player.card_action(self.action3[0], self.action3[1])
-        elif self.action3[2] == 1:
-            self.opponent.card_action(self.action3[0], self.action3[1])
-        elif self.action3[2] == 2:
-            self.player.card_action(self.action3[0], self.action3[1])
-            self.opponent.card_action(self.action3[0], self.action3[1])
-        else:
-            print 'Side is not defined for action1, must be 0,1,2'
+    # def __repr__(self):
+    #     str0 = '{0} = '.format(self.card_id)
+    #     str1 = '{3}{0} ({1}/{2})'.format(self.name, self.cost_color, self.cost_value, '-!-' if self.playable else '')
+    #     str3 = ' ({})'.format(self.description)
+    #     return str0 + str1 + str3
 
-    def get_card_id(self):
-        return self.card_id
+    # def play(self):
+    #     # subtracts card resources
+    #     self.player.pay_for_card(self.cost_color, self.cost_value)
+    #     # changes turn order: player inactive, opp active
+    #     self.player.set_active(False)
+    #     self.opponent.set_active(True)
+    #     # action 1
+    #     if self.action1[2] == 0:
+    #         self.player.card_action(self.action1[0], self.action1[1])
+    #     elif self.action1[2] == 1:
+    #         self.opponent.card_action(self.action1[0], self.action1[1])
+    #     elif self.action1[2] == 2:
+    #         self.player.card_action(self.action1[0], self.action1[1])
+    #         self.opponent.card_action(self.action1[0], self.action1[1])
+    #     # action 2
+    #     if self.action2 is None:
+    #         pass
+    #     elif self.action2[2] == 0:
+    #         if self.action2[1] == 11:
+    #             print 'C.play says: Card creates free turn in Action 2, did {} play again?'.format(self.player)
+    #             self.player.set_active(1)
+    #             self.opponent.set_active(0)
+    #         else:
+    #             self.player.card_action(self.action2[0], self.action2[1])
+    #     elif self.action2[2] == 1:
+    #         self.opponent.card_action(self.action2[0], self.action2[1])
+    #     elif self.action2[2] == 2:
+    #         self.player.card_action(self.action2[0], self.action2[1])
+    #         self.opponent.card_action(self.action2[0], self.action2[1])
+    #     # action 3
+    #     if self.action3 is None:
+    #         pass
+    #     elif self.action3[2] == 0:
+    #         if self.action3[1] == 11:
+    #             print 'C.play says: Card creats free turn in Action 3, did {} play again?'.format(self.player)
+    #             self.player.set_active(1)
+    #             self.opponent.set_active(0)
+    #         else:
+    #             self.player.card_action(self.action3[0], self.action3[1])
+    #     elif self.action3[2] == 1:
+    #         self.opponent.card_action(self.action3[0], self.action3[1])
+    #     elif self.action3[2] == 2:
+    #         self.player.card_action(self.action3[0], self.action3[1])
+    #         self.opponent.card_action(self.action3[0], self.action3[1])
+    #     else:
+    #         print 'Side is not defined for action1, must be 0,1,2'
 
-    def get_name(self):
-        return self.name
+    # def get_card_id(self):
+    #     return self.card_id
 
-    def get_player(self):
-        return self.player
+    # def get_name(self):
+    #     return self.name
 
-    def get_opponent(self):
-        return self.opponent
+    # def get_player(self):
+    #     return self.player
 
-    def get_cost_color(self):
-        return self.cost_color
+    # def get_opponent(self):
+    #     return self.opponent
 
-    def get_cost_value(self):
-        return self.cost_value
+    # def get_cost_color(self):
+    #     return self.cost_color
 
-    def get_actions(self, action_id):
-        if action_id == 1:
-            return self.action1
-        elif action_id == 2:
-            if self.action2 is None:
-                return ''
-            else:
-                return self.action2
-        elif action_id == 3:
-            if self.action3 is None:
-                return ''
-            else:
-                return self.action3
-        else:
-            print 'action_id invalid, must be 1...3'
-            pass
+    # def get_cost_value(self):
+    #     return self.cost_value
 
-    def get_image(self):
-        return self.image
+    # def get_actions(self, action_id):
+    #     if action_id == 1:
+    #         return self.action1
+    #     elif action_id == 2:
+    #         if self.action2 is None:
+    #             return ''
+    #         else:
+    #             return self.action2
+    #     elif action_id == 3:
+    #         if self.action3 is None:
+    #             return ''
+    #         else:
+    #             return self.action3
+    #     else:
+    #         print 'action_id invalid, must be 1...3'
+    #         pass
 
-    def get_description(self):
-        return self.description
+    # def get_image(self):
+    #     return self.image
 
-    def set_deck(self, deck):
-        self.deck = deck
+    # def get_description(self):
+    #     return self.description
 
-    def get_deck(self):
-        return self.deck
+    # def set_deck(self, deck):
+    #     self.deck = deck
 
-    def get_playable(self):
-        return self.playable
+    # def get_deck(self):
+    #     return self.deck
 
-    def set_playable(self, true_false):  # True or False kw only
-        self.playable = true_false
+    # def get_playable(self):
+    #     return self.playable
 
-    def set_inplay(self, true_false):
-        self.inplay = true_false
+    # def set_playable(self, true_false):  # True or False kw only
+    #     self.playable = true_false
+
+    # def set_inplay(self, true_false):
+    #     self.inplay = true_false
 
 
 class Deck:

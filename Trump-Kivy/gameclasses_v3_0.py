@@ -11,6 +11,11 @@ import random
 # import csv
 import processing_functions
 
+from kivy.uix.widget import Widget
+from kivy.uix.button import Button
+from kivy.core.audio import SoundLoader
+from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
+
 # VARIABLES
 
 # EXTERNAL DATABASES CONNECTED
@@ -33,7 +38,27 @@ path_h = ''  # path to images of Hillary cards, default - same dir
 
 
 # CLASSES
+class Player(Widget):
+    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
 
+    media = BoundedNumericProperty(1, min=1, max=100)
+    news = BoundedNumericProperty(1, min=0, max=300)
+    mojo = BoundedNumericProperty(1, min=1, max=100)
+    charisma = BoundedNumericProperty(1, min=0, max=300)
+    donors = BoundedNumericProperty(1, min=1, max=100)
+    cash = BoundedNumericProperty(1, min=0, max=300)
+
+    cards_actions = ListProperty()  # Should have a list of card actions
+
+class Card(Button, Widget):
+    """" This is a GUI class, representing a game field object."""
+    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+    background_normal = 'assets/cards/hillary/101.png'
+
+    def play_card(self):
+        # self.parent.scoreTrump += 1
+        self.myWavSound.play()
 
 class GameMaster:
     """CONTAINER FOR GAME VARIABLES, PROCESSES AND FUNCTIONS

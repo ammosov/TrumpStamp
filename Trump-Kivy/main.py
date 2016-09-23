@@ -1,36 +1,19 @@
 import kivy
-
-from kivy.config import Config
 from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
-from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
+from kivy.config import Config
 from kivy.core.audio import SoundLoader
 from kivy.logger import Logger
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.widget import Widget
 
-import csv
+from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
 
 kivy.require('1.9.1')
 Config.set('kivy', 'log_level', 'debug')
 
 Logger.info('title: This is a info message.')
 Logger.debug('title: This is a debug message.')
-
-
-class TrumpAssetStorage(object):
-    def __init__(self):
-        print("bla")
-        # cards_address = 'assets' + os.path.sep + 'cards'
-        # Logger.debug("TrumpApp: Cards address: %s", cards_address)
-        # list_file = cards_address + os.path.sep + 'DECK_1_4.csv'
-        list_file = 'cards.csv'
-        Logger.debug("TrumpApp: Csv file loading: %s", list_file)
-        with open(list_file) as csv_file:
-            reader = csv.DictReader(csv_file, delimiter=';')
-            for row in reader:
-                pass
-                # print('Loaded card: trump:', row['trump'], 'hillary:', row['hillary'])
 
 
 class Card(Button, Widget):

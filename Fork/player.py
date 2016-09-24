@@ -1,6 +1,7 @@
 from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
+from kivy.logger import Logger
 from hand import Hand
 from kivy.logger import Logger
 
@@ -35,10 +36,20 @@ class Player(Widget):
             setattr(self, prop_name, value)
 
         self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
+<<<<<<< HEAD
+        # self.ACTIONS = {1: [self.swing], 2: [self.partisans], 3: [self.news], 4: [self.hype], 5: [self.cash],
+        #                 6: [self.media], 7: [self.mojo], 8: [self.money], 9:  [self.news, self.hype, self.cash], 
+        #                 10: [self.media ,self.mojo, self.money]}
+        self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
+                        6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
+                        10: ['media', 'mojo', 'money']}
+        
+=======
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
                         10: ['media', 'mojo', 'money']}
 
+>>>>>>> 0de99b1d563f9b0706cf43ac4ad5acab375c1a64
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
         self.winner = None
@@ -54,6 +65,8 @@ class Player(Widget):
 
     def set_active(self, active):
         self.active = active
+        # TODO
+        # bot should do turn here
 
     def get_active(self):
         return self.active
@@ -69,6 +82,9 @@ class Player(Widget):
 
     def get_player_id(self):
         return self.player_id
+
+    def get_voters(self):
+        return self.partisans
 
     def pay_for_card(self, card_color, card_value):
         if card_color:
@@ -98,8 +114,11 @@ class Player(Widget):
             pass # WHAT DOES IT MEAN
         else:
             for res in self.ACTIONS[type]:
+                #TODO
+                # check with -value, it's seem it doesn't work(( 
                 old_value = self.property(res).get(self)
                 min_value = self.property(res).get_min(self)
+                #print self.player_id, res, type, value, old_value, min_value
                 self.property(res).set(self, max(min_value, old_value + value))
 
     def update_resources(self):  # at the end of turn, update resources of players

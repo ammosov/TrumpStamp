@@ -33,7 +33,7 @@ class Player(Widget):
         for prop_name, value in self.stats.items():
             setattr(self, prop_name, value)
 
-        self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
+        self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
                         10: ['media', 'mojo', 'money']}
@@ -81,14 +81,18 @@ class Player(Widget):
 
     def pay_for_card(self, card_color, card_value):
         if card_color:
-            if (self.RESOURSES[card_color] - card_value) >= 0 :
-                self.RESOURSES[card_color] -= card_value
+            property = self.property(self.RESOURSES[card_color])
+            property_value = property.get(self)
+            if (property_value - card_value) >= 0 :
+                property.set(self, property_value - card_value)
             else:
                 return False
         else:
-            for res in self.RESOURSES.values():
-                if (res - card_value) >= 0:
-                    res -= card_value
+            for color, prop_name in self.RESOURSES.items():
+                property = self.property(prop_name)
+                property_value = property.get(self)
+                if (property_value - card_value) >= 0:
+                    property.set(self, property_value - card_value)
                 else:
                     return False
         return True

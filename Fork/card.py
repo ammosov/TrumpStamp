@@ -5,11 +5,6 @@ import pandas as pd
 import os
 
 
-class Deck(object):
-    def __init__(self):
-        pass
-
-
 class Card(Button, Widget):
     def __init__(self, **kwargs):
         self.card_id = None

@@ -44,13 +44,13 @@ class AbstractBot(Player):
 
 class DrobBot(AbstractBot):
 
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         return game_info['cards'][0], TO_DROP
 
 
 class RandomDropBot(AbstractBot):
 
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         return game_info['cards'][randint(0, 6)], TO_DROP
 
 

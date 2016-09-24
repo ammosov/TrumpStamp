@@ -1,9 +1,8 @@
 import kivy
 from kivy.uix.floatlayout import FloatLayout
-from kivy.logger import Logger
 from game_master import GameMaster
-from player import Player
 kivy.require('1.7.2')
+
 
 class ElectionsGame(FloatLayout):
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other

@@ -10,7 +10,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
 from gameclasses_v3_0 import *
 
-kivy.require('1.9.1')
+kivy.require('1.7.2')
 Config.set('kivy', 'log_level', 'debug')
 
 Logger.info('title: This is a info message.')
@@ -22,9 +22,12 @@ class ElectionsGame(FloatLayout):
     objects. As a general class it stores all the stuff in the game.
     """
     deck = ObjectProperty(None)
-    playerTrump = ObjectProperty(Player)
-    playerHillary = ObjectProperty(Player)
+    playerTrump = ObjectProperty(PlayerKv())
+    playerHillary = ObjectProperty(PlayerKv())
 
+    def __init__(self, **kwargs):
+        super(FloatLayout, self).__init__(**kwargs)
+        #self.add_widget(PlayerKv())
 
 class ElectionsApp(App):
     def build(self):

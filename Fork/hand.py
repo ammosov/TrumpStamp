@@ -31,4 +31,3 @@ class Hand():
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
                 self.cards[i] = self.deck.pop_card()
-        self.render_cards()

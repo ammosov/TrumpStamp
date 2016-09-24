@@ -9,6 +9,7 @@ class Hand():
 
     def __init__(self, deck):
         self.deck = deck
+        self.player = deck.get_owner()
         self.cards = [None] * 6
 
     def pop_card(self, popped_card):
@@ -17,14 +18,12 @@ class Hand():
                 self.cards[i] = None
 
     def render_cards(self):
-        owner_id = self.deck.get_owner().player_id
         for i, card in enumerate(self.cards):
-            if owner_id == 0:
-                print card.background_normal
-                card.background_normal = card.image
-                print card.image
+            if self.player.active:
+                card.show()
             card.pos_hint = {'x': self.POSITIONS_X[i],
-                             'y': self.POSITIONS_Y[owner_id]}
+                             'y': self.POSITIONS_Y[self.player.player_id]}
+            card.render()
 
     def refill(self):
         for i in xrange(len(self.cards)):

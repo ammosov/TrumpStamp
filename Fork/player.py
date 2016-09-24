@@ -1,12 +1,10 @@
 from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
-from kivy.logger import Logger
 from hand import Hand
-from kivy.logger import Logger
 
-PLAYERS = {0: 'Trump',
-           1: 'Hillary'}
+PLAYERS = {0: 'PlayerTrump',
+           1: 'PlayerHillary'}
 
 
 class Player(Widget):

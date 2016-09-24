@@ -60,6 +60,7 @@ class Card(Button, Widget):
                Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
                Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
         anim.start(self)
+        self.play_sound()
 
     def deny(self):
         print 'Card deny playing'

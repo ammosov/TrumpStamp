@@ -83,7 +83,7 @@ class Player(Widget):
                     return False
         return True
 
-    def apply_card(type, value):
+    def apply_card(self, type, value):
         if type == 0:
             if value > 0:
                 self.swing += value
@@ -97,7 +97,7 @@ class Player(Widget):
             pass # WHAT DOES IT MEAN
         else:
             for res in self.ACTIONS[type]:
-                res = max(res.min_value, res + value)
+                res = max(getattr(self, res).min_value, res + value)
 
     def update_resources(self):  # at the end of turn, update resources of players
         self.news += self.media

@@ -86,16 +86,16 @@ class GameMaster():
         player = self.PLAYER[card.get_owner()]
         opponent = self.PLAYER[abs(card.get_owner() - 1)]
         if player.get_active():
-            if not player.pay_for_card(card.get_cost()):
+            if not player.pay_for_card(*card.get_cost()):
                 card.deny()
             else:
                 player.get_hand().pop_card(card)
                 card.move()
             actions = card.get_actions() # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
-                player.apply_card(action[0], action[1])
+                player.apply_card(*action)
             for action in actions['opponent']:
-                opponent.apply_card(action[0], action[1])
+                opponent.apply_card(*action)
             #TODO
             # check on winner
             

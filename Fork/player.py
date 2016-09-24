@@ -13,8 +13,8 @@ class Player(Widget):
     media = BoundedNumericProperty(1, min=1, max=100)
     news = BoundedNumericProperty(1, min=0, max=300)
     mojo = BoundedNumericProperty(1, min=1, max=100)
-    charisma = BoundedNumericProperty(1, min=0, max=300)
-    donors = BoundedNumericProperty(1, min=1, max=100)
+    hype = BoundedNumericProperty(1, min=0, max=300)
+    money = BoundedNumericProperty(1, min=1, max=100)
     cash = BoundedNumericProperty(1, min=0, max=300)
 
     cards_actions = ListProperty([])
@@ -32,6 +32,8 @@ class Player(Widget):
         self.stats = kwargs
         for prop_name, value in self.stats.items():
             setattr(self, prop_name, value)
+
+        self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
 
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
@@ -60,6 +62,20 @@ class Player(Widget):
 
     def get_player_id(self):
         return self.player_id
+
+    def pay_for_card(self, card_color, card_value):
+        if card_color:
+            if (self.RESOURSES[card_color] - card_value) >= 0 :
+                self.RESOURSES[card_color] -= card_value
+            else:
+                return false
+        else:
+            for res in self.RESOURSES.values():
+                if (res - card_value) >= 0:
+                    res -= card_value
+                else:
+                    return false
+        return true
         
 
 

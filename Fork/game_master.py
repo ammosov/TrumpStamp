@@ -13,11 +13,13 @@ class GameMaster():
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other
     objects. As a general class it stores all the stuff in the game.
     """
+
     def __init__(self, trump, hillary):
         round_id = 0
         self.trump = trump
         self.hillary = hillary
         self.card_fabric = CardFabric(cards_csv)
+        self.PLAYER = {0: self.trump, 1: self.hillary}
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database
@@ -74,4 +76,8 @@ class GameMaster():
         self.hillary.get_hand().refill()
 
     def card_clicked(self, card):
-        pass
+        player = self.PLAYER[card.get_owner()]
+        if player.get_active():
+            if not player.pay_for_card(card.get_cost()):
+                card.deny()
+            actions = card.get_actions() #[(,)]

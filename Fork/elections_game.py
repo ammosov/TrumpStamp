@@ -39,7 +39,6 @@ class ElectionsGame(FloatLayout):
             media=round_db['t6'][round_id],
             mojo=round_db['t7'][round_id],
             money=round_db['t8'][round_id],
-            voters=(round_db['t1'][round_id] + round_db['t2'][round_id]),
             card_fabric=self.card_fabric)
         self.hillary.late_init(
             player_id=1, 
@@ -51,7 +50,6 @@ class ElectionsGame(FloatLayout):
             media=round_db['h6'][round_id],
             mojo=round_db['h7'][round_id],
             money=round_db['h8'][round_id],
-            voters=round_db['h1'][round_id] + round_db['h2'][round_id],
             card_fabric=self.card_fabric)
 
         self.trump.set_opponent(self.hillary)
@@ -112,6 +110,8 @@ class ElectionsGame(FloatLayout):
         free_turn = False
         if player.get_active():
             print '\nBegin new turn'
+            print player.news, player.hype, player.cash
+            print opponent.news, opponent.hype, opponent.cash
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
                 return
@@ -136,6 +136,7 @@ class ElectionsGame(FloatLayout):
     
             player.get_hand().refill()
             player.get_hand().refill()
+            opponent.get_hand().refill()
             # self.trump.get_hand().set_playables()
             # self.hillary.get_hand().set_playables()
         else:

@@ -21,6 +21,7 @@ class Card(Button):
         self.background = kwargs['background']
         self.background_normal = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
+        self.touch_moving = False
         super(Card, self).__init__()
 
     def __repr__(self):
@@ -49,47 +50,42 @@ class Card(Button):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    #def on_press(self):
-    #    print 'Card clicked.'
-    #    self.game.card_clicked(self)
-
-    #def on_touch_down(self, touch):
-    #    print 'Card dropped'
-    #    self.game.card_dropped(self)
-    #    return True
-
-#    def on_touch_down(self, touch):
-#        self.orig_x = touch.x
-#        self.orig_y = touch.y
-#        print("Touch down")
-#        print(self.orig_x, self.orig_y)
-#        print("ID:")
-#        print(id(self))
-#        print(touch)
-#        return True
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             print("DOWN from {} touch {}".format(self.name, touch))
+            self.orig_pos = touch.pos
+            self.touch_moving = True
+            return True
 
     def on_touch_move(self, touch):
-        if self.collide_point(*touch.pos):
+        if self.touch_moving:
             print("MOVE from {} touch {}".format(self.name, touch))
+            return True
 
     def on_touch_up(self, touch):
-        if self.collide_point(*touch.pos):
+        if self.touch_moving:
             print("UP from {} touch {}".format(self.name, touch))
+            if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
+                (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
+                print("Clicked")
+                self.game.card_clicked(self)
+            if self.orig_pos[1] - touch.pos[1] > 20:
+                print("Dropped")
+                self.drop_anim()
+                self.game.card_dropped(self)
+            self.touch_moving = False
+            return True
 
-#    def on_touch_up(self, touch):
-#        print("Touching up")
-#        print(id(self))
-#        print(touch)
-#        x = touch.x
-#        y = touch.y
-#        if (x - self.orig_x) ** 2 + (y - self.orig_y) ** 2 < 25:
-#             print "Card {} clicked".format(self)
-#             self.game.card_clicked(self)
-
+    def drop_anim(self):
+        def on_complete(obj, widget):
+            self.game.remove_widget(self)
+        x, y = self.pos_hint["x"], self.pos_hint["y"]
+        anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+               Animation(opacity=0, duration=0.2)
+        anim.bind(on_complete=on_complete)
+        anim.start(self)
+        self.play_sound()
 
     def move(self):
         print 'Card move to the board'

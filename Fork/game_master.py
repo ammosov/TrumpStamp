@@ -63,13 +63,6 @@ class GameMaster():
             self.trump.set_active(True)
             self.hillary.set_active(False)
 
-
-        # for i in id_list:
-        #     card0 = Card(self.trump, self.hillary, self.trump.get_deck(), processing_functions.get_row(cards_db, i))
-        #     self.trump.get_deck().append_card(card0)
-        #     card1 = Card(self.hillary, self.trump, self.hillary.get_deck(), processing_functions.get_row(cards_db, i))
-        #     self.hillary.get_deck().append_card(card1)
-        
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
@@ -125,6 +118,7 @@ class GameMaster():
             print '\nBegin new turn'    
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
+                return
             else:
                 player.get_hand().pop_card(card)
                 card.move()
@@ -139,17 +133,18 @@ class GameMaster():
                 return
             
             # player.hand.push_card_from_deck
-
-            self.trump.update_resources()
-            self.hillary.update_resources()
-            # self.trump.get_hand().refill()
-            # self.hillary.get_hand().refill()
+           
             # self.trump.get_hand().set_playables()
             # self.hillary.get_hand().set_playables()
 
             #next turn
             player.set_active(False)
             opponent.set_active(True)
+            opponent.update_resources()
+            player.get_hand().refill()
+
+
+
         else:
             print 'Its not your turn!'
 

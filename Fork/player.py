@@ -1,12 +1,10 @@
 from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
-from kivy.logger import Logger
 from hand import Hand
-from kivy.logger import Logger
 
-PLAYERS = {0: 'Trump',
-           1: 'Hillary'}
+PLAYERS = {0: 'PlayerTrump',
+           1: 'PlayerHillary'}
 
 
 class Player(Widget):
@@ -35,7 +33,7 @@ class Player(Widget):
         for prop_name, value in self.stats.items():
             setattr(self, prop_name, value)
 
-        self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
+        self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
                         10: ['media', 'mojo', 'money']}
@@ -56,6 +54,12 @@ class Player(Widget):
         self.active = active
         # TODO
         # bot should do turn here
+        # innleg_play ():
+        #       self.opponent_swing
+                #self.hand.get_cards()
+                #card = Analysis
+                #card.on_press()
+
 
     def get_active(self):
         return self.active
@@ -77,14 +81,18 @@ class Player(Widget):
 
     def pay_for_card(self, card_color, card_value):
         if card_color:
-            if (self.RESOURSES[card_color] - card_value) >= 0 :
-                self.RESOURSES[card_color] -= card_value
+            property = self.property(self.RESOURSES[card_color])
+            property_value = property.get(self)
+            if (property_value - card_value) >= 0 :
+                property.set(self, property_value - card_value)
             else:
                 return False
         else:
-            for res in self.RESOURSES.values():
-                if (res - card_value) >= 0:
-                    res -= card_value
+            for color, prop_name in self.RESOURSES.items():
+                property = self.property(prop_name)
+                property_value = property.get(self)
+                if (property_value - card_value) >= 0:
+                    property.set(self, property_value - card_value)
                 else:
                     return False
         return True
@@ -100,7 +108,7 @@ class Player(Widget):
             else:
                 pass
         elif type == 11:
-            pass # WHAT DOES IT MEAN
+            return True
         else:
             for res in self.ACTIONS[type]:
                 #TODO
@@ -109,6 +117,7 @@ class Player(Widget):
                 min_value = self.property(res).get_min(self)
                 #print self.player_id, res, type, value, old_value, min_value
                 self.property(res).set(self, max(min_value, old_value + value))
+        return False
 
     def update_resources(self):  # at the end of turn, update resources of players
         self.news += self.media

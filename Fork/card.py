@@ -8,6 +8,7 @@ import os
 
 class Card(Button, Widget):
     def __init__(self, **kwargs):
+        self.game = kwargs['game']
         self.card_id = kwargs['id']
         self.owner_id = kwargs['owner_id']
         self.description = kwargs['description']
@@ -16,13 +17,10 @@ class Card(Button, Widget):
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
         self.actions = kwargs['actions']
-        self.background_normal = kwargs['background']
+        self.background = kwargs['background']
+        self.background_normal = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
         super(Card, self).__init__()
-
-    def set_game_master(self, game_master):
-        self.game_master = game_master
-        self.game_master.get_layout().add_widget(self)
 
     def __repr__(self):
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
@@ -32,6 +30,16 @@ class Card(Button, Widget):
     def __eq__(self, other):
         return isinstance(other, Card) and other.card_id == self.card_id and other.owner_id == self.owner_id
 
+    def render(self):
+        if not self.parent:
+            self.game.add_widget(self)
+
+    def show(self):
+        self.background_normal = self.image
+
+    def hide(self):
+        self.background_normal = self.background
+
     def get_owner(self):
         return self.owner_id
 
@@ -40,11 +48,11 @@ class Card(Button, Widget):
 
     def on_press(self):
         print 'Card clicked.'
-        self.game_master.card_clicked(self)
+        self.game.card_clicked(self)
 
-    def on_drop(self):
+    def on_touch_move(self, touch):
         print 'Card dropped'
-        pass
+        self.game.card_dropped(self)
 
     def move(self):
         print 'Card move to the board'
@@ -55,7 +63,6 @@ class Card(Button, Widget):
 
     def deny(self):
         print 'Card deny playing'
-        pass
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],
@@ -79,13 +86,13 @@ class Card(Button, Widget):
 
 
 class CardFabric(object):
-    def __init__(self, game_master, card_db, images_path=None, sound_path=None, background_path=None):
+    def __init__(self, game, card_db, images_path=None, sound_path=None, background_path=None):
         self.db = pd.read_csv(card_db, dtype={'img_t': str, 'img_h': str})
         self.images_path = images_path or {'trump': 'assets/cards/trump',
                                            'hillary': 'assets/cards/hillary'}
         self.sound_path = sound_path or 'assets/stubs/Sounds/card.wav'
         self.background_path = background_path or 'assets/card00.png'
-        self.game_master = game_master
+        self.game = game
 
     def get_card(self, card_id, owner_id):
         card_data = dict(self.db.iloc[card_id - 1])
@@ -106,8 +113,7 @@ class CardFabric(object):
         card_data['sound'] = self.sound_path
         card_data['background'] = self.background_path
 
-        card = Card(**card_data)
-        card.set_game_master(self.game_master)
+        card = Card(game=self.game, **card_data)
         return card
 
 

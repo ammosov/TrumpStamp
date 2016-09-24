@@ -18,7 +18,7 @@ class GameMaster():
         round_id = 0
         self.trump = trump
         self.hillary = hillary
-        self.card_fabric = CardFabric(cards_csv)
+        self.card_fabric = CardFabric(self, cards_csv)
         self.PLAYER = {0: self.trump, 1: self.hillary}
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         # CREATE PLAYERS

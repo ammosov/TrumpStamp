@@ -104,7 +104,7 @@ class Player(Widget):
             else:
                 pass
         elif type == 11:
-            pass
+            return True
         else:
             for res in self.ACTIONS[type]:
                 #TODO
@@ -113,6 +113,7 @@ class Player(Widget):
                 min_value = self.property(res).get_min(self)
                 #print self.player_id, res, type, value, old_value, min_value
                 self.property(res).set(self, max(min_value, old_value + value))
+        return False
 
     def update_resources(self):  # at the end of turn, update resources of players
         self.news += self.media

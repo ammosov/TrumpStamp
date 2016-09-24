@@ -109,6 +109,7 @@ class ElectionsGame(FloatLayout):
     def card_clicked(self, card):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
+        free_turn = False
         if player.get_active():
             print '\nBegin new turn'
             if not player.pay_for_card(*card.get_cost()):
@@ -119,7 +120,8 @@ class ElectionsGame(FloatLayout):
                 card.move()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
-                player.apply_card(*action)
+                if player.apply_card(*action):
+                    free_turn = True
             for action in actions['opponent']:
                 opponent.apply_card(*action)
 
@@ -127,13 +129,28 @@ class ElectionsGame(FloatLayout):
                 self.end_game()
                 return
 
-            # player.hand.push_card_from_deck
-
-            player.set_active(False)
-            opponent.set_active(True)
-            opponent.update_resources()
+            if not free_turn:
+                player.set_active(False)
+                opponent.set_active(True)
+                opponent.update_resources()
+    
+            player.get_hand().refill()
             player.get_hand().refill()
             # self.trump.get_hand().set_playables()
             # self.hillary.get_hand().set_playables()
         else:
             print 'Its not your turn!'
+
+    def card_dropped(self, card):
+        player = self.PLAYERS[card.get_owner()]
+        opponent = self.PLAYERS[abs(card.get_owner() - 1)]
+        if player.get_active():
+            player.get_hand().pop_card(card)
+            player.get_deck().drop_card(card)
+            player.get_hand().refill()
+            player.set_active(False)
+            opponent.set_active(True)
+            opponent.update_resources()
+    
+
+

@@ -50,9 +50,9 @@ class Card(Button, Widget):
         print 'Card clicked.'
         self.game.card_clicked(self)
 
-    def on_drop(self):
+    def on_touch_move(self, touch):
         print 'Card dropped'
-        pass
+        self.game.card_dropped(self)
 
     def move(self):
         print 'Card move to the board'

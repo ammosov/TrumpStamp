@@ -11,7 +11,7 @@ class Deck():
     def __init__(self, player, card_fabric):
         self.player = player
         self.cards = [card_fabric.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
-        self.discard = []
+        self.played = []
 
     def get_owner(self):
         return self.player
@@ -20,7 +20,12 @@ class Deck():
         random.shuffle(self.cards)
 
     def pop_card(self):
+        if len(self.cards) == 0:
+            self.cards = self.played
+            self.played = []
+            self.shuffle()
         return self.cards.pop()
 
+
     def drop_card(self, card):
-    	self.discard.append(card)
+    	self.played.append(card)

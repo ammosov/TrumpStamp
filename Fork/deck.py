@@ -11,6 +11,7 @@ class Deck():
     def __init__(self, player, card_fabric):
         self.player = player
         self.cards = [card_fabric.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
+        self.discard = []
 
     def get_owner(self):
         return self.player
@@ -20,3 +21,6 @@ class Deck():
 
     def pop_card(self):
         return self.cards.pop()
+
+    def drop_card(self, card):
+    	self.discard.append(card)

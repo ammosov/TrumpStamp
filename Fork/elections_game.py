@@ -68,7 +68,9 @@ class ElectionsGame(FloatLayout):
 
         # deal 6 Cards from Decks to Hands
         self.trump.get_hand().refill()
+        self.trump.get_hand().render_cards()
         self.hillary.get_hand().refill()
+        self.hillary.get_hand().render_cards()
 
     def play_game(self):
         while not self.declare_victory():
@@ -135,8 +137,8 @@ class ElectionsGame(FloatLayout):
                 opponent.update_resources()
     
             player.get_hand().refill()
-            player.get_hand().refill()
-            opponent.get_hand().refill()
+            player.get_hand().render_cards()
+            opponent.get_hand().render_cards()
             # self.trump.get_hand().set_playables()
             # self.hillary.get_hand().set_playables()
         else:
@@ -146,11 +148,14 @@ class ElectionsGame(FloatLayout):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():
+            #card.amination()
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
-            player.get_hand().refill()
-            player.set_active(False)
             opponent.set_active(True)
+            player.set_active(False)
+            player.get_hand().refill()
+            player.get_hand().render_cards()
+            opponent.get_hand().render_cards()
             opponent.update_resources()
     
 

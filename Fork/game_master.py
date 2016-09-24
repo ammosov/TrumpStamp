@@ -51,14 +51,12 @@ class GameMaster():
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        if round_db['turn'][round_id] == 0:
-            self.trump.set_active(True)
-            self.hillary.set_active(False)
-        elif round_db['turn'][round_id] == 1:
+        if round_db['turn'][round_id]:
             self.trump.set_active(False)
             self.hillary.set_active(True)
         else:
-            print 'GameMater INIT: ERROR ! First turn is not set!'
+            self.trump.set_active(True)
+            self.hillary.set_active(False)
 
 
         # for i in id_list:
@@ -74,12 +72,23 @@ class GameMaster():
         # deal 6 Cards from Decks to Hands
         self.trump.get_hand().refill()
         self.hillary.get_hand().refill()
+        # self.trump.get_hand().set_playables()
+        # self.hillary.get_hand().set_playables()
 
     def card_clicked(self, card):
         player = self.PLAYER[card.get_owner()]
+        opponent = self.PLAYER[abs(card.get_owner() - 1)]
         if player.get_active():
             if not player.pay_for_card(card.get_cost()):
                 card.deny()
             else:
+                player.get_hand().pop_card(card)
                 card.move()
-            actions = card.get_actions() # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
+            actions = card.get_actions() # {'player': [(type, value)], 'opponent': [(type, value)]}
+            for action in actions['player']:
+                player.apply_card(action[0], action[1])
+            for action in actions['opponent']:
+                opponent.apply_card(action[0], action[1])
+            #TODO
+            # check on winner
+            

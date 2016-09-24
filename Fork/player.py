@@ -9,7 +9,7 @@ PLAYERS = {0: 'Trump',
 
 class Player(Widget):
     partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
-    swing_voters = BoundedNumericProperty(0, min=0)
+    swing = BoundedNumericProperty(0, min=0)
     media = BoundedNumericProperty(1, min=1, max=100)
     news = BoundedNumericProperty(1, min=0, max=300)
     mojo = BoundedNumericProperty(1, min=1, max=100)
@@ -34,6 +34,9 @@ class Player(Widget):
             setattr(self, prop_name, value)
 
         self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
+        self.ACTIONS = {1: [self.swing], 2: [self.partisans], 3: [self.news], 4: [self.hype], 5: [self.cash],
+                        6: [self.media], 7: [self.mojo], 8: [self.money], 9:  [self.news, self.hype, self.cash], 
+                        10: [self.media ,self.mojo, self.money]}
 
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
@@ -54,6 +57,9 @@ class Player(Widget):
     def get_active(self):
         return self.active
 
+    def set_winner(self, winner):
+        self.winner = winner
+
     def get_deck(self):
         return self.deck
     
@@ -68,17 +74,35 @@ class Player(Widget):
             if (self.RESOURSES[card_color] - card_value) >= 0 :
                 self.RESOURSES[card_color] -= card_value
             else:
-                return false
+                return False
         else:
             for res in self.RESOURSES.values():
                 if (res - card_value) >= 0:
                     res -= card_value
                 else:
-                    return false
-        return true
-        
+                    return False
+        return True
 
+    def apply_card(type, value):
+        if type == 0:
+            if value > 0:
+                self.swing += value
+            # lose voters branch
+            elif value < 0:
+                self.partisans = max(0, self.partisans + self.swing + value)
+                self.swing = max(0, self.swing + value)
+            else:
+                pass
+        elif type == 11:
+            pass # WHAT DOES IT MEAN
+        else:
+            for res in self.ACTIONS[type]:
+                res = max(res.min_value, res + value)
 
+    def update_resources(self):  # at the end of turn, update resources of players
+        self.news += self.media
+        self.hype += self.mojo
+        self.cash += self.money
 
 
 

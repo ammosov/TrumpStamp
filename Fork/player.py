@@ -108,7 +108,7 @@ class Player(Widget):
             else:
                 pass
         elif type == 11:
-            pass # WHAT DOES IT MEAN
+            pass
         else:
             for res in self.ACTIONS[type]:
                 #TODO

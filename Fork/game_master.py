@@ -2,9 +2,9 @@ import kivy
 import pandas as pd
 import os
 from kivy.uix.floatlayout import FloatLayout
-from card import CardFabric
+from card import Card, CardFabric
 from player import Player
-
+from kivy.logger import Logger
 kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -12,19 +12,18 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
-
-class ElectionsGame(FloatLayout):
+class GameMaster():
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other
     objects. As a general class it stores all the stuff in the game.
     """
-    def __init__(self, **kwargs):
-        super(ElectionsGame, self).__init__(**kwargs)
+
+    def __init__(self, trump, hillary, layout):
         round_id = 0
-        self.trump = self.ids['PlayerTrump']
-        self.hillary = self.ids['PlayerHillary']
-        self.PLAYERS = {0: self.trump,
-                        1: self.hillary}
+        self.trump = trump
+        self.hillary = hillary
+        self.layout = layout
         self.card_fabric = CardFabric(self, cards_csv)
+        self.PLAYER = {0: self.trump, 1: self.hillary}
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         self.victory = {'destr': round_db['destr'][round_id], 'res': round_db['res'][round_id]}
         # CREATE PLAYERS
@@ -63,7 +62,7 @@ class ElectionsGame(FloatLayout):
         else:
             self.trump.set_active(True)
             self.hillary.set_active(False)
-        
+
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
@@ -71,6 +70,11 @@ class ElectionsGame(FloatLayout):
         # deal 6 Cards from Decks to Hands
         self.trump.get_hand().refill()
         self.hillary.get_hand().refill()
+        # self.trump.get_hand().set_playables()
+        # self.hillary.get_hand().set_playables()
+
+    def get_layout(self):
+        return self.layout
 
     def play_game(self):
         while not self.declare_victory():
@@ -106,34 +110,46 @@ class ElectionsGame(FloatLayout):
         else:
             print 'No victory condition set!'
 
+
     def card_clicked(self, card):
-        player = self.PLAYERS[card.get_owner()]
-        opponent = self.PLAYERS[abs(card.get_owner() - 1)]
+        player = self.PLAYER[card.get_owner()]
+        opponent = self.PLAYER[abs(card.get_owner() - 1)]
         if player.get_active():
-            print '\nBegin new turn'
+            print '\nBegin new turn'    
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
                 return
             else:
                 player.get_hand().pop_card(card)
                 card.move()
-            actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
+            actions = card.get_actions() # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 player.apply_card(*action)
             for action in actions['opponent']:
                 opponent.apply_card(*action)
-
+            
             if self.declare_victory():
                 self.end_game()
                 return
-
+            
             # player.hand.push_card_from_deck
+           
+            # self.trump.get_hand().set_playables()
+            # self.hillary.get_hand().set_playables()
 
+            #next turn
             player.set_active(False)
             opponent.set_active(True)
             opponent.update_resources()
             player.get_hand().refill()
-            # self.trump.get_hand().set_playables()
-            # self.hillary.get_hand().set_playables()
+
+
+
         else:
             print 'Its not your turn!'
+
+            
+
+
+
+            

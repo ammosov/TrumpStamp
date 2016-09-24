@@ -56,7 +56,7 @@ class GameMaster:
         round_cond = processing_functions.get_row(round_db, round_id)
         # select allowed cards by id
         # NOTE !! TEMP !! this is not a good way to do it, should be different and set in config
-        self.cards = [range(1, 53)]  # list of cards in sequence
+        self.cards = range(1, 53)  # list of cards in sequence
         self.additional_cards = [99]  # list of non sequential cards
         # makes a combined list of card ids
         id_list = processing_functions.sort_flatten_list(self.cards[0], self.additional_cards)
@@ -537,6 +537,11 @@ class CardKv(Button, Widget):
 
     def __init__(self, *args, **kwargs):
         super(CardKv, self).__init__(*args, **kwargs)
+
+    def play_card(self):
+        # self.parent.scoreTrump += 1
+        self.myWavSound.play()
+
 
 class Card(object):
     """CONTAINER FOR CARD PARAMETERS

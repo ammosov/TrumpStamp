@@ -27,6 +27,7 @@ class Player(Widget):
 
     def late_init(self, **kwargs):
         self.player_id = kwargs.pop('player_id')
+        self.card_fabric = kwargs.pop('card_fabric')
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
@@ -35,7 +36,8 @@ class Player(Widget):
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
         self.winner = None
-        self.deck = Deck(self)
+
+        self.deck = Deck(self, self.card_fabric)
         self.hand = Hand(self)
 
     def set_opponent(self, opponent):
@@ -55,6 +57,9 @@ class Player(Widget):
     
     def get_hand(self):
         return self.hand
+
+    def get_player_id(self):
+        return self.player_id
         
 
 

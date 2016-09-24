@@ -7,6 +7,7 @@ from kivy.logger import Logger
 kivy.require('1.7.2')
 
 round_csv = 'rounds.csv'
+cards_csv = 'cards.csv'
 
 class GameMaster():
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other
@@ -16,6 +17,8 @@ class GameMaster():
         round_id = 0
         self.trump = trump
         self.hillary = hillary
+        self.card_fabric = Cards(cards_csv, {'trump': 'assets/cards/trump',
+                                             'hillary': 'assets/cards/hillary'})
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database
@@ -29,7 +32,8 @@ class GameMaster():
             media=round_db['t6'][round_id],
             mojo=round_db['t7'][round_id],
             money=round_db['t8'][round_id],
-            voters=(round_db['t1'][round_id] + round_db['t2'][round_id]))
+            voters=(round_db['t1'][round_id] + round_db['t2'][round_id]),
+            card_fabric=self.card_fabric)
         self.hillary.late_init(
             player_id=1, 
             swing=round_db['h1'][round_id], 
@@ -40,7 +44,8 @@ class GameMaster():
             media=round_db['h6'][round_id],
             mojo=round_db['h7'][round_id],
             money=round_db['h8'][round_id],
-            voters=round_db['h1'][round_id] + round_db['h2'][round_id])
+            voters=round_db['h1'][round_id] + round_db['h2'][round_id],
+            card_fabric=self.card_fabric)
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)

@@ -4,9 +4,10 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 import pandas as pd
 import os
+import kwad
 
 
-class Card(Button, Widget):
+class Card(Button):
     def __init__(self, **kwargs):
         self.game = kwargs['game']
         self.card_id = kwargs['id']
@@ -32,7 +33,9 @@ class Card(Button, Widget):
 
     def render(self):
         if not self.parent:
+            print("Render {}".format(self.name))
             self.game.add_widget(self)
+
 
     def show(self):
         self.background_normal = self.image
@@ -46,13 +49,47 @@ class Card(Button, Widget):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    def on_press(self):
-        print 'Card clicked.'
-        self.game.card_clicked(self)
+    #def on_press(self):
+    #    print 'Card clicked.'
+    #    self.game.card_clicked(self)
+
+    #def on_touch_down(self, touch):
+    #    print 'Card dropped'
+    #    self.game.card_dropped(self)
+    #    return True
+
+#    def on_touch_down(self, touch):
+#        self.orig_x = touch.x
+#        self.orig_y = touch.y
+#        print("Touch down")
+#        print(self.orig_x, self.orig_y)
+#        print("ID:")
+#        print(id(self))
+#        print(touch)
+#        return True
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            print("DOWN from {} touch {}".format(self.name, touch))
 
     def on_touch_move(self, touch):
-        print 'Card dropped'
-        self.game.card_dropped(self)
+        if self.collide_point(*touch.pos):
+            print("MOVE from {} touch {}".format(self.name, touch))
+
+    def on_touch_up(self, touch):
+        if self.collide_point(*touch.pos):
+            print("UP from {} touch {}".format(self.name, touch))
+
+#    def on_touch_up(self, touch):
+#        print("Touching up")
+#        print(id(self))
+#        print(touch)
+#        x = touch.x
+#        y = touch.y
+#        if (x - self.orig_x) ** 2 + (y - self.orig_y) ** 2 < 25:
+#             print "Card {} clicked".format(self)
+#             self.game.card_clicked(self)
+
 
     def move(self):
         print 'Card move to the board'
@@ -121,5 +158,5 @@ class CardFabric(object):
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
     cards = CardFabric(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
-    print cards.get_card(31, owner_id=0)
-    print cards.get_card(31, owner_id=1)
+    #print cards.get_card(31, owner_id=0)
+    #print cards.get_card(31, owner_id=1)

@@ -59,7 +59,7 @@ class GameMaster:
         self.cards = [range(1, 53)]  # list of cards in sequence
         self.additional_cards = [99]  # list of non sequential cards
         # makes a combined list of card ids
-        id_list = processing_functions.sort_flatten_list(self.cards[0], self.additional_cards)
+        #######id_list = processing_functions.sort_flatten_list(self.cards[0], self.additional_cards)
         # set victory variables to new conditions
         # so far it's just two of them
         # destr: 0 == all voters must reach 0
@@ -79,8 +79,8 @@ class GameMaster:
             t_data.append(round_cond[t_prefix])
             h_prefix = 'h' + str(i)
             h_data.append(round_cond[h_prefix])
-        self.trump = Player(**round_cond)
-        self.hillary = Player(**round_cond)
+        self.trump = Player(*t_data)
+        self.hillary = Player(*h_data)
         # Sets opponents to Players and their objects
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
@@ -301,7 +301,24 @@ class GameMaster:
         self.trump.set_active(False)
         self.hillary.set_active(False)
         
-class PlayerKv(Widget):
+# class PlayerKv(Widget):
+#     partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+#     swing_voters = BoundedNumericProperty(0, min=0)
+
+#     media = BoundedNumericProperty(1, min=1, max=100)
+#     news = BoundedNumericProperty(1, min=0, max=300)
+#     mojo = BoundedNumericProperty(1, min=1, max=100)
+#     charisma = BoundedNumericProperty(1, min=0, max=300)
+#     donors = BoundedNumericProperty(1, min=1, max=100)
+#     cash = BoundedNumericProperty(1, min=0, max=300)
+
+#     cards_actions = ListProperty([])  # Should have a list of card actions
+    
+#     def __init__(self, *args, **kwargs):
+#         super(PlayerKv, self).__init__(*args, **kwargs)
+
+
+class Player(Widget):
     partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
     swing_voters = BoundedNumericProperty(0, min=0)
 
@@ -312,13 +329,6 @@ class PlayerKv(Widget):
     donors = BoundedNumericProperty(1, min=1, max=100)
     cash = BoundedNumericProperty(1, min=0, max=300)
 
-    cards_actions = ListProperty([])  # Should have a list of card actions
-    
-    def __init__(self, *args, **kwargs):
-        super(PlayerKv, self).__init__(*args, **kwargs)
-
-
-class Player(object):
     """CONTAINER FOR PLAYER PARAMETERS
    initiated with id = 0/1 and player_data = (0-7)
    player_data sequence: Swing Voters, Partisans, News, Hype, Cash, Media, Mojo, Money
@@ -336,9 +346,12 @@ class Player(object):
     # cash = BoundedNumericProperty(1, min=0, max=300)
     #
     # cards_actions = ListProperty()
-
-    def __init__(self, **kwargs):
-        self.player_id = kwargs['id']  # 0 = Trump, 1 = Hillary;
+    # def __init__(self, player_id, swing, partisans, news, hype, cash, media, mojo, money):
+    def __init__(self, *args, **kwargs):
+    #def __init__(self, player_params):
+        Logger.info(str(args))
+        self.player_id = args[0]  # 0 = Trump, 1 = Hillary;
+        print args[0]
         # 0 / 1 id is used to assign to Cards proper titles and images
         # note: for Cards, 0 is a code for 'voters' actions; voters is computed
         # column zero codes a player to keep other codes consistent between CSVs
@@ -348,14 +361,14 @@ class Player(object):
             self.player_name = 'Hillary'
         else:
             self.player_name = 'self.id not defined'
-        self.swing = kwargs['swing']
-        self.partisans = kwargs['partisans']
-        self.news = kwargs['news']
-        self.hype = kwargs['hype']
-        self.cash = kwargs['cash']
-        self.media = kwargs['media']
-        self.mojo = kwargs['mojo']
-        self.money = kwargs['money']
+        self.swing = args[1]
+        self.partisans = args[2]
+        self.news = args[3]
+        self.hype = args[4]
+        self.cash = args[5]
+        self.media = args[6]
+        self.mojo = args[7]
+        self.money = args[8]
         # Relationships with other objects in game
         self.opponent = None
         self.deck = Deck()  # pointer to Deck that Player owns

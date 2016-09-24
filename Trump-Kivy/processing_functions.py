@@ -33,6 +33,7 @@ def get_row(csvfile, record_id):
                         newrow.update({lbl: a})
                     else:  # do not convert STR to STR
                         newrow.update({lbl: a})
+                break
             else:
                 pass
         return newrow

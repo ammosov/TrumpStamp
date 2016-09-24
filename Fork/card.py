@@ -1,3 +1,4 @@
+from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
@@ -38,8 +39,8 @@ class Card(Button, Widget):
 
     def __repr__(self):
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
-                                                     self.cost_color, self.cost_value,
-                                                     self.description)
+                                               self.cost_color, self.cost_value,
+                                               self.description)
 
     def get_owner(self):
         return self.owner_id
@@ -47,13 +48,23 @@ class Card(Button, Widget):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    def on_click(self):
-        pass
+    def on_press(self):
+        print 'Card clicked.'
+        self.game_master.card_clicked(self)
 
     def on_drop(self):
+        print 'Card dropped'
         pass
 
+    def move(self):
+        print 'Card move to the board'
+        anim = Animation(pos_hint={'x': 1000.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5) + \
+               Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
+               Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
+        anim.start(self)
+
     def deny(self):
+        print 'Card deny playing'
         pass
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}

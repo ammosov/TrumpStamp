@@ -19,7 +19,9 @@ class Card(Button, Widget):
         self.actions = kwargs['actions']
         self.background = kwargs['background']
         self.background_normal = self.background
+        self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
+        self.counter_for_expand = 0
         super(Card, self).__init__()
 
     def __repr__(self):
@@ -36,6 +38,7 @@ class Card(Button, Widget):
 
     def show(self):
         self.background_normal = self.image
+        self.background_down = self.image
 
     def hide(self):
         self.background_normal = self.background
@@ -46,7 +49,12 @@ class Card(Button, Widget):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    def on_press(self):
+    # def on_press(self):
+    #     #this counter don't trigger on time((
+    #     self.counter_for_expand += 1
+    #     self.game.resize_card(self, self.counter_for_expand)
+        
+    def on_press(self, touch):
         print 'Card clicked.'
         self.game.card_clicked(self)
 

@@ -20,7 +20,12 @@ class Deck():
         random.shuffle(self.cards)
 
     def pop_card(self):
+    	if len(self.cards) == 0:
+			self.cards = self.discard
+			self.shuffle()
         return self.cards.pop()
 
+
     def drop_card(self, card):
+    	# played cards should be in discard too
     	self.discard.append(card)

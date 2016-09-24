@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from kivy.uix.floatlayout import FloatLayout
 from card import CardFabric
+from kivy.animation import Animation
 from player import Player
 
 kivy.require('1.7.2')
@@ -139,8 +140,6 @@ class ElectionsGame(FloatLayout):
             player.get_hand().refill()
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
-            # self.trump.get_hand().set_playables()
-            # self.hillary.get_hand().set_playables()
         else:
             print 'Its not your turn!'
 
@@ -158,5 +157,16 @@ class ElectionsGame(FloatLayout):
             opponent.get_hand().render_cards()
             opponent.update_resources()
     
+    def resize_card(self, card, counter):
+        x = 1.5
+        print card.pos
+        if self.PLAYERS[card.get_owner()].get_active():
+            if counter % 2 :
+                anim = Animation(size_hint=(card.size_hint[0] * x, card.size_hint[1] * x), duration=0.5) +\
+                    Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+            else :
+                anim = Animation(size_hint=(card.size_hint[0] * 1.0 / x, card.size_hint[1] * 1.0 / x), duration=0.5) +\
+                    Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+            anim.start(card) 
 
 

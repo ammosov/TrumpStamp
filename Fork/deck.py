@@ -1,7 +1,7 @@
 import kivy
 import pandas as pd
 from kivy.uix.floatlayout import FloatLayout
-from card import Card, Cards
+from card import Card, CardFabric
 from kivy.logger import Logger
 import random
 kivy.require('1.7.2')

@@ -14,10 +14,9 @@ class Card(Button, Widget):
         self.cost_color = None
         self.cost_value = None
         self.actions = None
-        self.playable = False
         self.in_play = False
         self.sound = None
-        self.background_normal = 'assets/card00.png'
+        self.background_normal = None
         super(Card, self).__init__(**kwargs)
 
     def lazy_init(self, **kwargs):
@@ -28,6 +27,7 @@ class Card(Button, Widget):
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
         self.actions = kwargs['actions']
+        self.background = kwargs['background']
         self.sound = SoundLoader.load(kwargs['sound'])
 
     def __repr__(self):
@@ -35,14 +35,24 @@ class Card(Button, Widget):
                                                      self.cost_color, self.cost_value,
                                                      '-!-' if self.playable else '', self.description)
 
+    def get_cost(self):
+        return self.cost_color, self.cost_value
+
+    def get_actions(self):
+
+        pass
+
     def play_sound(self):
         self.sound.play()
 
 
-class Cards(object):
-    def __init__(self, card_db, images_path):
+class CardFabric(object):
+    def __init__(self, card_db, images_path=None, sound_path=None, background_path=None):
         self.db = pd.read_csv(card_db)
-        self.images_path = images_path
+        self.images_path = images_path or {'trump': 'assets/cards/trump',
+                                           'hillary': 'assets/cards/hillary'}
+        self.sound_path = sound_path or 'assets/stubs/Sounds/card.wav'
+        self.background_path = background_path or 'assets/card00.png'
 
     def get_card(self, card_id, owner_id):
         card_data = dict(self.db.iloc[card_id - 1])
@@ -60,7 +70,8 @@ class Cards(object):
                    '3': [card_data['act3_value'], card_data['act3_type'], card_data['act3_side']]}
         actions = filter(lambda (k, v): v[0] != 0, actions.items())
         card_data['actions'] = actions
-        card_data['sound'] = 'assets/stubs/Sounds/card.wav'
+        card_data['sound'] = self.sound_path
+        card_data['background'] = self.background_path
 
         card = Card()
         card.lazy_init(**card_data)
@@ -69,7 +80,6 @@ class Cards(object):
 
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-    cards = Cards(os.path.join(SCRIPT_DIR, 'cards.csv'), {'trump': 'assets/cards/trump',
-                                                          'hillary': 'assets/cards/hillary'})
+    cards = CardFabric(os.path.join(SCRIPT_DIR, 'cards.csv'))
     print cards.get_card(31, owner_id=0)
     print cards.get_card(31, owner_id=1)

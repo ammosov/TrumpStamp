@@ -2,7 +2,7 @@ import kivy
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.floatlayout import FloatLayout
-from card import Card, Cards
+from card import Card, CardFabric
 from elections_game import ElectionsGame
 
 kivy.require('1.7.2')

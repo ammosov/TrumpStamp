@@ -1,7 +1,7 @@
 import kivy
 import pandas as pd
 from kivy.uix.floatlayout import FloatLayout
-from card import Card, Cards
+from card import Card, CardFabric
 from player import Player
 from kivy.logger import Logger
 kivy.require('1.7.2')
@@ -17,8 +17,7 @@ class GameMaster():
         round_id = 0
         self.trump = trump
         self.hillary = hillary
-        self.card_fabric = Cards(cards_csv, {'trump': 'assets/cards/trump',
-                                             'hillary': 'assets/cards/hillary'})
+        self.card_fabric = CardFabric(cards_csv)
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database

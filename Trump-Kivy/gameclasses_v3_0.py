@@ -533,7 +533,7 @@ class Player(object):
 
 class CardKv(Button, Widget):
     myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
-    background_normal = 'assets/cards/hillary/101.png'
+    background_normal = 'assets/card00.png'
 
     def __init__(self, *args, **kwargs):
         super(CardKv, self).__init__(*args, **kwargs)
@@ -703,7 +703,7 @@ class Deck:
    Deck contains Player-specific Cards, one Deck for each Player"""
 
     def __init__(self):
-        self.cards = []
+        self.cards = [processing_functions.get_row_for_player(cards_db, row_id, 0) for row_id in xrange(54)]
         self.player = None
         self.opponent = None
         self.hand = None  # Pointer to Hand to which Deck deals Cards

@@ -6,6 +6,8 @@
 <CardKv>:
     border: [0,0,0,0]
     size_hint: (250.0/2048.0), (350.0/1536.0)
+    #background_normal: self.get_image()
+    background_normal: 'assets/cards/hillary/101.png'
     on_press:
         print('Card pressed.')
         (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + \
@@ -36,10 +38,8 @@
 
     CardKv:
         pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-        background_normal: 'assets/cards/hillary/101.png'
     CardKv:
         pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-        background_normal: 'assets/cards/hillary/102.png'
     CardKv:
         pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
     CardKv:
@@ -62,37 +62,37 @@
         text: str(PlayerTrump.swing_voters)
     Label:
         id: 'trump_news'
-        pos_hint: {'x': 370.0/2048.0, 'y': 826.0/1536.0}
+        pos_hint: {'x': 370.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.news)
     Label:
         id: 'trump_hype'
-        pos_hint: {'x':370.0/2048.0, 'y':701.0/1536.0}
+        pos_hint: {'x':370.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.media)
     Label:
         id: 'trump_cash'
-        pos_hint: {'x':370.0/2048.0, 'y':576.0/1536.0}
+        pos_hint: {'x':370.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.cash)
     Label:
         id: 'trump_media'
-        pos_hint: {'x': 95.0/2048.0, 'y': 826.0/1536.0}
+        pos_hint: {'x': 95.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.media)
     Label:
         id: 'trump_mojo'
-        pos_hint: {'x':95.0/2048.0, 'y':701.0/1536.0}
+        pos_hint: {'x':95.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.mojo)
     Label:
         id: 'trump_money'
-        pos_hint: {'x':95.0/2048.0, 'y':576.0/1536.0}
+        pos_hint: {'x':95.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.donors)
@@ -110,38 +110,38 @@
         text: str(PlayerHillary.swing_voters)
     Label:
         id: 'hillary_news'
-        pos_hint: {'x': 1790.0/2048.0, 'y': 826.0/1536.0}
+        pos_hint: {'x': 1790.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.news)
         # text: str('nw')
     Label:
         id: 'hillary_hype'
-        pos_hint: {'x':1790.0/2048.0, 'y':701.0/1536.0}
+        pos_hint: {'x':1790.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.media)
     Label:
         id: 'hillary_cash'
-        pos_hint: {'x':1790.0/2048.0, 'y':576.0/1536.0}
+        pos_hint: {'x':1790.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.cash)
     Label:
         id: 'hillary_media'
-        pos_hint: {'x': 1515.0/2048.0, 'y': 826.0/1536.0}
+        pos_hint: {'x': 1515.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.media)
     Label:
         id: 'hillary_mojo'
-        pos_hint: {'x':1515.0/2048.0, 'y':701.0/1536.0}
+        pos_hint: {'x':1515.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.mojo)
     Label:
         id: 'hillary_money'
-        pos_hint: {'x':1515.0/2048.0, 'y':576.0/1536.0}
+        pos_hint: {'x':1515.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerHillary.donors)

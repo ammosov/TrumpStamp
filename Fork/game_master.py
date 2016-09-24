@@ -72,3 +72,6 @@ class GameMaster():
         # deal 6 Cards from Decks to Hands
         self.trump.get_hand().refill()
         self.hillary.get_hand().refill()
+
+    def card_clicked(self, card):
+        pass

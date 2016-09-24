@@ -8,6 +8,7 @@ import os
 class Card(Button, Widget):
     def __init__(self, **kwargs):
         self.card_id = None
+        self.owner_id = None
         self.description = None
         self.name = None
         self.image = None
@@ -21,6 +22,7 @@ class Card(Button, Widget):
 
     def lazy_init(self, **kwargs):
         self.card_id = kwargs['id']
+        self.owner_id = kwargs['owner_id']
         self.description = kwargs['description']
         self.name = kwargs['title']
         self.image = kwargs['image_path']
@@ -35,11 +37,19 @@ class Card(Button, Widget):
                                                      self.cost_color, self.cost_value,
                                                      '-!-' if self.playable else '', self.description)
 
+    def get_owner(self):
+        return self.owner_id
+
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    def get_actions(self):
+    def on_click(self):
+        pass
 
+    def on_drop(self):
+        pass
+
+    def get_actions(self):
         pass
 
     def play_sound(self):
@@ -56,6 +66,7 @@ class CardFabric(object):
 
     def get_card(self, card_id, owner_id):
         card_data = dict(self.db.iloc[card_id - 1])
+        card_data['owner_id'] = owner_id
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:
             card_data['title'] = card_data['t_title'].replace('*', ' ')

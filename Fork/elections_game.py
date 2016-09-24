@@ -110,33 +110,34 @@ class ElectionsGame(FloatLayout):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():
-            print '\nBegin new turn'    
+            print '\nBegin new turn'
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
+                return
             else:
                 player.get_hand().pop_card(card)
                 card.move()
-            actions = card.get_actions() # {'player': [(type, value)], 'opponent': [(type, value)]}
+            actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 player.apply_card(*action)
             for action in actions['opponent']:
                 opponent.apply_card(*action)
-            
+
             if self.declare_victory():
                 self.end_game()
                 return
-            
+
             # player.hand.push_card_from_deck
 
             self.trump.update_resources()
             self.hillary.update_resources()
-            # self.trump.get_hand().refill()
-            # self.hillary.get_hand().refill()
-            # self.trump.get_hand().set_playables()
-            # self.hillary.get_hand().set_playables()
 
-            #next turn
             player.set_active(False)
             opponent.set_active(True)
+
+            self.trump.get_hand().refill()
+            self.hillary.get_hand().refill()
+            # self.trump.get_hand().set_playables()
+            # self.hillary.get_hand().set_playables()
         else:
             print 'Its not your turn!'

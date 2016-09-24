@@ -17,7 +17,8 @@ class Card(Button, Widget):
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
         self.actions = kwargs['actions']
-        self.background_normal = kwargs['background']
+        self.background = kwargs['background']
+        self.background_normal = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
         super(Card, self).__init__()
 
@@ -30,10 +31,14 @@ class Card(Button, Widget):
         return isinstance(other, Card) and other.card_id == self.card_id and other.owner_id == self.owner_id
 
     def render(self):
-        self.game.add_widget(self)
+        if not self.parent:
+            self.game.add_widget(self)
 
     def show(self):
         self.background_normal = self.image
+
+    def hide(self):
+        self.background_normal = self.background
 
     def get_owner(self):
         return self.owner_id
@@ -58,7 +63,6 @@ class Card(Button, Widget):
 
     def deny(self):
         print 'Card deny playing'
-        pass
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],

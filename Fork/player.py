@@ -54,6 +54,12 @@ class Player(Widget):
         self.active = active
         # TODO
         # bot should do turn here
+        # innleg_play ():
+        #       self.opponent_swing
+                #self.hand.get_cards()
+                #card = Analysis
+                #card.on_press()
+
 
     def get_active(self):
         return self.active

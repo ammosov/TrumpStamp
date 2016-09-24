@@ -21,6 +21,8 @@ class Hand():
         for i, card in enumerate(self.cards):
             if self.player.active:
                 card.show()
+            else:
+                card.hide()
             card.pos_hint = {'x': self.POSITIONS_X[i],
                              'y': self.POSITIONS_Y[self.player.player_id]}
             card.render()

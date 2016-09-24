@@ -37,9 +37,9 @@ class Card(Button, Widget):
         self.game_master = game_master
 
     def __repr__(self):
-        return '{0} = {4}{1} ({2}/{3}) ({5})'.format(self.card_id, self.name,
+        return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
                                                      self.cost_color, self.cost_value,
-                                                     '-!-' if self.playable else '', self.description)
+                                                     self.description)
 
     def get_owner(self):
         return self.owner_id

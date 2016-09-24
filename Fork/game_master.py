@@ -80,4 +80,6 @@ class GameMaster():
         if player.get_active():
             if not player.pay_for_card(card.get_cost()):
                 card.deny()
-            actions = card.get_actions() #[(,)]
+            else:
+                card.move()
+            actions = card.get_actions() # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}

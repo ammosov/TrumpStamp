@@ -8,33 +8,23 @@
 
 
 import random
-# import csv
-from kivy.uix.boxlayout import BoxLayout
-
+import os
 import processing_functions
+from kivy.uix.widget import Widget
+from kivy.properties import BoundedNumericProperty, ListProperty
 import kivy
-from kivy.app import App
-from kivy.config import Config
 from kivy.core.audio import SoundLoader
+from kivy.uix.button import Button
 from kivy.logger import Logger
-from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.widget import Widget
-
-from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
-
-kivy.require('1.9.1')
-
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.core.audio import SoundLoader
-from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
-
+kivy.require('1.7.2')
 # VARIABLES
+
+SCRIPT_PATH = os.path.realpath(__file__)
+DIR_PATH = os.path.dirname(SCRIPT_PATH)
 
 # EXTERNAL DATABASES CONNECTED
 
-round_db = "rounds.csv"
+round_db = os.path.join(DIR_PATH, "rounds.csv")
 # csv with current round parameters -
 # victory conditions, first turn, player parameters at start
 
@@ -52,31 +42,8 @@ path_h = ''  # path to images of Hillary cards, default - same dir
 
 
 # CLASSES
-class Player(Widget):
-    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
-    swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
-
-    media = BoundedNumericProperty(1, min=1, max=100)
-    news = BoundedNumericProperty(1, min=0, max=300)
-    mojo = BoundedNumericProperty(1, min=1, max=100)
-    charisma = BoundedNumericProperty(1, min=0, max=300)
-    donors = BoundedNumericProperty(1, min=1, max=100)
-    cash = BoundedNumericProperty(1, min=0, max=300)
-
-    cards_actions = ListProperty()  # Should have a list of card actions
-
-class Card(Button, Widget):
-    """" This is a GUI class, representing a game field object."""
-    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
-    background_normal = 'assets/cards/hillary/101.png'
-
-    def play_card(self):
-        # self.parent.scoreTrump += 1
-        self.myWavSound.play()
-
 class GameMaster:
-    """CONTAINER FOR GAME VARIABLES, PROCESSES AND FUNCTIONS
-    """
+    """CONTAINER FOR GAME VARIABLES, PROCESSES AND FUNCTIONS"""
 
     def __init__(self, round_id):
         """CREATES ALL GAME TERMS, PLAYERS, DECKS, HANDS AND CARDS AT ONCE"""
@@ -86,12 +53,13 @@ class GameMaster:
         # GAME TERMS
         # get a line of round conditions from CSV, converted to dictionary
         round_cond = processing_functions.get_row(round_db, round_id)
+        Logger.info(str(round_cond))
         # select allowed cards by id
         # NOTE !! TEMP !! this is not a good way to do it, should be different and set in config
         self.cards = [range(1, 53)]  # list of cards in sequence
         self.additional_cards = [99]  # list of non sequential cards
         # makes a combined list of card ids
-        id_list = processing_functions.sort_flatten_list(self.cards[0], self.additional_cards)
+        #######id_list = processing_functions.sort_flatten_list(self.cards[0], self.additional_cards)
         # set victory variables to new conditions
         # so far it's just two of them
         # destr: 0 == all voters must reach 0
@@ -111,8 +79,8 @@ class GameMaster:
             t_data.append(round_cond[t_prefix])
             h_prefix = 'h' + str(i)
             h_data.append(round_cond[h_prefix])
-        self.trump = Player(t_data)
-        self.hillary = Player(h_data)
+        self.trump = Player(*t_data)
+        self.hillary = Player(*h_data)
         # Sets opponents to Players and their objects
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
@@ -198,7 +166,7 @@ class GameMaster:
 
     def declare_victory(self):
         """checks if victory is achieved
-        !! Current problem - what if both players are hit with one card?"""
+       !! Current problem - what if both players are hit with one card?"""
         #
         # Use any() function + 2 dictionaries of victory that are updated from card turn
         #
@@ -332,35 +300,75 @@ class GameMaster:
         """Sets both Players to active=False to prevent playing further cards"""
         self.trump.set_active(False)
         self.hillary.set_active(False)
+        
+# class PlayerKv(Widget):
+#     partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+#     swing_voters = BoundedNumericProperty(0, min=0)
+
+#     media = BoundedNumericProperty(1, min=1, max=100)
+#     news = BoundedNumericProperty(1, min=0, max=300)
+#     mojo = BoundedNumericProperty(1, min=1, max=100)
+#     charisma = BoundedNumericProperty(1, min=0, max=300)
+#     donors = BoundedNumericProperty(1, min=1, max=100)
+#     cash = BoundedNumericProperty(1, min=0, max=300)
+
+#     cards_actions = ListProperty([])  # Should have a list of card actions
+    
+#     def __init__(self, *args, **kwargs):
+#         super(PlayerKv, self).__init__(*args, **kwargs)
 
 
 class Player(Widget):
-    """CONTAINER FOR PLAYER PARAMETERS
-    initiated with id = 0/1 and player_data = (0-7)
-    player_data sequence: Swing Voters, Partisans, News, Hype, Cash, Media, Mojo, Money
-    in ROUNDS.CSV, voters param in database is replaced by first turn ID - 1 starts the game
-    """
+    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    swing_voters = BoundedNumericProperty(0, min=0)
 
+    media = BoundedNumericProperty(1, min=1, max=100)
+    news = BoundedNumericProperty(1, min=0, max=300)
+    mojo = BoundedNumericProperty(1, min=1, max=100)
+    charisma = BoundedNumericProperty(1, min=0, max=300)
+    donors = BoundedNumericProperty(1, min=1, max=100)
+    cash = BoundedNumericProperty(1, min=0, max=300)
+
+    """CONTAINER FOR PLAYER PARAMETERS
+   initiated with id = 0/1 and player_data = (0-7)
+   player_data sequence: Swing Voters, Partisans, News, Hype, Cash, Media, Mojo, Money
+   in ROUNDS.CSV, voters param in database is replaced by first turn ID - 1 starts the game
+   """
+
+    # partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    # swing_voters = BoundedNumericProperty(0, min=0, rebind=True)
+    #
+    # media = BoundedNumericProperty(1, min=1, max=100)
+    # news = BoundedNumericProperty(1, min=0, max=300)
+    # mojo = BoundedNumericProperty(1, min=1, max=100)
+    # charisma = BoundedNumericProperty(1, min=0, max=300)
+    # donors = BoundedNumericProperty(1, min=1, max=100)
+    # cash = BoundedNumericProperty(1, min=0, max=300)
+    #
+    # cards_actions = ListProperty()
     # def __init__(self, player_id, swing, partisans, news, hype, cash, media, mojo, money):
-    def __init__(self, player_params):
-        self.id = player_params[0]  # 0 = Trump, 1 = Hillary;
+    def __init__(self, *args, **kwargs):
+    #def __init__(self, player_params):
+        Logger.info(str(args))
+        self.player_id = args[0]  # 0 = Trump, 1 = Hillary;
+        print args[0]
         # 0 / 1 id is used to assign to Cards proper titles and images
         # note: for Cards, 0 is a code for 'voters' actions; voters is computed
         # column zero codes a player to keep other codes consistent between CSVs
-        if self.id == 0:
-            self.name = 'Trump'
-        elif self.id == 1:
-            self.name = 'Hillary'
+        if self.player_id == 0:
+            self.player_name = 'Trump'
+        elif self.player_id == 1:
+            self.player_name = 'Hillary'
         else:
-            self.name = 'self.id not defined'
-        self.swing = player_params[1]
-        self.partisans = player_params[2]
-        self.news = player_params[3]
-        self.hype = player_params[4]
-        self.cash = player_params[5]
-        self.media = player_params[6]
-        self.mojo = player_params[7]
-        self.money = player_params[8]
+            self.player_name = 'self.id not defined'
+        self.swing = args[1]
+        self.partisans = args[2]
+        self.news = args[3]
+        self.hype = args[4]
+        self.cash = args[5]
+        self.media = args[6]
+        self.mojo = args[7]
+        self.money = args[8]
         # Relationships with other objects in game
         self.opponent = None
         self.deck = Deck()  # pointer to Deck that Player owns
@@ -375,7 +383,7 @@ class Player(Widget):
         self.winner = None
 
     def __str__(self):  # string method for class
-        return self.name
+        return self.player_name
 
     def status(self):
         """Extended printout of player parameters to console"""
@@ -383,10 +391,10 @@ class Player(Widget):
         str1 = '{} news, {} hype, {} cash, {} media, {} mojo, {} money.'
         str2 = ''
         if not self.active:
-            str2 = '{} waits for turn'.format(self.name)
+            str2 = '{} waits for turn'.format(self.player_name)
         elif self.active:
-            str2 = '{} makes next turn'.format(self.name)
-        return (str0 + str1).format(self.name, self.swing + self.partisans, self.swing, self.partisans, self.news,
+            str2 = '{} makes next turn'.format(self.player_name)
+        return (str0 + str1).format(self.player_name, self.swing + self.partisans, self.swing, self.partisans, self.news,
                                     self.hype, self.cash, self.media, self.mojo, self.money) + '\n' + str2
 
     def set_opponent(self, opponent):
@@ -436,14 +444,14 @@ class Player(Widget):
         elif data_id == 11 or data_id == 'active':
             return self.active
         elif data_id == 12 or data_id == 'id':
-            return self.id
+            return self.player_id
         else:
             print 'invalid data_id, must be 0...11 or string param name'
             pass
 
     def get_player_id(self):
         # fast player id retrieval
-        return self.id
+        return self.player_id
 
     # Card playing functions
     def pay_for_card(self, card_type, card_value):
@@ -466,8 +474,8 @@ class Player(Widget):
 
     def card_action(self, value, action_type):
         """Processes a single action according to game rules
-        action type number == Player parameter that is modified
-        card arguments modify player data per appropriate resource id, probably easiest way"""
+       action type number == Player parameter that is modified
+       card arguments modify player data per appropriate resource id, probably easiest way"""
         if action_type == 0:
             # voters = swing + partisans, min value = 0;
             # if damage greater than swing voters, only then partisans are damaged by the remainder
@@ -533,14 +541,30 @@ class Player(Widget):
         self.mojo = 4
         self.money = 4
 
+class CardKv(Button, Widget):
+    myWavSound = SoundLoader.load('assets/stubs/Sounds/card.wav')
+    background_normal = 'assets/card00.png'
 
-class Card(Widget, Button):
+    def __init__(self, *args, **kwargs):
+        super(CardKv, self).__init__(*args, **kwargs)
+
+    def play_card(self):
+        # self.parent.scoreTrump += 1
+        self.myWavSound.play()
+
+
+class Card(object):
     """CONTAINER FOR CARD PARAMETERS
-    for the time being Trump and Hillary use the same card values with different names
-    """
+   for the time being Trump and Hillary use the same card values with different names
+   """
 
-    def __init__(self, player, opponent, deck, card_params):
+    def play_card(self):
+        # self.parent.scoreTrump += 1
+        self.myWavSound.play()
+
+    def __init__(self, player, opponent, deck, card_params, **kwargs):
         # csv is processed outside Card, Card is fed params already as a dict
+        super(Card, self).__init__(**kwargs)
         self.player = player
         self.opponent = opponent
         self.deck = deck  # Deck that Card belongs to
@@ -686,10 +710,10 @@ class Card(Widget, Button):
 
 class Deck:
     """LIST OF CARDS AND INPUT-OUTPUT OPERATIONS
-    Deck contains Player-specific Cards, one Deck for each Player"""
+   Deck contains Player-specific Cards, one Deck for each Player"""
 
     def __init__(self):
-        self.cards = []
+        self.cards = [processing_functions.get_row_for_player(cards_db, row_id, 0) for row_id in xrange(54)]
         self.player = None
         self.opponent = None
         self.hand = None  # Pointer to Hand to which Deck deals Cards
@@ -715,16 +739,16 @@ class Deck:
 
     def append_card(self, card):
         """Adds a Card to the Deck
-        Card will be the first to pop() from Deck"""
+       Card will be the first to pop() from Deck"""
         self.cards.append(card)
 
     def insert_card(self, card):
         """Insert a Card to the Deck
-        Card will be the last to pop() from Deck"""
+       Card will be the last to pop() from Deck"""
         self.cards.insert(0, card)
 
 
-class Hand(BoxLayout):
+class Hand:
     """LIST OF CARDS ON PLAYING FIELD"""
 
     def __init__(self):
@@ -753,7 +777,7 @@ class Hand(BoxLayout):
 
     def take_card(self, card):
         """Adds a Card to Hand in place of 0
-        universal method, works both at start and in game"""
+       universal method, works both at start and in game"""
         for i in range(6):
             if 0 not in self.cards:
                 print 'Hand.take_card says: {} Hand full!'.format(self.player)
@@ -770,7 +794,7 @@ class Hand(BoxLayout):
 
     def set_playables(self):
         """Resets playability at the end of player's turn, assumes 6 cards !!
-        Validation here raises errors because self.cards init as list of INT, not Card obj """
+       Validation here raises errors because self.cards init as list of INT, not Card obj """
         res = self.player.get_resources()
         for card in self.cards:
             if card == 0:
@@ -839,15 +863,3 @@ class Hand(BoxLayout):
             print 'H.play_random_card says: {} prepares to play card {}'.format(self.player, active_card)
             active_card.play()
             self.deck.insert_card(active_card)  # becomes last card to pop
-
-
-# ** THE END **
-
-class GameApp(App):
-    def build(self):
-        game_master = GameMaster
-        return game_master
-
-
-if __name__ == '__main__':
-    GameApp().run()

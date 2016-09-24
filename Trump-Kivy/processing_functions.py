@@ -33,6 +33,7 @@ def get_row(csvfile, record_id):
                         newrow.update({lbl: a})
                     else:  # do not convert STR to STR
                         newrow.update({lbl: a})
+                break
             else:
                 pass
         return newrow
@@ -70,3 +71,35 @@ def sort_flatten_list(list1, list2):
     """Flattens and sorts list of cards before generation
     https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions"""
     return sorted([num for elem in [list1, list2] for num in elem])
+
+def get_row_for_player(csvfile, record_id, player_id):
+    """Retrieves a row with a specific ID
+    input: csv file, record_id of a line;
+    output: dictionary with headers as keys and row values as values
+    id must be unique and labeled as 'id' - or else!"""
+    with open(csvfile, 'rb') as csvfile:
+        newfile = csv.DictReader(csvfile, delimiter=',', quotechar='|')
+        newrow = {}  # empty dictionary
+        for row in newfile:
+            if row['id'] == str(record_id):
+                if player_id == 1:
+                    del row['ttitle']
+                    del row['img_t']
+                else:
+                    del row['htitle']
+                    del row['img_h']
+
+                # id is numeric but at this point as it comes out of CSV, it is still a string!
+                # row['id'] -> 'id' must be present in CSV or else!
+                # no error prevention is in place now !!
+                # mb add later addl id_format='id' later
+                for lbl in row:
+                    a = row[lbl]
+                    if is_int_str(a):  # convert numeric STR to INT
+                        a = int(a)
+                        newrow.update({lbl: a})
+                    else:  # do not convert STR to STR
+                        newrow.update({lbl: a})
+            else:
+                pass
+        return newrow

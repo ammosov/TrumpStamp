@@ -55,16 +55,17 @@ class GameMaster():
             print 'GameMater INIT: ERROR ! First turn is not set!'
 
 
-
         # for i in id_list:
         #     card0 = Card(self.trump, self.hillary, self.trump.get_deck(), processing_functions.get_row(cards_db, i))
         #     self.trump.get_deck().append_card(card0)
         #     card1 = Card(self.hillary, self.trump, self.hillary.get_deck(), processing_functions.get_row(cards_db, i))
         #     self.hillary.get_deck().append_card(card1)
+        
         # # shuffle Decks
-        # self.trump.get_deck().shuffle()
-        # self.hillary.get_deck().shuffle()
-        # # deal 6 Cards from Decks to Hands
+        self.trump.get_deck().shuffle()
+        self.hillary.get_deck().shuffle()
+        
+        # deal 6 Cards from Decks to Hands
         # self.trump.get_hand().refill()
         # self.hillary.get_hand().refill()
         # self.trump.get_hand().set_playables()

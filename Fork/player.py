@@ -1,5 +1,7 @@
 from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
+from deck import Deck
+from hand import Hand
 
 PLAYERS = {0: 'Trump',
            1: 'Hillary'}
@@ -33,8 +35,8 @@ class Player(Widget):
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
         self.winner = None
-        #TODO:
-        #init Desk, Hand
+        self.deck = Deck(self)
+        self.hand = Hand(self)
 
     def set_opponent(self, opponent):
         """Sets opponents at once for Player and all his objects"""
@@ -47,5 +49,15 @@ class Player(Widget):
 
     def get_active(self):
         return self.active
+
+    def get_deck(self):
+        return self.deck
+    
+    def get_hand(self):
+        return self.hand
+        
+
+
+
 
 

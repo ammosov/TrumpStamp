@@ -133,17 +133,18 @@ class GameMaster():
                 return
             
             # player.hand.push_card_from_deck
-
-            self.trump.update_resources()
-            self.hillary.update_resources()
-            self.trump.get_hand().refill()
-            self.hillary.get_hand().refill()
+           
             # self.trump.get_hand().set_playables()
             # self.hillary.get_hand().set_playables()
 
             #next turn
             player.set_active(False)
             opponent.set_active(True)
+            opponent.update_resources()
+            player.get_hand().refill()
+
+
+
         else:
             print 'Its not your turn!'
 

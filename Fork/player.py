@@ -4,6 +4,7 @@ from kivy.uix.widget import Widget
 PLAYERS = {0: 'Trump',
            1: 'Hillary'}
 
+
 class Player(Widget):
     partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
     swing_voters = BoundedNumericProperty(0, min=0)

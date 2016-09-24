@@ -2,8 +2,8 @@ import kivy
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.floatlayout import FloatLayout
-
-from card import *
+from card import Card, Cards
+from player import Player
 
 kivy.require('1.7.2')
 Config.set('kivy', 'log_level', 'debug')

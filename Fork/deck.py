@@ -9,9 +9,9 @@ kivy.require('1.7.2')
 
 class Deck():
 	
-	def __init__(self, player):
+	def __init__(self, player, card_fabric):
 		self.player = player
-		self.cards = [1, 2, 3, 4]
+		self.cards = [card_fabric.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
 
 	def shuffle(self):
 		random.shuffle(self.cards)

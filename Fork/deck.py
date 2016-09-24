@@ -15,3 +15,6 @@ class Deck():
 
 	def shuffle(self):
 		random.shuffle(self.cards)
+
+	def pop_card(self):
+		return self.cards.pop()

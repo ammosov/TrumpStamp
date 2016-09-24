@@ -38,7 +38,7 @@ class Player(Widget):
         self.winner = None
 
         self.deck = Deck(self, self.card_fabric)
-        self.hand = Hand(self)
+        self.hand = Hand(self, self.deck)
 
     def set_opponent(self, opponent):
         """Sets opponents at once for Player and all his objects"""

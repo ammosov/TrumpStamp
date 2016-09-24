@@ -2,6 +2,7 @@ from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
 from hand import Hand
+from kivy.logger import Logger
 
 PLAYERS = {0: 'Trump',
            1: 'Hillary'}
@@ -34,9 +35,9 @@ class Player(Widget):
             setattr(self, prop_name, value)
 
         self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
-        self.ACTIONS = {1: [self.swing], 2: [self.partisans], 3: [self.news], 4: [self.hype], 5: [self.cash],
-                        6: [self.media], 7: [self.mojo], 8: [self.money], 9:  [self.news, self.hype, self.cash], 
-                        10: [self.media ,self.mojo, self.money]}
+        self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
+                        6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
+                        10: ['media', 'mojo', 'money']}
 
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
@@ -97,7 +98,9 @@ class Player(Widget):
             pass # WHAT DOES IT MEAN
         else:
             for res in self.ACTIONS[type]:
-                res = max(getattr(self, res).min_value, res + value)
+                old_value = self.property(res).get(self)
+                min_value = self.property(res).get_min(self)
+                self.property(res).set(self, max(min_value, old_value + value))
 
     def update_resources(self):  # at the end of turn, update resources of players
         self.news += self.media

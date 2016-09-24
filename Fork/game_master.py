@@ -65,12 +65,10 @@ class GameMaster():
         #     card1 = Card(self.hillary, self.trump, self.hillary.get_deck(), processing_functions.get_row(cards_db, i))
         #     self.hillary.get_deck().append_card(card1)
         
-        # # shuffle Decks
+        # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
         
         # deal 6 Cards from Decks to Hands
-        # self.trump.get_hand().refill()
-        # self.hillary.get_hand().refill()
-        # self.trump.get_hand().set_playables()
-        # self.hillary.get_hand().set_playables()
+        self.trump.get_hand().refill()
+        self.hillary.get_hand().refill()

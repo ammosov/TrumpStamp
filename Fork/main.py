@@ -1,4 +1,5 @@
 import kivy
+import kwad
 from kivy.app import App
 from kivy.config import Config
 from elections_game import ElectionsGame
@@ -13,4 +14,5 @@ class ElectionsApp(App):
 
 
 if __name__ == '__main__':
+    kwad.attach()
     ElectionsApp().run()

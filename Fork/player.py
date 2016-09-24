@@ -15,7 +15,6 @@ class Player(Widget):
     donors = BoundedNumericProperty(1, min=1, max=100)
     cash = BoundedNumericProperty(1, min=0, max=300)
 
-    # noinspection PyArgumentList
     cards_actions = ListProperty([])
 
     def __init__(self, **kwargs):
@@ -30,3 +29,23 @@ class Player(Widget):
         self.stats = kwargs
         for prop_name, value in self.stats.items():
             setattr(self, prop_name, value)
+
+        self.active = False  # Active Player plays the next Card
+        self.human = False  # Human player == True gets HID input, False = algorithm plays
+        self.winner = None
+        #TODO:
+        #init Desk, Hand
+
+    def set_opponent(self, opponent):
+        """Sets opponents at once for Player and all his objects"""
+        self.opponent = opponent
+        #self.deck.set_opponent(self.opponent)
+        #self.hand.set_opponent(self.opponent)
+
+    def set_active(self, active):
+        self.active = active
+
+    def get_active(self):
+        return self.active
+
+

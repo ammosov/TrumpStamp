@@ -6,8 +6,6 @@
 <Card>:
     border: [0,0,0,0]
     size_hint: (250.0/2048.0), (350.0/1536.0)
-    #background_normal: self.get_image()
-    background_normal: 'assets/cards/hillary/101.png'
 
 <Player>:
     border: [0,0,0,0]
@@ -30,18 +28,6 @@
         pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
         background_normal: 'assets/cards/hillary/101.png'
 
-    Card:
-        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-    Card:
-        pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-    Card:
-        pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-    Card:
-        pos_hint: {'x':1225.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-    Card:
-        pos_hint: {'x':1495.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
-    Card:
-        pos_hint: {'x':1764.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
     Label:
         id: 'trump_part'
         pos_hint: {'x': 679.0/2048.0, 'y': 426.0/1536.0}
@@ -140,18 +126,6 @@
         font_size: 18
         text: str(PlayerHillary.money)
 
-    Card:
-        pos_hint: {'x':34/2048.0, 'y':(1536.0-488.0)/1536.0}
-    Card:
-        pos_hint: {'x':302/2048.0, 'y':(1536.0-488.0)/1536.0}
-    Card:
-        pos_hint: {'x':570/2048.0, 'y':(1536.0-488.0)/1536.0}
-    Card:
-        pos_hint: {'x':838/2048.0, 'y':(1536.0-488.0)/1536.0}
-    Card:
-        pos_hint: {'x':1106/2048.0, 'y':(1536.0-488.0)/1536.0}
-    Card:
-        pos_hint: {'x':1374/2048.0, 'y':(1536.0-488.0)/1536.0}
 #    Label:
 #        pos_hint: {'x':720.0/2048.0, 'y':(1536.0-1085.0)/1536.0}
 #        size_hint: (50.0/2048.0), (50.0/1536.0)

@@ -8,21 +8,6 @@ import os
 
 class Card(Button, Widget):
     def __init__(self, **kwargs):
-        self.card_id = None
-        self.owner_id = None
-        self.description = None
-        self.name = None
-        self.image = None
-        self.cost_color = None
-        self.cost_value = None
-        self.actions = None
-        self.in_play = False
-        self.sound = None
-        self.background = None
-        self.game_master = None
-        super(Card, self).__init__(**kwargs)
-
-    def lazy_init(self, **kwargs):
         self.card_id = kwargs['id']
         self.owner_id = kwargs['owner_id']
         self.description = kwargs['description']
@@ -31,16 +16,21 @@ class Card(Button, Widget):
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
         self.actions = kwargs['actions']
-        self.background = kwargs['background']
+        self.background_normal = kwargs['background']
         self.sound = SoundLoader.load(kwargs['sound'])
+        super(Card, self).__init__()
 
     def set_game_master(self, game_master):
         self.game_master = game_master
+        self.game_master.get_layout().add_widget(self)
 
     def __repr__(self):
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
                                                self.cost_color, self.cost_value,
                                                self.description)
+
+    def __eq__(self, other):
+        return isinstance(other, Card) and other.card_id == self.card_id and other.owner_id == self.owner_id
 
     def get_owner(self):
         return self.owner_id
@@ -116,8 +106,7 @@ class CardFabric(object):
         card_data['sound'] = self.sound_path
         card_data['background'] = self.background_path
 
-        card = Card()
-        card.lazy_init(**card_data)
+        card = Card(**card_data)
         card.set_game_master(self.game_master)
         return card
 

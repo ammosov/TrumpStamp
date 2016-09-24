@@ -1,23 +1,27 @@
 import kivy
 import pandas as pd
+import os
 from kivy.uix.floatlayout import FloatLayout
 from card import Card, CardFabric
 from player import Player
 from kivy.logger import Logger
 kivy.require('1.7.2')
 
-round_csv = 'rounds.csv'
-cards_csv = 'cards.csv'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
+cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 class GameMaster():
     """This class represents the game. As a Kivy object it represents the game field and is a root for all other
     objects. As a general class it stores all the stuff in the game.
     """
 
-    def __init__(self, trump, hillary):
+    def __init__(self, trump, hillary, layout):
         round_id = 0
         self.trump = trump
         self.hillary = hillary
+        self.layout = layout
         self.card_fabric = CardFabric(self, cards_csv)
         self.PLAYER = {0: self.trump, 1: self.hillary}
         round_db = pd.DataFrame(pd.read_csv(round_csv))
@@ -70,10 +74,13 @@ class GameMaster():
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
-        
+
         # deal 6 Cards from Decks to Hands
         self.trump.get_hand().refill()
         self.hillary.get_hand().refill()
+
+    def get_layout(self):
+        return self.layout
 
     def card_clicked(self, card):
         player = self.PLAYER[card.get_owner()]

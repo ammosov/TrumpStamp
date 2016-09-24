@@ -11,4 +11,4 @@ class ElectionsGame(FloatLayout):
     """
     def __init__(self, **kwargs):
         super(FloatLayout, self).__init__(**kwargs)
-        gameMaster = GameMaster(self.ids['PlayerTrump'], self.ids['PlayerHillary'])
+        gameMaster = GameMaster(self.ids['PlayerTrump'], self.ids['PlayerHillary'], self)

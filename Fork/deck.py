@@ -8,13 +8,15 @@ kivy.require('1.7.2')
 
 
 class Deck():
-	
-	def __init__(self, player, card_fabric):
-		self.player = player
-		self.cards = [card_fabric.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
+    def __init__(self, player, card_fabric):
+        self.player = player
+        self.cards = [card_fabric.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
 
-	def shuffle(self):
-		random.shuffle(self.cards)
+    def get_owner(self):
+        return self.player
 
-	def pop_card(self):
-		return self.cards.pop()
+    def shuffle(self):
+        random.shuffle(self.cards)
+
+    def pop_card(self):
+        return self.cards.pop()

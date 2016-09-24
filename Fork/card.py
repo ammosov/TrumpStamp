@@ -55,7 +55,6 @@ class Card(Button, Widget):
 
     def deny(self):
         print 'Card deny playing'
-        pass
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],

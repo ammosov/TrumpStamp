@@ -80,7 +80,7 @@ class Card(Button, Widget):
 
 class CardFabric(object):
     def __init__(self, game_master, card_db, images_path=None, sound_path=None, background_path=None):
-        self.db = pd.read_csv(card_db)
+        self.db = pd.read_csv(card_db, dtype={'img_t': str, 'img_h': str})
         self.images_path = images_path or {'trump': 'assets/cards/trump',
                                            'hillary': 'assets/cards/hillary'}
         self.sound_path = sound_path or 'assets/stubs/Sounds/card.wav'
@@ -93,10 +93,10 @@ class CardFabric(object):
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:
             card_data['title'] = card_data['t_title'].replace('*', ' ')
-            card_data['image_path'] = os.path.join(self.images_path['trump'], str(card_data['img_t'])) + '.png'
+            card_data['image_path'] = os.path.join(self.images_path['trump'], card_data['img_t']) + '.png'
         elif owner_id == 1:
             card_data['title'] = card_data['h_title'].replace('*', ' ')
-            card_data['image_path'] = os.path.join(self.images_path['hillary'], str(card_data['img_h'])) + '.png'
+            card_data['image_path'] = os.path.join(self.images_path['hillary'], card_data['img_h']) + '.png'
         else:
             raise ValueError('Wrong owner_id')
         actions = [[card_data['act1_value'], card_data['act1_type'], card_data['act1_side']],

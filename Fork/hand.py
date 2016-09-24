@@ -20,7 +20,9 @@ class Hand():
         owner_id = self.deck.get_owner().player_id
         for i, card in enumerate(self.cards):
             if owner_id == 0:
+                print card.background_normal
                 card.background_normal = card.image
+                print card.image
             card.pos_hint = {'x': self.POSITIONS_X[i],
                              'y': self.POSITIONS_Y[owner_id]}
 

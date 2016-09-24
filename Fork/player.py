@@ -36,20 +36,9 @@ class Player(Widget):
             setattr(self, prop_name, value)
 
         self.RESOURSES = {1: self.news, 2: self.cash, 3: self.hype}
-<<<<<<< HEAD
-        # self.ACTIONS = {1: [self.swing], 2: [self.partisans], 3: [self.news], 4: [self.hype], 5: [self.cash],
-        #                 6: [self.media], 7: [self.mojo], 8: [self.money], 9:  [self.news, self.hype, self.cash], 
-        #                 10: [self.media ,self.mojo, self.money]}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
                         10: ['media', 'mojo', 'money']}
-        
-=======
-        self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
-                        6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
-                        10: ['media', 'mojo', 'money']}
-
->>>>>>> 0de99b1d563f9b0706cf43ac4ad5acab375c1a64
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
         self.winner = None

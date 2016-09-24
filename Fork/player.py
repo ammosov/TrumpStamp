@@ -31,7 +31,8 @@ class Player(Widget):
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
-            setattr(self, prop_name, value)
+            print prop_name, value
+            self.property(prop_name).set(self, value)
 
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
@@ -119,9 +120,9 @@ class Player(Widget):
                 self.property(res).set(self, max(min_value, old_value + value))
 
     def update_resources(self):  # at the end of turn, update resources of players
-        self.news += self.media
-        self.hype += self.mojo
-        self.cash += self.money
-
-
-
+        for fabric, resource in (('media', 'news'), ('mojo', 'hype'), ('money', 'cash')):
+            fabric_property = self.property(fabric)
+            fabric_property_value = fabric_property.get(self)
+            resource_property = self.property(resource)
+            resource_property_value = resource_property.get(self)
+            resource_property.set(self, fabric_property_value + resource_property_value)

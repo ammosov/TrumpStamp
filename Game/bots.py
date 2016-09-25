@@ -44,9 +44,9 @@ class AbstractBot(Player):
         card, action = self.analysis(game_info)  # this function gives card and action, which we have to use on it
 
         if action == TO_PRESS:
-            card.on_press()
+            card.use()
         elif action == TO_DROP:
-            card.on_drop()
+            card.drop()
 
 
 class DropBot(AbstractBot):

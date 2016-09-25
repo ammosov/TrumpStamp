@@ -117,10 +117,8 @@ class ElectionsGame(FloatLayout):
         if player.get_active():
             print '\nBegin new turn'
             if not player.pay_for_card(*card.get_cost()):
-                card.deny()
-                return
+                return False
             player.get_hand().pop_card(card)
-            card.move()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 if player.apply_card(*action):
@@ -130,7 +128,7 @@ class ElectionsGame(FloatLayout):
 
             if self.declare_victory():
                 self.end_game()
-                return
+                return True
 
             if not free_turn:
                 player.set_active(False)
@@ -143,8 +141,10 @@ class ElectionsGame(FloatLayout):
 
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
+            return True
         else:
             print 'Its not your turn!'
+            return False
 
     def card_dropped(self, card):
 
@@ -163,7 +163,7 @@ class ElectionsGame(FloatLayout):
             opponent.get_hand().render_cards()
             return True
         return False
-    
+
     def resize_card(self, card, counter):
         x = 1.5
         print card.pos
@@ -178,4 +178,4 @@ class ElectionsGame(FloatLayout):
                 anim &= Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
                 #anim += Animation(z_index=1, duration=0.5)
                     #Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-            anim.start(card) 
+            anim.start(card)

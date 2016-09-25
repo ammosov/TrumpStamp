@@ -75,6 +75,9 @@ class Player(Widget):
     def get_voters(self):
         return self.partisans
 
+    def play(self):
+        pass
+
     def pay_for_card(self, card_color, card_value):
         if card_color:
             property = self.property(self.RESOURSES[card_color])

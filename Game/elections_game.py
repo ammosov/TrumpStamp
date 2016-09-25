@@ -67,7 +67,7 @@ class ElectionsGame(Screen):
             mojo=round_db['h7'][round_id],
             money=round_db['h8'][round_id],
             card_fabric=self.card_fabric,
-            is_bot=False if bot_name == 'hillary' else True)
+            is_bot=True if bot_name == 'hillary' else False)
 
         if bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
@@ -76,6 +76,13 @@ class ElectionsGame(Screen):
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
+
+        if round_db['turn'][round_id]:
+            self.trump.set_active(False)
+            self.hillary.set_active(True)
+        else:
+            self.trump.set_active(True)
+            self.hillary.set_active(False)
 
         # shuffle Decks
         self.trump.get_deck().shuffle()
@@ -87,12 +94,10 @@ class ElectionsGame(Screen):
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
 
-        if round_db['turn'][round_id]:
-            self.trump.set_active(False)
-            self.hillary.set_active(True)
-        else:
-            self.trump.set_active(True)
-            self.hillary.set_active(False)
+        if round_db['turn'][round_id] and bot_name == 'hillary':
+            self.hillary.play()
+        elif not round_db['turn'][round_id] and bot_name == 'trump':
+            self.trump.play()
 
 
     def end_game(self):
@@ -150,6 +155,8 @@ class ElectionsGame(Screen):
 
             if free_turn:
                 player.set_active(True)
+                if player.is_bot():
+                    player.play()
             else:
                 player.set_active(False)
 
@@ -160,10 +167,11 @@ class ElectionsGame(Screen):
             else:    
                 opponent.update_resources()
                 opponent.set_active(True)
-
+                if opponent.is_bot():
+                    opponent.play()
             opponent.get_hand().render_cards()
             player.get_hand().render_cards()
-            
+
             return True
         else:
             print 'Its not your turn!'
@@ -182,6 +190,8 @@ class ElectionsGame(Screen):
             opponent.update_resources()
             #opponent.get_hand().refill()
             opponent.set_active(True)
+            if opponent.is_bot():
+                opponent.play()
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             return True

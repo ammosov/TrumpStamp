@@ -78,12 +78,11 @@ class Card(Button):
                 self.counter_for_expand += 1
                 self.game.resize_card(self, self.counter_for_expand)                
             if touch.pos[1] - self.orig_pos[1] > 20:
-                print("Clicked")
+                print("CLICKED")
                 self.game.card_clicked(self)
             if self.orig_pos[1] - touch.pos[1] > 20:
                 if self.game.card_dropped(self):
-                    assert 1==2
-                    print("Dropped")
+                    print("DROPPED")
                     self.drop_anim(False)
             self.touch_moving = False
             return True

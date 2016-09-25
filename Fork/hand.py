@@ -1,4 +1,5 @@
 import os
+from kivy.logger import Logger
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,6 +21,8 @@ class Hand():
 
     def render_cards(self):
         print self.player
+        print 'kjdnkjndrgkjnvkdjrnbkjrnkjnrbrn'
+        Logger.info(str(self.cards))
         for i, card in enumerate(self.cards):
             print card
             if self.player.active:
@@ -33,8 +36,10 @@ class Hand():
 
     def refill(self):
         print self.player, 'REFILLED'
+        print 'l;lsefl;,ef;l,e;l,fe;l,srl;,;fl'
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
                 new_card  = self.deck.pop_card()
                 print 'new_card', new_card
-                self.cards[i] = new_card#self.deck.pop_card()
+                self.cards[i] = new_card
+                #self.deck.pop_card()

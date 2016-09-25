@@ -138,8 +138,8 @@ class ElectionsGame(FloatLayout):
             player.get_hand().refill()
 
             if not free_turn:
-                opponent.set_active(True)
                 opponent.update_resources()
+                opponent.set_active(True)
 
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
@@ -147,19 +147,20 @@ class ElectionsGame(FloatLayout):
             print 'Its not your turn!'
 
     def card_dropped(self, card):
+
         print 'dropped:', card
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():
-            # card.amination()
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
-            opponent.set_active(True)
             player.set_active(False)
             player.get_hand().refill()
+            opponent.update_resources()
+            opponent.set_active(True)
+            #opponent.get_hand().refill()
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
-            opponent.update_resources()
             return True
         return False
     

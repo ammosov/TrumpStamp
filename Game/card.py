@@ -1,12 +1,8 @@
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
 import pandas as pd
 import os
-import kwad
-import time
-
 
 ZOOM_SCALE_FACTOR = 1.5
 
@@ -16,16 +12,20 @@ class Card(Button):
     current_zoomed_in_card = None
 
     def __init__(self, **kwargs):
-        self.game = kwargs['game']
-        self.card_id = kwargs['id']
-        self.owner_id = kwargs['owner_id']
+        self.card_id = kwargs.pop('id')
         self.description = kwargs['description']
         self.name = kwargs['title']
-        self.image = kwargs['image_path']
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
+        super(Card, self).__init__(**kwargs)
+        self.game = kwargs['game']
+        self.owner_id = kwargs['owner_id']
         self.actions = kwargs['actions']
+        self.image = kwargs['image_path']
         self.background = kwargs['background']
+        self.counter_for_expand = 0
+        self.touch_moving = False
+
         self.background_normal = self.background
         self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
@@ -61,12 +61,14 @@ class Card(Button):
 
     def hide(self):
         self.background_normal = self.background
+        self.background_down = self.background
 
     def use(self):
         if self.game.card_clicked(self):
             self.bring_to_front()
             print("USE")
-            self.zoom_out()
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
             self._build_use_anim().start(self)
             self.play_sound()
         else:
@@ -74,7 +76,8 @@ class Card(Button):
 
     def drop(self):
         if self.game.card_dropped(self):
-            self.zoom_out()
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
             anim = self._build_drop_anim()
             anim.bind(on_complete=self.delete)
             anim.start(self)

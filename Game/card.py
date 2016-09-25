@@ -1,7 +1,7 @@
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
-import pandas as pd
+import csv
 import os
 
 ZOOM_SCALE_FACTOR = 1.5
@@ -40,7 +40,8 @@ class Card(Button):
                                                self.description)
 
     def __eq__(self, other):
-        return isinstance(other, Card) and other.card_id == self.card_id and other.owner_id == self.owner_id
+        return (isinstance(other, Card) and other.card_id == self.card_id and
+                other.owner_id == self.owner_id)
 
     def render(self):
         if not self.parent:
@@ -107,20 +108,20 @@ class Card(Button):
     def _build_zoom_in_anim(self):
         card = self
         delta_x = self.size_hint[0] * ZOOM_SCALE_FACTOR / 5
-        return Animation(size_hint=(card.size_hint[0] * ZOOM_SCALE_FACTOR,
-                                    card.size_hint[1] * ZOOM_SCALE_FACTOR),
-                         duration=0.25) & \
-               Animation(pos_hint={'x': card.pos_hint['x'] - delta_x,
-                                   'y': card.pos_hint['y']}, duration=0.25)
+        return (Animation(size_hint=(card.size_hint[0] * ZOOM_SCALE_FACTOR,
+                                     card.size_hint[1] * ZOOM_SCALE_FACTOR),
+                          duration=0.25) &
+                Animation(pos_hint={'x': card.pos_hint['x'] - delta_x,
+                          'y': card.pos_hint['y']}, duration=0.25))
 
     def _build_zoom_out_anim(self):
         card = self
         delta_x = self.size_hint[0] / 5
-        return Animation(size_hint=(card.size_hint[0] / ZOOM_SCALE_FACTOR,
-                                    card.size_hint[1] / ZOOM_SCALE_FACTOR),
-                         duration=0.25) & \
-               Animation(pos_hint={'x': card.pos_hint['x'] + delta_x,
-                                   'y': card.pos_hint['y']}, duration=0.25)
+        return (Animation(size_hint=(card.size_hint[0] / ZOOM_SCALE_FACTOR,
+                                     card.size_hint[1] / ZOOM_SCALE_FACTOR),
+                          duration=0.25) &
+                Animation(pos_hint={'x': card.pos_hint['x'] + delta_x,
+                                    'y': card.pos_hint['y']}, duration=0.25))
 
     def _build_use_anim(self):
         return Animation(pos_hint={'x': 900.0 / 2048.0,
@@ -129,15 +130,19 @@ class Card(Button):
 
     def _build_drop_anim(self):
         x, y = self.pos_hint["x"], self.pos_hint["y"]
-        return Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
-               Animation(opacity=0, duration=0.2)
+        return (Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) +
+                Animation(opacity=0, duration=0.2))
 
     def _build_deny_anim(self):
-        x, y = self.pos_hint["x"], self.pos_hint["y"]
-        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.025)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']}, duration=0.025)
+        # x, y = self.pos_hint["x"], self.pos_hint["y"]
+        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+                         duration=0.025)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']},
+                          duration=0.05)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+                          duration=0.05)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']},
+                          duration=0.025)
         return anim
 
     def get_owner(self):
@@ -157,7 +162,7 @@ class Card(Button):
         if self.touch_moving:
             print("UP from {} touch {}".format(self.name, touch))
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
-                (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
+                    (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
                 pass
                 if self.zoomed_in:
                     self.zoom_out()
@@ -175,7 +180,8 @@ class Card(Button):
     def on_deny(self):
         self._build_deny_anim().start(self)
 
-    def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
+    def get_actions(self):
+        # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],
                    'opponent': []}
         for action in self.actions:
@@ -198,7 +204,13 @@ class Card(Button):
 
 class CardFabric(object):
     def __init__(self, game, card_db, images_path=None, sound_path=None, background_path=None):
-        self.db = pd.read_csv(card_db, dtype={'img_t': str, 'img_h': str})
+        self.db = []
+        with open(card_db) as card_file:
+            reader = csv.DictReader(card_file)
+            str_keys = ['t_title', 'h_title', 'description', 'img_t', 'img_h']
+            for row in reader:
+                row_ = {k: (int(v) if k not in str_keys else v) for k, v in row.iteritems()}
+                self.db.append(row_)
         self.images_path = images_path or {'trump': 'assets/cards/trump',
                                            'hillary': 'assets/cards/hillary'}
         self.sound_path = sound_path or 'assets/stubs/Sounds/card.wav'
@@ -206,15 +218,18 @@ class CardFabric(object):
         self.game = game
 
     def get_card(self, card_id, owner_id):
-        card_data = dict(self.db.iloc[card_id - 1])
+        card_data = dict(self.db[card_id - 1])
+        print(card_data)
         card_data['owner_id'] = owner_id
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:
             card_data['title'] = card_data['t_title'].replace('*', ' ')
-            card_data['image_path'] = os.path.join(self.images_path['trump'], card_data['img_t']) + '.png'
+            card_data['image_path'] = (os.path.join(self.images_path['trump'], card_data['img_t']) +
+                                       '.png')
         elif owner_id == 1:
             card_data['title'] = card_data['h_title'].replace('*', ' ')
-            card_data['image_path'] = os.path.join(self.images_path['hillary'], card_data['img_h']) + '.png'
+            card_data['image_path'] = (os.path.join(self.images_path['hillary'],
+                                       card_data['img_h']) + '.png')
         else:
             raise ValueError('Wrong owner_id')
         actions = [[card_data['act1_value'], card_data['act1_type'], card_data['act1_side']],

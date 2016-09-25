@@ -1,6 +1,7 @@
 import kivy
-import pandas as pd
 import os
+import csv
+from collections import defaultdict
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 
@@ -39,32 +40,40 @@ class ElectionsGame(Screen):
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
-        #self.card_fabric = CardFabric(self, cards_csv)
-        round_db = pd.DataFrame(pd.read_csv(round_csv))
-        self.victory = {'destr': round_db['destr'][round_id], 'res': round_db['res'][round_id]}
+        # self.card_fabric = CardFabric(self, cards_csv)
+
+        round_db = []
+        with open(round_csv) as round_file:
+            reader = csv.DictReader(round_file)
+            for row in reader:
+                row_ = {k: int(v) for k, v in row.iteritems()}
+                round_db.append(row_)
+
+        self.victory = {'destr': round_db[round_id]['destr'], 'res': round_db[round_id]['res']}
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database
+        print(round_db)
         self.trump.late_init(
             player_id=0,
-            swing=round_db['t1'][round_id],
-            partisans=round_db['t2'][round_id],
-            news=round_db['t3'][round_id],
-            hype=round_db['t4'][round_id],
-            cash=round_db['t5'][round_id],
-            media=round_db['t6'][round_id],
-            mojo=round_db['t7'][round_id],
-            money=round_db['t8'][round_id],
+            swing=round_db[round_id]['t1'],
+            partisans=round_db[round_id]['t2'],
+            news=round_db[round_id]['t3'],
+            hype=round_db[round_id]['t4'],
+            cash=round_db[round_id]['t5'],
+            media=round_db[round_id]['t6'],
+            mojo=round_db[round_id]['t7'],
+            money=round_db[round_id]['t8'],
             card_fabric=self.card_fabric)
         self.hillary.late_init(
             player_id=1,
-            swing=round_db['h1'][round_id],
-            partisans=round_db['h2'][round_id],
-            news=round_db['h3'][round_id],
-            hype=round_db['h4'][round_id],
-            cash=round_db['h5'][round_id],
-            media=round_db['h6'][round_id],
-            mojo=round_db['h7'][round_id],
-            money=round_db['h8'][round_id],
+            swing=round_db[round_id]['h1'],
+            partisans=round_db[round_id]['h2'],
+            news=round_db[round_id]['h3'],
+            hype=round_db[round_id]['h4'],
+            cash=round_db[round_id]['h5'],
+            media=round_db[round_id]['h6'],
+            mojo=round_db[round_id]['h7'],
+            money=round_db[round_id]['h8'],
             card_fabric=self.card_fabric)
 
         if bot_name == 'trump':
@@ -75,7 +84,7 @@ class ElectionsGame(Screen):
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        if round_db['turn'][round_id]:
+        if round_db[round_id]['turn']:
             self.trump.set_active(False)
             self.hillary.set_active(True)
         else:
@@ -91,7 +100,6 @@ class ElectionsGame(Screen):
         self.trump.get_hand().render_cards()
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
-
 
     def end_game(self):
         """Sets both Players to active=False to prevent playing further cards"""
@@ -132,7 +140,7 @@ class ElectionsGame(Screen):
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
-            player.get_deck().drop_card(card) #even played card should be in discard 
+            player.get_deck().drop_card(card)  # even played card should be in discard
             if player.is_bot():
                 card.show()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
@@ -155,13 +163,13 @@ class ElectionsGame(Screen):
 
             if free_turn:
                 opponent.set_active(False)
-            else:    
+            else:
                 opponent.update_resources()
                 opponent.set_active(True)
 
             opponent.get_hand().render_cards()
             player.get_hand().render_cards()
-            
+
             return True
         else:
             print 'Its not your turn!'
@@ -178,7 +186,7 @@ class ElectionsGame(Screen):
             player.set_active(False)
             player.get_hand().refill()
             opponent.update_resources()
-            #opponent.get_hand().refill()
+            # opponent.get_hand().refill()
             opponent.set_active(True)
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()

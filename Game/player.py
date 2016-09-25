@@ -39,8 +39,8 @@ class Player(Widget):
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],
                         10: ['media', 'mojo', 'money']}
-        self.active = False 
-        self.human = False if self.player_id == 1 else True  #########################################Should be changed after choosing mod!!!!!
+        self.active = False
+        self.human = False if self.player_id == 1 else True  # Should be changed after choosing mod
         self.bot = True if self.player_id == 1 else False
         self.winner = None
 

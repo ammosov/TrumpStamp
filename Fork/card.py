@@ -82,17 +82,23 @@ class Card(Button):
                 self.game.card_clicked(self)
             if self.orig_pos[1] - touch.pos[1] > 20:
                 if self.game.card_dropped(self):
+                    assert 1==2
                     print("Dropped")
-                    self.drop_anim()
+                    self.drop_anim(False)
             self.touch_moving = False
             return True
 
-    def drop_anim(self):
+    def drop_anim(self, is_bot):
         def on_complete(obj, widget):
             self.game.remove_widget(self)
         x, y = self.pos_hint["x"], self.pos_hint["y"]
-        anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
-               Animation(opacity=0, duration=0.2)
+        if is_bot:
+            anim = Animation(duration=3.) + \
+                    Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+                    Animation(opacity=0, duration=0.2)            
+        else:
+            anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+                   Animation(opacity=0, duration=0.2)
         anim.bind(on_complete=on_complete)
         anim.start(self)
         self.play_sound()
@@ -100,6 +106,7 @@ class Card(Button):
     def on_drop(self):
         print 'Card dropped'
         self.game.card_dropped(self)
+        self.drop_anim(True)
 
     def move(self):
         print 'Card move to the board'

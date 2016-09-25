@@ -1,6 +1,7 @@
 from player import Player
 from random import randint
 from kivy.logger import Logger
+import time
 
 TO_PRESS = 228
 TO_DROP = 265
@@ -50,7 +51,7 @@ class AbstractBot(Player):
             card.on_drop()
 
 
-class DrobBot(AbstractBot):
+class DropBot(AbstractBot):
 
     def analysis(self, game_info):
         return game_info['cards'][0], TO_DROP

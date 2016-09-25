@@ -12,6 +12,8 @@ class AbstractBot(Player):
     def analysis(self, game_info):
         pass
 
+
+
     def set_active(self, active):
         print 'bot set active called with ', active
         self.active = active
@@ -73,25 +75,25 @@ def getResourceName(color):
 class RandomPressDrop(AbstractBot):
 
     '''
-    available_cards_indices -- numbers of cards in this.hand.cards, which we can use.
+    available_cards_indexes -- numbers of cards in this.hand.cards, which we can use.
     and return some random available card with label TO_PRESS, if that is possible, otherwise we
     return some random card with label TO_DROP
     '''
-
+    
     def analysis(self, game_info):
-        available_cards_indices = []
+        available_cards_indexes = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
             cost_color, cost_value = card.get_cost()
             if cost_color == 0:
-                available_cards_indices.append(card_index)
+                available_cards_indexes.append(card_index)
                 continue
             resource_name = getResourceName(cost_color)
             if game_info[resource_name] >= cost_value:
-                available_cards_indices.append(card_index)
+                available_cards_indexes.append(card_index)
 
-        if len(available_cards_indices) > 0:
-            random_index = available_cards_indices[randint(0, len(available_cards_indices)-1)]
+        if len(available_cards_indexes) > 0:
+            random_index = available_cards_indexes[randint(0, len(available_cards_indexes)-1)]
             return game_info['cards'][random_index], TO_PRESS
 
         return game_info['cards'][randint(0, 5)], TO_DROP

@@ -12,8 +12,6 @@ class AbstractBot(Player):
     def analysis(self, game_info):
         pass
 
-
-
     def set_active(self, active):
         print 'bot set active called with ', active
         self.active = active
@@ -75,25 +73,66 @@ def getResourceName(color):
 class RandomPressDrop(AbstractBot):
 
     '''
-    available_cards_indexes -- numbers of cards in this.hand.cards, which we can use.
+    available_cards_indices -- numbers of cards in this.hand.cards, which we can use.
     and return some random available card with label TO_PRESS, if that is possible, otherwise we
     return some random card with label TO_DROP
     '''
     
     def analysis(self, game_info):
-        available_cards_indexes = []
+        available_cards_indices = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
             cost_color, cost_value = card.get_cost()
             if cost_color == 0:
-                available_cards_indexes.append(card_index)
+                available_cards_indices.append(card_index)
                 continue
             resource_name = getResourceName(cost_color)
             if game_info[resource_name] >= cost_value:
-                available_cards_indexes.append(card_index)
+                available_cards_indices.append(card_index)
 
-        if len(available_cards_indexes) > 0:
-            random_index = available_cards_indexes[randint(0, len(available_cards_indexes)-1)]
+        if len(available_cards_indices) > 0:
+            random_index = available_cards_indices[randint(0, len(available_cards_indices)-1)]
             return game_info['cards'][random_index], TO_PRESS
 
         return game_info['cards'][randint(0, 5)], TO_DROP
+
+
+class GreedyBot(AbstractBot):
+
+    def analysis(self, game_info):
+        available_cards_indices = []
+        for card_index in range(len(game_info['cards'])):
+            card = game_info['cards'][card_index]
+            cost_color, cost_value = card.get_cost()
+            if cost_color == 0:
+                available_cards_indices.append(card_index)
+                continue
+            resource_name = getResourceName(cost_color)
+            if game_info[resource_name] >= cost_value:
+                available_cards_indices.append(card_index)
+
+        self_coeff = -1
+        enemy_coeff = 1
+        if len(available_cards_indices) > 0:
+            index = 0
+            optimal_priority = 0
+            for i in xrange(len(available_cards_indices)):
+                priority = 0
+                actions = game_info['cards'][available_cards_indices[i]].get_actions()
+                for action in actions['player']:
+                    if action[0] == 0:
+                        priority += self_coeff * action[1]
+                for action in actions['opponent']:
+                    if action[0] == 0:
+                        priority -= enemy_coeff * action[1]
+                if i == 0:
+                    optimal_priority = priority
+                elif priority > optimal_priority:
+                    index, optimal_priority = i, priority
+            return game_info['cards'][available_cards_indices[index]], TO_PRESS
+        else:
+            index = 0
+            for i in xrange(1, 5):
+                if game_info['cards'][i].cost_value > game_info['cards'][index].cost_value:
+                    index = i
+            return game_info['cards'][index], TO_DROP

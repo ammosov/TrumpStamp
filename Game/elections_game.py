@@ -114,7 +114,6 @@ class ElectionsGame(FloatLayout):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
-        is_bot = True if card.get_owner() == 1 else False
         if player.get_active():
             print '\nBegin new turn'
             if not player.pay_for_card(*card.get_cost()):
@@ -142,8 +141,9 @@ class ElectionsGame(FloatLayout):
                 opponent.update_resources()
                 opponent.set_active(True)
 
-            player.get_hand().render_cards()
             opponent.get_hand().render_cards()
+            player.get_hand().render_cards()
+            
             return True
         else:
             print 'Its not your turn!'
@@ -160,8 +160,8 @@ class ElectionsGame(FloatLayout):
             player.set_active(False)
             player.get_hand().refill()
             opponent.update_resources()
-            opponent.set_active(True)
             #opponent.get_hand().refill()
+            opponent.set_active(True)
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             return True

@@ -1,30 +1,37 @@
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
 import pandas as pd
 import os
-import kwad
-import time
+
+ZOOM_SCALE_FACTOR = 1.5
 
 
 class Card(Button):
+    # Workaround, need to use Deck instead
+    current_zoomed_in_card = None
+
     def __init__(self, **kwargs):
-        self.game = kwargs['game']
-        self.card_id = kwargs['id']
-        self.owner_id = kwargs['owner_id']
+        self.card_id = kwargs.pop('id')
         self.description = kwargs['description']
         self.name = kwargs['title']
-        self.image = kwargs['image_path']
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
+        super(Card, self).__init__(**kwargs)
+        self.game = kwargs['game']
+        self.owner_id = kwargs['owner_id']
         self.actions = kwargs['actions']
+        self.image = kwargs['image_path']
         self.background = kwargs['background']
+        self.counter_for_expand = 0
+        self.touch_moving = False
+
         self.background_normal = self.background
         self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
-        self.counter_for_expand = 0
         self.touch_moving = False
+        self.size = [self.size_hint[0], self.size_hint[1]]
+        self.zoomed_in = False
         super(Card, self).__init__()
 
     def __repr__(self):
@@ -40,6 +47,13 @@ class Card(Button):
             print("Render {}".format(self.name))
             self.game.add_widget(self)
 
+    def delete(self, *args, **kwargs):
+        if self.parent:
+            self.game.remove_widget(self)
+
+    def bring_to_front(self):
+        self.delete()
+        self.render()
 
     def show(self):
         self.background_normal = self.image
@@ -47,6 +61,84 @@ class Card(Button):
 
     def hide(self):
         self.background_normal = self.background
+        self.background_down = self.background
+
+    def use(self):
+        if self.game.card_clicked(self):
+            self.bring_to_front()
+            print("USE")
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
+            self._build_use_anim().start(self)
+            self.play_sound()
+        else:
+            self.on_deny()
+
+    def drop(self):
+        if self.game.card_dropped(self):
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
+            anim = self._build_drop_anim()
+            anim.bind(on_complete=self.delete)
+            anim.start(self)
+            self.play_sound()
+        else:
+            self.on_deny()
+
+    def zoom_in(self):
+        if not self.zoomed_in:
+            self.bring_to_front()
+            self._build_zoom_in_anim().start(self)
+            Card.current_zoomed_in_card = self
+            self.zoomed_in = True
+            return True
+        else:
+            return False
+
+    def zoom_out(self):
+        if self.zoomed_in:
+            self._build_zoom_out_anim().start(self)
+            Card.current_zoomed_in_card = None
+            self.zoomed_in = False
+            return True
+        else:
+            return False
+
+    def _build_zoom_in_anim(self):
+        card = self
+        delta_x = self.size_hint[0] * ZOOM_SCALE_FACTOR / 5
+        return Animation(size_hint=(card.size_hint[0] * ZOOM_SCALE_FACTOR,
+                                    card.size_hint[1] * ZOOM_SCALE_FACTOR),
+                         duration=0.25) & \
+               Animation(pos_hint={'x': card.pos_hint['x'] - delta_x,
+                                   'y': card.pos_hint['y']}, duration=0.25)
+
+    def _build_zoom_out_anim(self):
+        card = self
+        delta_x = self.size_hint[0] / 5
+        return Animation(size_hint=(card.size_hint[0] / ZOOM_SCALE_FACTOR,
+                                    card.size_hint[1] / ZOOM_SCALE_FACTOR),
+                         duration=0.25) & \
+               Animation(pos_hint={'x': card.pos_hint['x'] + delta_x,
+                                   'y': card.pos_hint['y']}, duration=0.25)
+
+    def _build_use_anim(self):
+        return Animation(pos_hint={'x': 900.0 / 2048.0,
+                                   'y': (1536.0 - 1000.0) / 1536.0},
+                         duration=0.5)
+
+    def _build_drop_anim(self):
+        x, y = self.pos_hint["x"], self.pos_hint["y"]
+        return Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+               Animation(opacity=0, duration=0.2)
+
+    def _build_deny_anim(self):
+        x, y = self.pos_hint["x"], self.pos_hint["y"]
+        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.025)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.05)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']}, duration=0.05)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']}, duration=0.025)
+        return anim
 
     def get_owner(self):
         return self.owner_id
@@ -61,67 +153,27 @@ class Card(Button):
             self.touch_moving = True
             return True
 
-    def on_touch_move(self, touch):
-        if self.touch_moving:
-            print("MOVE from {} touch {}".format(self.name, touch))
-            return True
-
     def on_touch_up(self, touch):
         if self.touch_moving:
             print("UP from {} touch {}".format(self.name, touch))
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
                 (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
-                self.counter_for_expand += 1
-                self.game.resize_card(self, self.counter_for_expand)                
+                pass
+                if self.zoomed_in:
+                    self.zoom_out()
+                else:
+                    if Card.current_zoomed_in_card:
+                        Card.current_zoomed_in_card.zoom_out()
+                    self.zoom_in()
             if touch.pos[1] - self.orig_pos[1] > 20:
-                print("CLICKED")
-                self.game.card_clicked(self)
+                self.use()
             if self.orig_pos[1] - touch.pos[1] > 20:
-                if self.game.card_dropped(self):
-                    print("DROPPED")
-                    self.drop_anim(False)
+                self.drop()
             self.touch_moving = False
             return True
 
-    def drop_anim(self, is_bot):
-        def on_complete(obj, widget):
-            self.game.remove_widget(self)
-        x, y = self.pos_hint["x"], self.pos_hint["y"]
-        if is_bot:
-            anim = Animation(duration=2.) + \
-                    Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
-                    Animation(opacity=0, duration=0.2)            
-        else:
-            anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
-                   Animation(opacity=0, duration=0.2)
-        anim.bind(on_complete=on_complete)
-        anim.start(self)
-        self.play_sound()
-
-    def on_drop(self):
-        print 'Card dropped'
-        self.drop_anim(True)
-        self.game.card_dropped(self)
-
-    def on_press(self):
-        self.game.card_clicked(self)
-
-    def move(self, is_bot):
-        if is_bot:
-            anim = Animation(duration=2.) + Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
-        else:
-            anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
-               #Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
-               #Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
-        anim.start(self)
-        self.play_sound()
-
-    def deny(self):
-        print 'Card deny playing'
-        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 30 / 2048.0, 'y': self.pos_hint['y']}, duration=0.1)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 30 / 2048.0, 'y': self.pos_hint['y']}, duration=0.1)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']}, duration=0.1)
-        anim.start(self)
+    def on_deny(self):
+        self._build_deny_anim().start(self)
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],

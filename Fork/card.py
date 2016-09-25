@@ -20,7 +20,9 @@ class Card(Button):
         self.actions = kwargs['actions']
         self.background = kwargs['background']
         self.background_normal = self.background
+        self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
+        self.counter_for_expand = 0
         self.touch_moving = False
         super(Card, self).__init__()
 
@@ -40,6 +42,7 @@ class Card(Button):
 
     def show(self):
         self.background_normal = self.image
+        self.background_down = self.image
 
     def hide(self):
         self.background_normal = self.background
@@ -50,6 +53,10 @@ class Card(Button):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
+    # def on_press(self):
+    #     #this counter don't trigger on time((
+    #     self.counter_for_expand += 1
+    #     self.game.resize_card(self, self.counter_for_expand)
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
@@ -160,5 +167,3 @@ class CardFabric(object):
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
     cards = CardFabric(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
-    #print cards.get_card(31, owner_id=0)
-    #print cards.get_card(31, owner_id=1)

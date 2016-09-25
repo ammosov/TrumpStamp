@@ -28,4 +28,5 @@ class Deck():
 
 
     def drop_card(self, card):
+    	# played cards should be in discard too
     	self.played.append(card)

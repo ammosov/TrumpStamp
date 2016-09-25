@@ -3,7 +3,8 @@ import os
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 class Hand():
-    POSITIONS_X = [34 / 2048.0, 302 / 2048.0, 570 / 2048.0, 838 / 2048.0, 1106 / 2048.0, 1374 / 2048.0]
+    POSITIONS_X = {0: [414 / 2048.0, 682 / 2048.0, 950 / 2048.0, 1218 / 2048.0, 1486 / 2048.0, 1754 / 2048.0], 
+    				1: [34 / 2048.0, 302 / 2048.0, 570 / 2048.0, 838 / 2048.0, 1106 / 2048.0, 1374 / 2048.0]}
     POSITIONS_Y = {0: (1536.0 - 1488.0) / 1536.0,
                    1: (1536.0 - 488.0) / 1536.0}
 
@@ -25,7 +26,7 @@ class Hand():
                 card.show()
             else:
                 card.hide()
-            card.pos_hint = {'x': self.POSITIONS_X[i],
+            card.pos_hint = {'x': self.POSITIONS_X[self.player.player_id][i],
                              'y': self.POSITIONS_Y[self.player.player_id]}
             card.render()
         print '---------------------------'

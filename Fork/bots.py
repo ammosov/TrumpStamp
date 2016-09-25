@@ -60,7 +60,7 @@ class DropBot(AbstractBot):
 class RandomDropBot(AbstractBot):
 
     def analysis(self, game_info):
-        return game_info['cards'][randint(0, 6)], TO_DROP
+        return game_info['cards'][randint(0, 5)], TO_DROP
 
 
 def getResourceName(color):
@@ -96,4 +96,4 @@ class RandomPressDrop(AbstractBot):
             random_index = available_cards_indexes[randint(0, len(available_cards_indexes)-1)]
             return game_info['cards'][random_index], TO_PRESS
 
-        return game_info['cards'][randint(0, 6)], TO_DROP
+        return game_info['cards'][randint(0, 5)], TO_DROP

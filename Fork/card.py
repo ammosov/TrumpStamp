@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 import pandas as pd
 import os
 import kwad
+import time
 
 
 class Card(Button):
@@ -53,11 +54,6 @@ class Card(Button):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
-    # def on_press(self):
-    #     #this counter don't trigger on time((
-    #     self.counter_for_expand += 1
-    #     self.game.resize_card(self, self.counter_for_expand)
-
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             print("DOWN from {} touch {}".format(self.name, touch))
@@ -92,7 +88,7 @@ class Card(Button):
             self.game.remove_widget(self)
         x, y = self.pos_hint["x"], self.pos_hint["y"]
         if is_bot:
-            anim = Animation(duration=3.) + \
+            anim = Animation(duration=2.) + \
                     Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
                     Animation(opacity=0, duration=0.2)            
         else:
@@ -104,12 +100,17 @@ class Card(Button):
 
     def on_drop(self):
         print 'Card dropped'
-        self.game.card_dropped(self)
         self.drop_anim(True)
+        self.game.card_dropped(self)
 
-    def move(self):
-        print 'Card move to the board'
-        anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+    def on_press(self):
+        self.game.card_clicked(self)
+
+    def move(self, is_bot):
+        if is_bot:
+            anim = Animation(duration=2.) + Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+        else:
+            anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
                #Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
                #Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
         anim.start(self)

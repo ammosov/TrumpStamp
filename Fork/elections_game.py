@@ -5,6 +5,7 @@ from kivy.uix.floatlayout import FloatLayout
 from card import CardFabric
 from kivy.animation import Animation
 from player import Player
+from bots import *
 
 kivy.require('1.7.2')
 
@@ -15,8 +16,10 @@ cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 
 class ElectionsGame(FloatLayout):
-    """This class represents the game. As a Kivy object it represents the game field and is a root for all other
-    objects. As a general class it stores all the stuff in the game.
+    """
+       This class represents the game.
+       As a Kivy object it represents the game field and is a root for all other
+       objects. As a general class it stores all the stuff in the game.
     """
     def __init__(self, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
@@ -31,10 +34,10 @@ class ElectionsGame(FloatLayout):
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database
         self.trump.late_init(
-            player_id=0, 
-            swing=round_db['t1'][round_id], 
-            partisans=round_db['t2'][round_id], 
-            news=round_db['t3'][round_id], 
+            player_id=0,
+            swing=round_db['t1'][round_id],
+            partisans=round_db['t2'][round_id],
+            news=round_db['t3'][round_id],
             hype=round_db['t4'][round_id],
             cash=round_db['t5'][round_id],
             media=round_db['t6'][round_id],
@@ -42,10 +45,10 @@ class ElectionsGame(FloatLayout):
             money=round_db['t8'][round_id],
             card_fabric=self.card_fabric)
         self.hillary.late_init(
-            player_id=1, 
-            swing=round_db['h1'][round_id], 
-            partisans=round_db['h2'][round_id], 
-            news=round_db['h3'][round_id], 
+            player_id=1,
+            swing=round_db['h1'][round_id],
+            partisans=round_db['h2'][round_id],
+            news=round_db['h3'][round_id],
             hype=round_db['h4'][round_id],
             cash=round_db['h5'][round_id],
             media=round_db['h6'][round_id],
@@ -62,7 +65,7 @@ class ElectionsGame(FloatLayout):
         else:
             self.trump.set_active(True)
             self.hillary.set_active(False)
-        
+
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
@@ -113,14 +116,11 @@ class ElectionsGame(FloatLayout):
         free_turn = False
         if player.get_active():
             print '\nBegin new turn'
-            print player.news, player.hype, player.cash
-            print opponent.news, opponent.hype, opponent.cash
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
                 return
-            else:
-                player.get_hand().pop_card(card)
-                card.move()
+            player.get_hand().pop_card(card)
+            card.move()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 if player.apply_card(*action):
@@ -134,20 +134,24 @@ class ElectionsGame(FloatLayout):
 
             if not free_turn:
                 player.set_active(False)
+
+            player.get_hand().refill()
+
+            if not free_turn:
                 opponent.set_active(True)
                 opponent.update_resources()
-    
-            player.get_hand().refill()
+
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
         else:
             print 'Its not your turn!'
 
     def card_dropped(self, card):
+        print 'dropped:', card
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():
-            #card.amination()
+            # card.amination()
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
             opponent.set_active(True)
@@ -168,5 +172,3 @@ class ElectionsGame(FloatLayout):
                 anim = Animation(size_hint=(card.size_hint[0] * 1.0 / x, card.size_hint[1] * 1.0 / x), duration=0.5) +\
                     Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
             anim.start(card) 
-
-

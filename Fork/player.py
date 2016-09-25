@@ -36,7 +36,7 @@ class Player(Widget):
 
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
-                        6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'], 
+                        6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],
                         10: ['media', 'mojo', 'money']}
         self.active = False  # Active Player plays the next Card
         self.human = False  # Human player == True gets HID input, False = algorithm plays
@@ -70,7 +70,7 @@ class Player(Widget):
 
     def get_deck(self):
         return self.deck
-    
+
     def get_hand(self):
         return self.hand
 
@@ -113,7 +113,7 @@ class Player(Widget):
         else:
             for res in self.ACTIONS[type]:
                 #TODO
-                # check with -value, it's seem it doesn't work(( 
+                # check with -value, it's seem it doesn't work((
                 old_value = self.property(res).get(self)
                 min_value = self.property(res).get_min(self)
                 #print self.player_id, res, type, value, old_value, min_value

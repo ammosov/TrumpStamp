@@ -1,30 +1,30 @@
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
 import pandas as pd
 import os
-import kwad
 
 
 class Card(Button):
     def __init__(self, **kwargs):
-        self.game = kwargs['game']
-        self.card_id = kwargs['id']
-        self.owner_id = kwargs['owner_id']
+        self.card_id = kwargs.pop('id')
         self.description = kwargs['description']
         self.name = kwargs['title']
-        self.image = kwargs['image_path']
         self.cost_color = kwargs['cost_color']
         self.cost_value = kwargs['cost_value']
+        super(Card, self).__init__(**kwargs)
+        self.game = kwargs['game']
+        self.owner_id = kwargs['owner_id']
         self.actions = kwargs['actions']
+        self.image = kwargs['image_path']
         self.background = kwargs['background']
+        self.counter_for_expand = 0
+        self.touch_moving = False
+
         self.background_normal = self.background
         self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
-        self.counter_for_expand = 0
-        self.touch_moving = False
-        super(Card, self).__init__()
+
 
     def __repr__(self):
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
@@ -39,13 +39,13 @@ class Card(Button):
             print("Render {}".format(self.name))
             self.game.add_widget(self)
 
-
     def show(self):
         self.background_normal = self.image
         self.background_down = self.image
 
     def hide(self):
         self.background_normal = self.background
+        self.background_down = self.background
 
     def get_owner(self):
         return self.owner_id

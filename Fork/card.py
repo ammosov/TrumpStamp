@@ -54,6 +54,10 @@ class Card(Button, Widget):
         print 'Card dropped'
         self.game.card_dropped(self)
 
+    def on_drop(self):
+        print 'Card dropped'
+        self.game.card_dropped(self)
+
     def move(self):
         print 'Card move to the board'
         anim = Animation(pos_hint={'x': 1000.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5) + \

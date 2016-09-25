@@ -18,7 +18,9 @@ class Hand():
                 self.cards[i] = None
 
     def render_cards(self):
+        print self.player
         for i, card in enumerate(self.cards):
+            print card
             if self.player.active:
                 card.show()
             else:
@@ -26,8 +28,12 @@ class Hand():
             card.pos_hint = {'x': self.POSITIONS_X[i],
                              'y': self.POSITIONS_Y[self.player.player_id]}
             card.render()
+        print '---------------------------'
 
     def refill(self):
+        print self.player, 'REFILLED'
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
-                self.cards[i] = self.deck.pop_card()
+                new_card  = self.deck.pop_card()
+                print 'new_card', new_card
+                self.cards[i] = new_card#self.deck.pop_card()

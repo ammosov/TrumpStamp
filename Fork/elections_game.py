@@ -4,6 +4,7 @@ import os
 from kivy.uix.floatlayout import FloatLayout
 from card import CardFabric
 from player import Player
+from bots import *
 
 kivy.require('1.7.2')
 
@@ -112,14 +113,11 @@ class ElectionsGame(FloatLayout):
         free_turn = False
         if player.get_active():
             print '\nBegin new turn'
-            print player.news, player.hype, player.cash
-            print opponent.news, opponent.hype, opponent.cash
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
                 return
-            else:
-                player.get_hand().pop_card(card)
-                card.move()
+            player.get_hand().pop_card(card)
+            card.move()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 if player.apply_card(*action):
@@ -133,10 +131,13 @@ class ElectionsGame(FloatLayout):
 
             if not free_turn:
                 player.set_active(False)
+
+            player.get_hand().refill()
+
+            if not free_turn:
                 opponent.set_active(True)
                 opponent.update_resources()
-    
-            player.get_hand().refill()
+                
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             # self.trump.get_hand().set_playables()
@@ -145,6 +146,7 @@ class ElectionsGame(FloatLayout):
             print 'Its not your turn!'
 
     def card_dropped(self, card):
+        print 'dropped:', card
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():

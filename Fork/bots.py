@@ -1,16 +1,24 @@
 from player import Player
 from random import randint
+from kivy.logger import Logger
 
 TO_PRESS = 228
 TO_DROP = 265
 
 class AbstractBot(Player):
 
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         pass
 
-    def set_active(self):
-        super(AbstractBot, self).__init__()
+
+
+    def set_active(self, active):
+        print 'bot set active called with ', active
+        self.active = active
+        if not self.active:
+            return
+        Logger.info('bot set active')
+        Logger.info(str(self.player_name))
         game_info = {
             'partisans' : self.partisans,
             'swing' : self.swing,
@@ -42,12 +50,12 @@ class AbstractBot(Player):
 
 class DrobBot(AbstractBot):
 
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         return game_info['cards'][0], TO_DROP
 
 class RandomDropBot(AbstractBot):
 
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         return game_info['cards'][randint(0, 6)], TO_DROP
 
 def getResourceName(color):
@@ -66,7 +74,7 @@ class RandomPressDrop(AbstractBot):
     some random card with label TO_DROP
     '''
     
-    def Analysis(self, game_info):
+    def analysis(self, game_info):
         available_cards_indexes = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]

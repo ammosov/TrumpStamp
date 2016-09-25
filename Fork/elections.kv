@@ -5,11 +5,11 @@
 
 <Card>:
     border: [0,0,0,0]
-    size_hint: (250.0/2048.0), (350.0/1536.0)
+    size_hint: 0.125, 0.23
 
 <Player>:
     border: [0,0,0,0]
-    size_hint: (250.0/2048.0), (350.0/1536.0)
+    size_hint: 0.125, 0.23
 
 <ElectionsGame>:
     canvas:
@@ -20,29 +20,29 @@
             size: self.size
     Player:
         id: PlayerTrump
-        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        pos_hint: {'x':.2, 'y':0.03}
         background_normal: 'assets/cards/hillary/101.png'
 
     Player:
         id: PlayerHillary
-        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        pos_hint: {'x':.2, 'y':0.03}
         background_normal: 'assets/cards/hillary/101.png'
 
     Label:
         id: 'trump_part'
-        pos_hint: {'x': 679.0/2048.0, 'y': 426.0/1536.0}
-        size_hint: (50.0/2048.0), (50.0/1536.0)
+        pos_hint: {'x': 0.33, 'y': 0.28}
+        size_hint: 0.025, 0.033
         font_size: 24
         text: str(PlayerTrump.partisans)
     Label:
         id: 'trump_swing'
-        pos_hint: {'x':1417.0/2048.0, 'y':426.0/1536.0}
-        size_hint: (50.0/2048.0), (50.0/1536.0)
+        pos_hint: {'x':0.69, 'y':0.28}
+        size_hint: 0.025, 0.033
         font_size: 24
         text: str(PlayerTrump.swing)
     Label:
         id: 'trump_news'
-        pos_hint: {'x': 370.0/2048.0, 'y': 814.0/1536.0}
+        pos_hint: {'x': 0.18, 'y': 0.53}
         size_hint: (50.0/2048.0), (50.0/1536.0)
         font_size: 18
         text: str(PlayerTrump.news)

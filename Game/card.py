@@ -25,6 +25,7 @@ class Card(Button):
         self.sound = SoundLoader.load(kwargs['sound'])
         self.counter_for_expand = 0
         self.touch_moving = False
+        self.size = [self.size_hint[0], self.size_hint[1]]
         super(Card, self).__init__()
 
     def __repr__(self):
@@ -108,9 +109,11 @@ class Card(Button):
 
     def move(self, is_bot):
         if is_bot:
-            anim = Animation(duration=2.) + Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+            anim = Animation(duration=2.) + \
+                   Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5) 
         else:
-            anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+            anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5) & \
+                   Animation(size_hint=(self.size[0], self.size[1]), duration=0.5)
                #Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
                #Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
         anim.start(self)

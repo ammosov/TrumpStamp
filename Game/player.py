@@ -4,8 +4,8 @@ from deck import Deck
 from hand import Hand
 import time
 
-PLAYERS = {0: 'PlayerTrump',
-           1: 'PlayerHillary'}
+PLAYERS = {0: 'trump_player',
+           1: 'hillary_player'}
 
 
 class Player(Widget):

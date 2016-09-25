@@ -80,10 +80,6 @@ class ElectionsGame(FloatLayout):
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
 
-    def play_game(self):
-        while not self.declare_victory():
-            self.turn_if_selected()
-
     def end_game(self):
         """Sets both Players to active=False to prevent playing further cards"""
         self.trump.set_active(False)
@@ -123,6 +119,7 @@ class ElectionsGame(FloatLayout):
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
+            player.get_deck().drop_card(card) #even played card should be in discard 
             if player.is_bot():
                 card.show()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
@@ -136,12 +133,16 @@ class ElectionsGame(FloatLayout):
                 self.end_game()
                 return True
 
-            if not free_turn:
+            if free_turn:
+                player.set_active(True)
+            else:
                 player.set_active(False)
 
             player.get_hand().refill()
 
-            if not free_turn:
+            if free_turn:
+                opponent.set_active(False)
+            else:    
                 opponent.update_resources()
                 opponent.set_active(True)
 

@@ -136,6 +136,8 @@ class RandomPressDrop(AbstractBot):
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
             cost_color, cost_value = card.get_cost()
+            if cost_value == 99:
+                return game_info['cards'][card_index], TO_DROP
             if cost_color == 0:
                 available_cards_indexes.append(card_index)
                 continue

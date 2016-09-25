@@ -27,7 +27,7 @@ class ElectionsGame(FloatLayout):
         super(ElectionsGame, self).__init__(**kwargs)
         round_id = 0
         self.trump = self.ids['trump_player']
-        self.hillary = RandomPressDrop(self.ids['hillary_player'])
+        self.hillary = RandomPressBot(self.ids['hillary_player'])
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
         self.card_fabric = CardFabric(self, cards_csv)

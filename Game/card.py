@@ -67,7 +67,8 @@ class Card(Button):
         if self.game.card_clicked(self):
             self.bring_to_front()
             print("USE")
-            self.zoom_out()
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
             self._build_use_anim().start(self)
             self.play_sound()
         else:
@@ -75,7 +76,8 @@ class Card(Button):
 
     def drop(self):
         if self.game.card_dropped(self):
-            self.zoom_out()
+            if Card.current_zoomed_in_card is not None:
+                Card.current_zoomed_in_card.zoom_out()
             anim = self._build_drop_anim()
             anim.bind(on_complete=self.delete)
             anim.start(self)

@@ -75,12 +75,15 @@ class Card(Button):
             print("UP from {} touch {}".format(self.name, touch))
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
                 (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
+                self.counter_for_expand += 1
+                self.game.resize_card(self, self.counter_for_expand)                
+            if touch.pos[1] - self.orig_pos[1] > 20:
                 print("Clicked")
                 self.game.card_clicked(self)
             if self.orig_pos[1] - touch.pos[1] > 20:
-                print("Dropped")
-                self.drop_anim()
-                self.game.card_dropped(self)
+                if self.game.card_dropped(self):
+                    print("Dropped")
+                    self.drop_anim()
             self.touch_moving = False
             return True
 
@@ -100,11 +103,9 @@ class Card(Button):
 
     def move(self):
         print 'Card move to the board'
-        anim = Animation(pos_hint={'x': 1000.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0},
-                         duration=0.5) + \
-               Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
-               Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0},
-                         duration=0.5)
+        anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+               #Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
+               #Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
         anim.start(self)
         self.play_sound()
 

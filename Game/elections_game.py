@@ -54,7 +54,8 @@ class ElectionsGame(Screen):
             media=round_db['t6'][round_id],
             mojo=round_db['t7'][round_id],
             money=round_db['t8'][round_id],
-            card_fabric=self.card_fabric)
+            card_fabric=self.card_fabric,
+            is_bot=False if bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
             swing=round_db['h1'][round_id],
@@ -65,7 +66,8 @@ class ElectionsGame(Screen):
             media=round_db['h6'][round_id],
             mojo=round_db['h7'][round_id],
             money=round_db['h8'][round_id],
-            card_fabric=self.card_fabric)
+            card_fabric=self.card_fabric,
+            is_bot=False if bot_name == 'hillary' else True)
 
         if bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
@@ -74,13 +76,6 @@ class ElectionsGame(Screen):
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
-
-        if round_db['turn'][round_id]:
-            self.trump.set_active(False)
-            self.hillary.set_active(True)
-        else:
-            self.trump.set_active(True)
-            self.hillary.set_active(False)
 
         # shuffle Decks
         self.trump.get_deck().shuffle()
@@ -91,6 +86,13 @@ class ElectionsGame(Screen):
         self.trump.get_hand().render_cards()
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
+
+        if round_db['turn'][round_id]:
+            self.trump.set_active(False)
+            self.hillary.set_active(True)
+        else:
+            self.trump.set_active(True)
+            self.hillary.set_active(False)
 
 
     def end_game(self):

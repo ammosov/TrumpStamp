@@ -1,18 +1,69 @@
 from player import Player
 from random import randint
 from kivy.logger import Logger
-import time
 
 TO_PRESS = 228
 TO_DROP = 265
 
 
 class AbstractBot(Player):
+    def __init__(self, *args, **kwargs):
+        super(AbstractBot, self).__init__(**kwargs)
+
+    def set_updaters(self, *args):
+        if len(args) and isinstance(args[0], dict) and isinstance(args[1], str):
+            player_id = args[1]
+            # player = args[0][player_id]
+            # print player_id, player
+            # mapping = {'partisans': self.partisans,
+            #            'swing': self.swing,
+            #            'news': self.news,
+            #            'hype': self.hype,
+            #            'media': self.media,
+            #            'mojo': self.mojo,
+            #            'money': self.money,
+            #            'cash': self.cash}
+            # for key, prop in mapping.items():
+            #     def updater(instance, value):
+            #         args[0][player_id.replace('player','') + key].text = str(prop)
+            #     updater(None, None)
+            #     self.bind(**{key: prop})
+            # BIND DOESN'T WORK INSIDE LOOPS. FUCK THIS FRAMEWORK!!!
+            def upd_partisans(instance, value):
+                args[0][player_id.replace('player', '') + 'partisans'].text = str(self.partisans)
+            upd_partisans(None, None)
+            self.bind(partisans=upd_partisans)
+            def upd_swing(instance, value):
+                args[0][player_id.replace('player', '') + 'swing'].text = str(self.swing)
+            upd_swing(None, None)
+            self.bind(swing=upd_swing)
+            def upd_news(instance, value):
+                args[0][player_id.replace('player', '') + 'news'].text = str(self.news)
+            upd_news(None, None)
+            self.bind(news=upd_news)
+            def upd_hype(instance, value):
+                args[0][player_id.replace('player', '') + 'hype'].text = str(self.hype)
+            upd_hype(None, None)
+            self.bind(hype=upd_hype)
+            def upd_media(instance, value):
+                args[0][player_id.replace('player', '') + 'media'].text = str(self.media)
+            upd_media(None, None)
+            self.bind(media=upd_media)
+            def upd_cash(instance, value):
+                args[0][player_id.replace('player','') + 'cash'].text = str(self.cash)
+            upd_cash(None, None)
+            self.bind(cash=upd_cash)
+            def upd_mojo(instance, value):
+                args[0][player_id.replace('player','') + 'mojo'].text = str(self.mojo)
+            upd_mojo(None, None)
+            self.bind(mojo=upd_mojo)
+            def upd_money(instance, value):
+                args[0][player_id.replace('player', '') + 'money'].text = str(self.money)
+            upd_money(None, None)
+            self.bind(money=upd_money)
 
     def analysis(self, game_info):
         pass
-
-
 
     def set_active(self, active):
         print 'bot set active called with ', active

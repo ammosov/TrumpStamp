@@ -2,6 +2,8 @@ import kivy
 import pandas as pd
 import os
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+
 from card import CardFabric
 from kivy.animation import Animation
 from player import Player
@@ -24,8 +26,8 @@ class ElectionsGame(FloatLayout):
     def __init__(self, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
         round_id = 0
-        self.trump = self.ids['PlayerTrump']
-        self.hillary = self.ids['PlayerHillary']
+        self.trump = self.ids['trump_player']
+        self.hillary = RandomPressDrop(self.ids['hillary_player'])
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
         self.card_fabric = CardFabric(self, cards_csv)
@@ -55,6 +57,8 @@ class ElectionsGame(FloatLayout):
             mojo=round_db['h7'][round_id],
             money=round_db['h8'][round_id],
             card_fabric=self.card_fabric)
+
+        self.hillary.set_updaters(self.ids, 'hillary_player')
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)

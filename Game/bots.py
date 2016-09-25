@@ -123,6 +123,7 @@ def getResourceName(color):
         return 'hype'
 
 
+
 class RandomPressBot(AbstractBot):
 
     '''

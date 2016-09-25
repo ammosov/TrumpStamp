@@ -118,6 +118,10 @@ class Card(Button):
 
     def deny(self):
         print 'Card deny playing'
+        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 30 / 2048.0, 'y': self.pos_hint['y']}, duration=0.1)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 30 / 2048.0, 'y': self.pos_hint['y']}, duration=0.1)
+        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']}, duration=0.1)
+        anim.start(self)
 
     def get_actions(self):  # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],

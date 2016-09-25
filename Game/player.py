@@ -29,6 +29,9 @@ class Player(Widget):
     def late_init(self, **kwargs):
         self.player_id = kwargs.pop('player_id')
         self.card_fabric = kwargs.pop('card_fabric')
+        is_bot = kwargs.pop('is_bot')
+        self.human = False if is_bot else True
+        self.bot = True if is_bot else False
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
@@ -40,8 +43,6 @@ class Player(Widget):
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],
                         10: ['media', 'mojo', 'money']}
         self.active = False
-        self.human = False if self.player_id == 1 else True  # Should be changed after choosing mod
-        self.bot = True if self.player_id == 1 else False
         self.winner = None
 
         self.deck = Deck(self, self.card_fabric)
@@ -73,6 +74,9 @@ class Player(Widget):
 
     def get_voters(self):
         return self.partisans
+
+    def play(self):
+        pass
 
     def pay_for_card(self, card_color, card_value):
         if card_color:

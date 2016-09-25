@@ -72,6 +72,11 @@ class AbstractBot(Player):
             return
         Logger.info('bot set active')
         Logger.info(str(self.player_name))
+
+    def play(self):
+        if not self.active:
+            return
+        print ("CARDS: ", self.hand.cards)
         game_info = {
             'partisans': self.partisans,
             'swing': self.swing,

@@ -63,7 +63,8 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['t6'],
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
-            card_fabric=self.card_fabric)
+            card_fabric=self.card_fabric,
+            is_bot=False if bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
             swing=round_db[round_id]['h1'],
@@ -74,7 +75,8 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['h6'],
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
-            card_fabric=self.card_fabric)
+            card_fabric=self.card_fabric,
+            is_bot=True if bot_name == 'hillary' else True)
 
         if bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
@@ -100,6 +102,11 @@ class ElectionsGame(Screen):
         self.trump.get_hand().render_cards()
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
+
+        if round_db[round_id]['turn'] and bot_name == 'hillary':
+            self.hillary.play()
+        elif not round_db[round_id]['turn'] and bot_name == 'trump':
+            self.trump.play()
 
     def end_game(self):
         """Sets both Players to active=False to prevent playing further cards"""
@@ -156,6 +163,8 @@ class ElectionsGame(Screen):
 
             if free_turn:
                 player.set_active(True)
+                if player.is_bot():
+                    player.play()
             else:
                 player.set_active(False)
 
@@ -166,7 +175,8 @@ class ElectionsGame(Screen):
             else:
                 opponent.update_resources()
                 opponent.set_active(True)
-
+                if opponent.is_bot():
+                    opponent.play()
             opponent.get_hand().render_cards()
             player.get_hand().render_cards()
 
@@ -188,6 +198,8 @@ class ElectionsGame(Screen):
             opponent.update_resources()
             # opponent.get_hand().refill()
             opponent.set_active(True)
+            if opponent.is_bot():
+                opponent.play()
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             return True

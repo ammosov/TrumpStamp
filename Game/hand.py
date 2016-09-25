@@ -18,12 +18,13 @@ class Hand():
         for i in xrange(len(self.cards)):
             if self.cards[i] == popped_card:
                 self.cards[i] = None
-
+    """
     def render_cards(self):
         for i, card in enumerate(self.cards):
             card.pos_hint = {'x': self.POSITIONS_X[self.player.player_id][i],
                              'y': self.POSITIONS_Y[self.player.player_id]}
             card.render()
+    """
 
     def render_cards(self):
         for i, card in enumerate(self.cards):

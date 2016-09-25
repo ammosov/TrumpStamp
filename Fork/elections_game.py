@@ -3,7 +3,9 @@ import pandas as pd
 import os
 from kivy.uix.floatlayout import FloatLayout
 from card import CardFabric
+from kivy.animation import Animation
 from player import Player
+from bots import *
 
 kivy.require('1.7.2')
 
@@ -114,14 +116,11 @@ class ElectionsGame(FloatLayout):
         free_turn = False
         if player.get_active():
             print '\nBegin new turn'
-            print player.news, player.hype, player.cash
-            print opponent.news, opponent.hype, opponent.cash
             if not player.pay_for_card(*card.get_cost()):
                 card.deny()
                 return
-            else:
-                player.get_hand().pop_card(card)
-                card.move()
+            player.get_hand().pop_card(card)
+            card.move()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 if player.apply_card(*action):
@@ -135,27 +134,48 @@ class ElectionsGame(FloatLayout):
 
             if not free_turn:
                 player.set_active(False)
-                opponent.set_active(True)
-                opponent.update_resources()
 
             player.get_hand().refill()
+
+            if not free_turn:
+                opponent.update_resources()
+                opponent.set_active(True)
+
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
-            # self.trump.get_hand().set_playables()
-            # self.hillary.get_hand().set_playables()
         else:
             print 'Its not your turn!'
 
     def card_dropped(self, card):
+
+        print 'dropped:', card
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():
-            # card.amination()
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
-            opponent.set_active(True)
             player.set_active(False)
             player.get_hand().refill()
+            opponent.update_resources()
+            opponent.set_active(True)
+            #opponent.get_hand().refill()
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
-            opponent.update_resources()
+            return True
+        return False
+    
+    def resize_card(self, card, counter):
+        x = 1.5
+        print card.pos
+        if self.PLAYERS[card.get_owner()].get_active():
+            if counter % 2 :
+                anim = Animation(size_hint=(card.size_hint[0] * x, card.size_hint[1] * x), duration=0.5)
+                anim &= Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+                #anim += Animation(z_index=100, duration=0.5)
+                    #Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+            else :
+                anim = Animation(size_hint=(card.size_hint[0] * 1.0 / x, card.size_hint[1] * 1.0 / x), duration=0.5)
+                anim &= Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+                #anim += Animation(z_index=1, duration=0.5)
+                    #Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
+            anim.start(card) 

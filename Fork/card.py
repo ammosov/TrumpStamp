@@ -20,7 +20,9 @@ class Card(Button):
         self.actions = kwargs['actions']
         self.background = kwargs['background']
         self.background_normal = self.background
+        self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
+        self.counter_for_expand = 0
         self.touch_moving = False
         super(Card, self).__init__()
 
@@ -40,6 +42,7 @@ class Card(Button):
 
     def show(self):
         self.background_normal = self.image
+        self.background_down = self.image
 
     def hide(self):
         self.background_normal = self.background
@@ -50,6 +53,10 @@ class Card(Button):
     def get_cost(self):
         return self.cost_color, self.cost_value
 
+    # def on_press(self):
+    #     #this counter don't trigger on time((
+    #     self.counter_for_expand += 1
+    #     self.game.resize_card(self, self.counter_for_expand)
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
@@ -68,32 +75,43 @@ class Card(Button):
             print("UP from {} touch {}".format(self.name, touch))
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
                 (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
-                print("Clicked")
+                self.counter_for_expand += 1
+                self.game.resize_card(self, self.counter_for_expand)                
+            if touch.pos[1] - self.orig_pos[1] > 20:
+                print("CLICKED")
                 self.game.card_clicked(self)
             if self.orig_pos[1] - touch.pos[1] > 20:
-                print("Dropped")
-                self.drop_anim()
-                self.game.card_dropped(self)
+                if self.game.card_dropped(self):
+                    print("DROPPED")
+                    self.drop_anim(False)
             self.touch_moving = False
             return True
 
-    def drop_anim(self):
+    def drop_anim(self, is_bot):
         def on_complete(obj, widget):
             self.game.remove_widget(self)
         x, y = self.pos_hint["x"], self.pos_hint["y"]
-        anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
-               Animation(opacity=0, duration=0.2)
+        if is_bot:
+            anim = Animation(duration=3.) + \
+                    Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+                    Animation(opacity=0, duration=0.2)            
+        else:
+            anim = Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) + \
+                   Animation(opacity=0, duration=0.2)
         anim.bind(on_complete=on_complete)
         anim.start(self)
         self.play_sound()
 
+    def on_drop(self):
+        print 'Card dropped'
+        self.game.card_dropped(self)
+        self.drop_anim(True)
+
     def move(self):
         print 'Card move to the board'
-        anim = Animation(pos_hint={'x': 1000.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0},
-                         duration=0.5) + \
-               Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
-               Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0},
-                         duration=0.5)
+        anim = Animation(pos_hint={'x': 900.0 / 2048.0, 'y': (1536.0 - 1000.0) / 1536.0}, duration=0.5)
+               #Animation(size_hint=(300.0 / 2048.0, self.size_hint[1]), duration=0.5) & \
+               #Animation(pos_hint={'x': 1125.0 / 2048.0, 'y': (1536.0 - 888.0) / 1536.0}, duration=0.5)
         anim.start(self)
         self.play_sound()
 
@@ -156,5 +174,3 @@ class CardFabric(object):
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
     cards = CardFabric(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
-    #print cards.get_card(31, owner_id=0)
-    #print cards.get_card(31, owner_id=1)

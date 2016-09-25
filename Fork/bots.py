@@ -1,5 +1,7 @@
 from player import Player
 from random import randint
+from kivy.logger import Logger
+import time
 
 TO_PRESS = 228
 TO_DROP = 265
@@ -10,8 +12,13 @@ class AbstractBot(Player):
     def analysis(self, game_info):
         pass
 
-    def set_active(self, active_value=True):
-        super(AbstractBot, self).__init__()
+    def set_active(self, active):
+        print 'bot set active called with ', active
+        self.active = active
+        if not self.active:
+            return
+        Logger.info('bot set active')
+        Logger.info(str(self.player_name))
         game_info = {
             'partisans': self.partisans,
             'swing': self.swing,
@@ -42,7 +49,7 @@ class AbstractBot(Player):
             card.on_drop()
 
 
-class DrobBot(AbstractBot):
+class DropBot(AbstractBot):
 
     def analysis(self, game_info):
         return game_info['cards'][0], TO_DROP

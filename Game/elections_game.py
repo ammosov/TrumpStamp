@@ -166,21 +166,3 @@ class ElectionsGame(FloatLayout):
             opponent.get_hand().render_cards()
             return True
         return False
-
-"""
-    def resize_card(self, card, counter):
-        x = 2
-        print card.pos
-        if self.PLAYERS[card.get_owner()].get_active():
-            if counter % 2 :
-                anim = Animation(size_hint=(card.size_hint[0] * x, card.size_hint[1] * x), duration=0.5)
-                anim &= Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-                #anim += Animation(z_index=100, duration=0.5)
-                    #Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-            else :
-                anim = Animation(size_hint=(card.size_hint[0] * 1.0 / x, card.size_hint[1] * 1.0 / x), duration=0.5)
-                anim &= Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-                #anim += Animation(z_index=1, duration=0.5)
-                    #Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-            anim.start(card)
-"""

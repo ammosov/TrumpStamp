@@ -30,11 +30,8 @@ class Card(Button):
         self.background_down = self.background
         self.sound = SoundLoader.load(kwargs['sound'])
         self.touch_moving = False
-<<<<<<< HEAD
         self.size = [self.size_hint[0], self.size_hint[1]]
-=======
         self.zoomed_in = False
->>>>>>> fa0a257cfa0f2000190c1a25efe8d7b40d53ca9c
         super(Card, self).__init__()
 
     def __repr__(self):

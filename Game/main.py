@@ -15,8 +15,7 @@ class ElectionsApp(App):
 
     def build(self):
         sm = ScreenManager()
-        sm.add_widget(StartScreen(sm, name=self.start_screen_name))
-        sm.add_widget(ElectionsGame(name=self.game_screen_name))
+        start_screen = StartScreen(sm, name=self.start_screen_name)
         return sm
 
 

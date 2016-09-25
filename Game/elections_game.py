@@ -2,6 +2,8 @@ import kivy
 import pandas as pd
 import os
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+
 from card import CardFabric
 from kivy.animation import Animation
 from player import Player
@@ -24,13 +26,20 @@ class ElectionsGame(Screen):
     """
     def __init__(self, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
+        self.card_fabric = CardFabric(self, cards_csv)
+
+    def set_bot(self, bot_name):
         round_id = 0
-        #self.player_name = player_name
-        self.trump = self.ids['PlayerTrump']
-        self.hillary = self.ids['PlayerHillary']
+        if bot_name == 'trump':
+            self.trump = RandomPressBot(self.ids['trump_player'])
+            self.hillary = self.ids['hillary_player']
+        elif bot_name == 'hillary':
+            self.hillary = RandomPressBot(self.ids['hillary_player'])
+            self.trump = self.ids['trump_player']
+
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
-        self.card_fabric = CardFabric(self, cards_csv)
+        #self.card_fabric = CardFabric(self, cards_csv)
         round_db = pd.DataFrame(pd.read_csv(round_csv))
         self.victory = {'destr': round_db['destr'][round_id], 'res': round_db['res'][round_id]}
         # CREATE PLAYERS
@@ -58,6 +67,11 @@ class ElectionsGame(Screen):
             money=round_db['h8'][round_id],
             card_fabric=self.card_fabric)
 
+        if bot_name == 'trump':
+            self.trump.set_updaters(self.ids, 'trump_player')
+        elif bot_name == 'hillary':
+            self.hillary.set_updaters(self.ids, 'hillary_player')
+
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
@@ -77,8 +91,6 @@ class ElectionsGame(Screen):
         self.trump.get_hand().render_cards()
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
-
-
 
 
     def end_game(self):
@@ -118,10 +130,11 @@ class ElectionsGame(Screen):
         if player.get_active():
             print '\nBegin new turn'
             if not player.pay_for_card(*card.get_cost()):
-                card.deny()
-                return
+                return False
             player.get_hand().pop_card(card)
-            card.move()
+            player.get_deck().drop_card(card) #even played card should be in discard 
+            if player.is_bot():
+                card.show()
             actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
             for action in actions['player']:
                 if player.apply_card(*action):
@@ -131,21 +144,28 @@ class ElectionsGame(Screen):
 
             if self.declare_victory():
                 self.end_game()
-                return
+                return True
 
-            if not free_turn:
+            if free_turn:
+                player.set_active(True)
+            else:
                 player.set_active(False)
 
             player.get_hand().refill()
 
-            if not free_turn:
+            if free_turn:
+                opponent.set_active(False)
+            else:    
                 opponent.update_resources()
                 opponent.set_active(True)
 
-            player.get_hand().render_cards()
             opponent.get_hand().render_cards()
+            player.get_hand().render_cards()
+            
+            return True
         else:
             print 'Its not your turn!'
+            return False
 
     def card_dropped(self, card):
 
@@ -158,25 +178,9 @@ class ElectionsGame(Screen):
             player.set_active(False)
             player.get_hand().refill()
             opponent.update_resources()
-            opponent.set_active(True)
             #opponent.get_hand().refill()
+            opponent.set_active(True)
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             return True
         return False
-    
-    def resize_card(self, card, counter):
-        x = 1.5
-        print card.pos
-        if self.PLAYERS[card.get_owner()].get_active():
-            if counter % 2 :
-                anim = Animation(size_hint=(card.size_hint[0] * x, card.size_hint[1] * x), duration=0.5)
-                anim &= Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-                #anim += Animation(z_index=100, duration=0.5)
-                    #Animation(pos_hint={'x': card.pos_hint['x'] - 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-            else :
-                anim = Animation(size_hint=(card.size_hint[0] * 1.0 / x, card.size_hint[1] * 1.0 / x), duration=0.5)
-                anim &= Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-                #anim += Animation(z_index=1, duration=0.5)
-                    #Animation(pos_hint={'x': card.pos_hint['x'] + 200 / 2048.0, 'y': card.pos_hint['y']}, duration=0.5)
-            anim.start(card) 

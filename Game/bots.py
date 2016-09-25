@@ -123,7 +123,7 @@ def getResourceName(color):
         return 'hype'
 
 
-class RandomPressDrop(AbstractBot):
+class RandomPressBot(AbstractBot):
 
     '''
     available_cards_indexes -- numbers of cards in this.hand.cards, which we can use.

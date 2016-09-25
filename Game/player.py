@@ -2,6 +2,7 @@ from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
 from hand import Hand
+import time
 
 PLAYERS = {0: 'PlayerTrump',
            1: 'PlayerHillary'}
@@ -38,32 +39,25 @@ class Player(Widget):
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],
                         10: ['media', 'mojo', 'money']}
-        self.active = False  # Active Player plays the next Card
-        self.human = False  # Human player == True gets HID input, False = algorithm plays
+        self.active = False 
+        self.human = False if self.player_id == 1 else True  #########################################Should be changed after choosing mod!!!!!
+        self.bot = True if self.player_id == 1 else False
         self.winner = None
 
         self.deck = Deck(self, self.card_fabric)
         self.hand = Hand(self.deck)
 
     def set_opponent(self, opponent):
-        """Sets opponents at once for Player and all his objects"""
         self.opponent = opponent
-        #self.deck.set_opponent(self.opponent)
-        #self.hand.set_opponent(self.opponent)
 
     def set_active(self, active):
         self.active = active
-        # TODO
-        # bot should do turn here
-        # innleg_play ():
-        #       self.opponent_swing
-                #self.hand.get_cards()
-                #card = Analysis
-                #card.on_press()
-
 
     def get_active(self):
         return self.active
+
+    def is_bot(self):
+        return self.bot
 
     def set_winner(self, winner):
         self.winner = winner
@@ -98,7 +92,7 @@ class Player(Widget):
                     return False
         return True
 
-    def apply_card(self, type, value):
+    def apply_card(self, type, value): # return True if after applying this card the turn doesn't change
         if type == 0:
             if value > 0:
                 self.swing += value

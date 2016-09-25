@@ -97,9 +97,9 @@ class AbstractBot(Player):
         card, action = self.analysis(game_info)  # this function gives card and action, which we have to use on it
 
         if action == TO_PRESS:
-            card.on_press()
+            card.use()
         elif action == TO_DROP:
-            card.on_drop()
+            card.drop()
 
 
 class DropBot(AbstractBot):
@@ -111,7 +111,7 @@ class DropBot(AbstractBot):
 class RandomDropBot(AbstractBot):
 
     def analysis(self, game_info):
-        return game_info['cards'][randint(0, 6)], TO_DROP
+        return game_info['cards'][randint(0, 5)], TO_DROP
 
 
 def getResourceName(color):
@@ -147,4 +147,4 @@ class RandomPressDrop(AbstractBot):
             random_index = available_cards_indexes[randint(0, len(available_cards_indexes)-1)]
             return game_info['cards'][random_index], TO_PRESS
 
-        return game_info['cards'][randint(0, 6)], TO_DROP
+        return game_info['cards'][randint(0, 5)], TO_DROP

@@ -1,0 +1,141 @@
+#: kivy 1.7.2
+#: import Animation kivy.animation.Animation
+#: import time time
+#: import SoundLoader kivy.core.audio.SoundLoader
+
+<Card>:
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+
+<Player>:
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+
+<ElectionsGame>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/main_field.png'
+            size: self.size
+    Player:
+        id: PlayerTrump
+        pos_hint: {'x':.2, 'y':0.03}
+        background_normal: 'assets/cards/hillary/101.png'
+
+    DropBot:
+        id: PlayerHillary
+        pos_hint: {'x':.2, 'y':0.03}
+        background_normal: 'assets/cards/hillary/101.png'
+
+    Label:
+        id: 'trump_part'
+        pos_hint: {'x': 0.33, 'y': 0.28}
+        size_hint: 0.025, 0.033
+        font_size: 24
+        text: str(PlayerTrump.partisans)
+    Label:
+        id: 'trump_swing'
+        pos_hint: {'x':0.69, 'y':0.28}
+        size_hint: 0.025, 0.033
+        font_size: 24
+        text: str(PlayerTrump.swing)
+    Label:
+        id: 'trump_news'
+        pos_hint: {'x': 0.18, 'y': 0.53}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.news)
+    Label:
+        id: 'trump_hype'
+        pos_hint: {'x':370.0/2048.0, 'y':689.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.hype)
+    Label:
+        id: 'trump_cash'
+        pos_hint: {'x':370.0/2048.0, 'y':564.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.cash)
+    Label:
+        id: 'trump_media'
+        pos_hint: {'x': 95.0/2048.0, 'y': 814.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.media)
+    Label:
+        id: 'trump_mojo'
+        pos_hint: {'x':95.0/2048.0, 'y':689.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.mojo)
+    Label:
+        id: 'trump_money'
+        pos_hint: {'x':95.0/2048.0, 'y':564.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.money)
+    Label:
+        id: 'hillary_part'
+        pos_hint: {'x':289.0/2048.0, 'y':956.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerHillary.partisans)
+    Label:
+        id: 'hillary_swing'
+        pos_hint: {'x':1032.0/2048.0, 'y':956.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerHillary.swing)
+    Label:
+        id: 'hillary_news'
+        pos_hint: {'x': 1790.0/2048.0, 'y': 814.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.news)
+        # text: str('nw')
+    Label:
+        id: 'hillary_hype'
+        pos_hint: {'x':1790.0/2048.0, 'y':689.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.hype)
+    Label:
+        id: 'hillary_cash'
+        pos_hint: {'x':1790.0/2048.0, 'y':564.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.cash)
+    Label:
+        id: 'hillary_media'
+        pos_hint: {'x': 1515.0/2048.0, 'y': 814.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.media)
+    Label:
+        id: 'hillary_mojo'
+        pos_hint: {'x':1515.0/2048.0, 'y':689.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.mojo)
+    Label:
+        id: 'hillary_money'
+        pos_hint: {'x':1515.0/2048.0, 'y':564.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.money)
+
+#    Label:
+#        pos_hint: {'x':720.0/2048.0, 'y':(1536.0-1085.0)/1536.0}
+#        size_hint: (50.0/2048.0), (50.0/1536.0)
+#        size_hint: 1, 1
+#        font_size: 50
+#        text: str(root.scoreTrump)
+#        text: str( 1 )
+#    Label:
+#        pos_hint: {'x':325.0/2048.0, 'y':(1536.0-570.0)/1536.0}
+#        size_hint: (50.0/2048.0), (50.0/1536.0)
+#        font_size: 50
+#        text: str(root.scoreHillary)
+#        text: str( 2 )

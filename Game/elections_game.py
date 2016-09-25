@@ -5,6 +5,7 @@ from kivy.uix.floatlayout import FloatLayout
 from card import CardFabric
 from kivy.animation import Animation
 from player import Player
+from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
 
 kivy.require('1.7.2')
@@ -15,7 +16,7 @@ round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 
-class ElectionsGame(FloatLayout):
+class ElectionsGame(Screen):
     """
        This class represents the game.
        As a Kivy object it represents the game field and is a root for all other
@@ -24,6 +25,7 @@ class ElectionsGame(FloatLayout):
     def __init__(self, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
         round_id = 0
+        #self.player_name = player_name
         self.trump = self.ids['PlayerTrump']
         self.hillary = self.ids['PlayerHillary']
         self.PLAYERS = {0: self.trump,
@@ -76,9 +78,8 @@ class ElectionsGame(FloatLayout):
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
 
-    def play_game(self):
-        while not self.declare_victory():
-            self.turn_if_selected()
+
+
 
     def end_game(self):
         """Sets both Players to active=False to prevent playing further cards"""

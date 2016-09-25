@@ -95,3 +95,5 @@ class RandomPressDrop(AbstractBot):
             return game_info['cards'][random_index], TO_PRESS
 
         return game_info['cards'][randint(0, 6)], TO_DROP
+
+

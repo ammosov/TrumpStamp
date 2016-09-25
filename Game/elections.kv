@@ -1,7 +1,29 @@
-#: kivy 1.7.2
+ #: kivy 1.7.2
 #: import Animation kivy.animation.Animation
 #: import time time
 #: import SoundLoader kivy.core.audio.SoundLoader
+
+
+<Icon>:
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+    on_press: app.root.current = "electionsgame"
+
+<StartScreen>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/green.png'
+            size: self.size
+    Icon:
+        id: IconTrump
+        #on_press: app.game_screen
+
+    Icon:
+        id: IconHillary
+        pos_hint: {'x':.2, 'y':0.03}
+        background_normal: 'assets/Hillary.png'
 
 <Card>:
     border: [0,0,0,0]

@@ -1,0 +1,9 @@
+# Python
+*.py[cod]
+__pycache__
+
+# MacOS
+.DS_Store
+
+# PyCharm
+.idea

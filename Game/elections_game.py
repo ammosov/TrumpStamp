@@ -10,6 +10,7 @@ from kivy.animation import Animation
 from player import Player
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
+from end_screen import EndScreen
 
 kivy.require('1.7.2')
 
@@ -108,10 +109,12 @@ class ElectionsGame(Screen):
         elif not round_db[round_id]['turn'] and bot_name == 'trump':
             self.trump.play()
 
-    def end_game(self):
+    def end_game(self, winner_name):
         """Sets both Players to active=False to prevent playing further cards"""
         self.trump.set_active(False)
         self.hillary.set_active(False)
+
+        end_screen = EndScreen(sm, winner_name)
         print 'END GAME'
 
     def declare_victory(self):
@@ -125,12 +128,12 @@ class ElectionsGame(Screen):
             if self.hillary.get_voters() <= 0:
                 self.trump.set_winner(True)
                 print 'Trump won'
-                return True
+                return 'Trump'
             # if Hillary wins
             elif self.trump.get_voters() <= 0:
                 self.hillary.set_winner(True)
                 print 'Hillary won'
-                return True
+                return 'Hillary'
             # No winner yet
             else:
                 # print 'No winner yet'
@@ -158,7 +161,7 @@ class ElectionsGame(Screen):
                 opponent.apply_card(*action)
 
             if self.declare_victory():
-                self.end_game()
+                self.end_game(self.declare_victory())
                 return True
 
             if free_turn:

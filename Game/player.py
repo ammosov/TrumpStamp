@@ -9,14 +9,14 @@ PLAYERS = {0: 'trump_player',
 
 
 class Player(Widget):
-    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    partisans = BoundedNumericProperty(0, min=0, rebind=True)
     swing = BoundedNumericProperty(0, min=0)
-    media = BoundedNumericProperty(1, min=1, max=100)
-    news = BoundedNumericProperty(1, min=0, max=300)
-    mojo = BoundedNumericProperty(1, min=1, max=100)
-    hype = BoundedNumericProperty(1, min=0, max=300)
-    money = BoundedNumericProperty(1, min=1, max=100)
-    cash = BoundedNumericProperty(1, min=0, max=300)
+    media = BoundedNumericProperty(1, min=1)
+    news = BoundedNumericProperty(1, min=0)
+    mojo = BoundedNumericProperty(1, min=1)
+    hype = BoundedNumericProperty(1, min=0)
+    money = BoundedNumericProperty(1, min=1)
+    cash = BoundedNumericProperty(1, min=0)
 
     cards_actions = ListProperty([])
 
@@ -35,7 +35,6 @@ class Player(Widget):
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
-            print prop_name, value
             self.property(prop_name).set(self, value)
 
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}

@@ -28,6 +28,10 @@ class Hand():
 
     def render_cards(self):
         for i, card in enumerate(self.cards):
+
+            if card is None:
+                continue
+
             if self.player.active:
                 card.show()
             else:
@@ -40,5 +44,4 @@ class Hand():
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
                 new_card  = self.deck.pop_card()
-                print 'new_card', new_card
                 self.cards[i] = new_card

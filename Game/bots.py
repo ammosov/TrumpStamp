@@ -66,7 +66,6 @@ class AbstractBot(Player):
         pass
 
     def set_active(self, active):
-        print 'bot set active called with ', active
         self.active = active
         if not self.active:
             return
@@ -76,7 +75,6 @@ class AbstractBot(Player):
     def play(self):
         if not self.active:
             return
-        print ("CARDS: ", self.hand.cards)
         game_info = {
             'partisans': self.partisans,
             'swing': self.swing,
@@ -141,6 +139,10 @@ class RandomPressBot(AbstractBot):
         available_cards_indices = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
+
+            if card is None:
+                continue
+
             cost_color, cost_value = card.get_cost()
             if cost_value == 99:
                 return game_info['cards'][card_index], TO_DROP

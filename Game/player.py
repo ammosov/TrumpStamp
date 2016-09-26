@@ -2,20 +2,21 @@ from kivy.properties import BoundedNumericProperty, ListProperty
 from kivy.uix.widget import Widget
 from deck import Deck
 from hand import Hand
+import time
 
-PLAYERS = {0: 'PlayerTrump',
-           1: 'PlayerHillary'}
+PLAYERS = {0: 'trump_player',
+           1: 'hillary_player'}
 
 
 class Player(Widget):
-    partisans = BoundedNumericProperty(0, min=0, max=125, rebind=True)
+    partisans = BoundedNumericProperty(0, min=0, rebind=True)
     swing = BoundedNumericProperty(0, min=0)
-    media = BoundedNumericProperty(1, min=1, max=100)
-    news = BoundedNumericProperty(1, min=0, max=300)
-    mojo = BoundedNumericProperty(1, min=1, max=100)
-    hype = BoundedNumericProperty(1, min=0, max=300)
-    money = BoundedNumericProperty(1, min=1, max=100)
-    cash = BoundedNumericProperty(1, min=0, max=300)
+    media = BoundedNumericProperty(1, min=1)
+    news = BoundedNumericProperty(1, min=0)
+    mojo = BoundedNumericProperty(1, min=1)
+    hype = BoundedNumericProperty(1, min=0)
+    money = BoundedNumericProperty(1, min=1)
+    cash = BoundedNumericProperty(1, min=0)
 
     cards_actions = ListProperty([])
 
@@ -28,42 +29,35 @@ class Player(Widget):
     def late_init(self, **kwargs):
         self.player_id = kwargs.pop('player_id')
         self.card_fabric = kwargs.pop('card_fabric')
+        is_bot = kwargs.pop('is_bot')
+        self.human = False if is_bot else True
+        self.bot = True if is_bot else False
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
-            print prop_name, value
             self.property(prop_name).set(self, value)
 
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],
                         10: ['media', 'mojo', 'money']}
-        self.active = False  # Active Player plays the next Card
-        self.human = False  # Human player == True gets HID input, False = algorithm plays
+        self.active = False
         self.winner = None
 
         self.deck = Deck(self, self.card_fabric)
         self.hand = Hand(self.deck)
 
     def set_opponent(self, opponent):
-        """Sets opponents at once for Player and all his objects"""
         self.opponent = opponent
-        #self.deck.set_opponent(self.opponent)
-        #self.hand.set_opponent(self.opponent)
 
     def set_active(self, active):
         self.active = active
-        # TODO
-        # bot should do turn here
-        # innleg_play ():
-        #       self.opponent_swing
-                #self.hand.get_cards()
-                #card = Analysis
-                #card.on_press()
-
 
     def get_active(self):
         return self.active
+
+    def is_bot(self):
+        return self.bot
 
     def set_winner(self, winner):
         self.winner = winner
@@ -79,6 +73,9 @@ class Player(Widget):
 
     def get_voters(self):
         return self.partisans
+
+    def play(self):
+        pass
 
     def pay_for_card(self, card_color, card_value):
         if card_color:
@@ -98,7 +95,7 @@ class Player(Widget):
                     return False
         return True
 
-    def apply_card(self, type, value):
+    def apply_card(self, type, value): # return True if after applying this card the turn doesn't change
         if type == 0:
             if value > 0:
                 self.swing += value

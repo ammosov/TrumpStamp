@@ -25,6 +25,6 @@ class ElectionsApp(App):
 
 if __name__ == '__main__':
     kwad.attach()
-    if platform not in ('linux', 'windows', 'macosx'):
+    if platform in ('android', 'ios'):
         Window.rotation = -90
     ElectionsApp().run()

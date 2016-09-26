@@ -66,7 +66,6 @@ class AbstractBot(Player):
         pass
 
     def set_active(self, active):
-        print 'bot set active called with ', active
         self.active = active
         if not self.active:
             return
@@ -76,7 +75,6 @@ class AbstractBot(Player):
     def play(self):
         if not self.active:
             return
-        print ("CARDS: ", self.hand.cards)
         game_info = {
             'partisans': self.partisans,
             'swing': self.swing,

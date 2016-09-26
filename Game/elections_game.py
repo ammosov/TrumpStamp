@@ -76,7 +76,7 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
             card_fabric=self.card_fabric,
-            is_bot=True if bot_name == 'hillary' else True)
+            is_bot=False if bot_name == 'trump' else True)
 
         if bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
@@ -187,7 +187,6 @@ class ElectionsGame(Screen):
 
     def card_dropped(self, card):
 
-        print 'dropped:', card
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():

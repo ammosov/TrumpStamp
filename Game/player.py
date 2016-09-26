@@ -35,7 +35,6 @@ class Player(Widget):
         self.player_name = PLAYERS[self.player_id]
         self.stats = kwargs
         for prop_name, value in self.stats.items():
-            print prop_name, value
             self.property(prop_name).set(self, value)
 
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}

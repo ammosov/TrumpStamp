@@ -40,5 +40,4 @@ class Hand():
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
                 new_card  = self.deck.pop_card()
-                print 'new_card', new_card
                 self.cards[i] = new_card

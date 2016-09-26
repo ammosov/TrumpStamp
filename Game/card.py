@@ -5,7 +5,7 @@ import csv
 import os
 
 ZOOM_SCALE_FACTOR = 1.5
-
+DELAY_TIME = 0.5
 
 class Card(Button):
     # Workaround, need to use Deck instead
@@ -32,6 +32,7 @@ class Card(Button):
         self.touch_moving = False
         self.size = [self.size_hint[0], self.size_hint[1]]
         self.zoomed_in = False
+        self.is_bot = self.game.PLAYERS[self.owner_id].is_bot()
         super(Card, self).__init__()
 
     def __repr__(self):
@@ -45,7 +46,6 @@ class Card(Button):
 
     def render(self):
         if not self.parent:
-            print("Render {}".format(self.name))
             self.game.add_widget(self)
 
     def delete(self, *args, **kwargs):
@@ -66,11 +66,14 @@ class Card(Button):
 
     def use(self):
         if self.game.card_clicked(self):
-            self.bring_to_front()
-            print("USE")
+            if self.is_bot:
+                anim = (Animation(d=DELAY_TIME) + self._build_use_anim())
+            else:
+                self.bring_to_front()
+                anim = self._build_use_anim()
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()
-            self._build_use_anim().start(self)
+            anim.start(self)
             self.play_sound()
         else:
             self.on_deny()
@@ -79,7 +82,10 @@ class Card(Button):
         if self.game.card_dropped(self):
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()
-            anim = self._build_drop_anim()
+            if self.is_bot:
+                anim = Animation(d=DELAY_TIME) + self._build_drop_anim()
+            else:
+                anim = self._build_drop_anim()
             anim.bind(on_complete=self.delete)
             anim.start(self)
             self.play_sound()
@@ -124,17 +130,25 @@ class Card(Button):
                                     'y': card.pos_hint['y']}, duration=0.25))
 
     def _build_use_anim(self):
-        return Animation(pos_hint={'x': 900.0 / 2048.0,
-                                   'y': (1536.0 - 1000.0) / 1536.0},
+        if self.owner_id:
+            x_pos = 720.0
+        else:
+            x_pos = 1070.0
+        y_pos = 536.0
+        return Animation(pos_hint={'x': x_pos / 2048.0,
+                                   'y':  y_pos / 1536.0},
                          duration=0.5)
 
     def _build_drop_anim(self):
         x, y = self.pos_hint["x"], self.pos_hint["y"]
-        return (Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) +
+        if self.owner_id:
+            return (Animation(pos_hint={"x": x, "y": y + 0.1}, duration=0.2) +
+                Animation(opacity=0, duration=0.2))
+        else:
+            return (Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) +
                 Animation(opacity=0, duration=0.2))
 
     def _build_deny_anim(self):
-        # x, y = self.pos_hint["x"], self.pos_hint["y"]
         anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
                          duration=0.025)
         anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']},
@@ -153,14 +167,12 @@ class Card(Button):
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
-            print("DOWN from {} touch {}".format(self.name, touch))
             self.orig_pos = touch.pos
             self.touch_moving = True
             return True
 
     def on_touch_up(self, touch):
         if self.touch_moving:
-            print("UP from {} touch {}".format(self.name, touch))
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
                     (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
                 pass
@@ -171,9 +183,15 @@ class Card(Button):
                         Card.current_zoomed_in_card.zoom_out()
                     self.zoom_in()
             if touch.pos[1] - self.orig_pos[1] > 20:
-                self.use()
+                if self.owner_id:
+                    self.drop()
+                else:    
+                    self.use()
             if self.orig_pos[1] - touch.pos[1] > 20:
-                self.drop()
+                if self.owner_id:
+                    self.use()
+                else:
+                    self.drop()
             self.touch_moving = False
             return True
 
@@ -181,7 +199,7 @@ class Card(Button):
         self._build_deny_anim().start(self)
 
     def get_actions(self):
-        # {'player': [(type, value), (type, value)], 'opponent': [(type, value)]}
+        # {'player': [(type, value)], 'opponent': [(type, value)]}
         actions = {'player': [],
                    'opponent': []}
         for action in self.actions:
@@ -219,7 +237,6 @@ class CardFabric(object):
 
     def get_card(self, card_id, owner_id):
         card_data = dict(self.db[card_id - 1])
-        print(card_data)
         card_data['owner_id'] = owner_id
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:

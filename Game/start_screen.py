@@ -41,7 +41,7 @@ class StartScreen(Screen):
         self.icon_hillary = self.ids['IconHillary']
         self.icons = [self.icon_trump, self.icon_hillary]
 
-        self.game = ElectionsGame(name="electionsgame")
+        self.game = ElectionsGame(sm, name="electionsgame")
         self.sm = sm
         sm.add_widget(self)
         sm.add_widget(self.game)

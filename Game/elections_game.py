@@ -26,18 +26,21 @@ class ElectionsGame(Screen):
        As a Kivy object it represents the game field and is a root for all other
        objects. As a general class it stores all the stuff in the game.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, sm, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
         self.card_fabric = CardFabric(self, cards_csv)
+        self.sm = sm
 
     def set_bot(self, bot_name):
         round_id = 0
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
             self.hillary = self.ids['hillary_player']
+            #self.hillary = RandomPressBot(self.ids['hillary_player'])
         elif bot_name == 'hillary':
             self.hillary = RandomPressBot(self.ids['hillary_player'])
             self.trump = self.ids['trump_player']
+            #self.trump = RandomPressBot(self.ids['trump_player'])
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
@@ -113,8 +116,9 @@ class ElectionsGame(Screen):
         """Sets both Players to active=False to prevent playing further cards"""
         self.trump.set_active(False)
         self.hillary.set_active(False)
-
-        end_screen = EndScreen(sm, winner_name)
+        end_screen = EndScreen(winner_name, name='endscreen')
+        self.sm.add_widget(end_screen)
+        self.sm.current = 'endscreen'
         print 'END GAME'
 
     def declare_victory(self):
@@ -147,6 +151,8 @@ class ElectionsGame(Screen):
         free_turn = False
         if player.get_active():
             print '\nBegin new turn'
+            print card.description
+
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
@@ -198,7 +204,6 @@ class ElectionsGame(Screen):
             player.set_active(False)
             player.get_hand().refill()
             opponent.update_resources()
-            # opponent.get_hand().refill()
             opponent.set_active(True)
             if opponent.is_bot():
                 opponent.play()

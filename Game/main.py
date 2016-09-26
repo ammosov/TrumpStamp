@@ -15,6 +15,7 @@ Config.set('kivy', 'log_level', 'debug')
 
 class ElectionsApp(App):
     start_screen_name = "startscreen"
+    end_screen_name = "endscreen"
     game_screen_name = "electionsgame"
 
     def build(self):

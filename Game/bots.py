@@ -139,6 +139,10 @@ class RandomPressBot(AbstractBot):
         available_cards_indices = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
+
+            if card is None:
+                continue
+
             cost_color, cost_value = card.get_cost()
             if cost_value == 99:
                 return game_info['cards'][card_index], TO_DROP

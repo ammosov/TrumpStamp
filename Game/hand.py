@@ -28,10 +28,6 @@ class Hand():
 
     def render_cards(self):
         for i, card in enumerate(self.cards):
-
-            if card is None:
-                continue
-
             if self.player.active:
                 card.show()
             else:

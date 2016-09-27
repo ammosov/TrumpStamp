@@ -66,10 +66,10 @@ class Card(Button):
 
     def use(self):
         if self.game.card_clicked(self):
-            self.bring_to_front()
             if self.is_bot:
                 anim = (Animation(d=DELAY_TIME) + self._build_use_anim())
             else:
+                self.bring_to_front()
                 anim = self._build_use_anim()
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()

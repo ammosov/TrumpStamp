@@ -8,9 +8,9 @@ from kivy.uix.label import Label
 from card import CardFabric
 from kivy.animation import Animation
 from player import Player
+from end_screen import EndScreen
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
-from end_screen import EndScreen
 
 kivy.require('1.7.2')
 
@@ -36,11 +36,9 @@ class ElectionsGame(Screen):
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
             self.hillary = self.ids['hillary_player']
-            #self.hillary = RandomPressBot(self.ids['hillary_player'])
         elif bot_name == 'hillary':
             self.hillary = RandomPressBot(self.ids['hillary_player'])
             self.trump = self.ids['trump_player']
-            #self.trump = RandomPressBot(self.ids['trump_player'])
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
@@ -90,12 +88,20 @@ class ElectionsGame(Screen):
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        if round_db[round_id]['turn']:
+        # if round_db[round_id]['turn']:
+        #     self.trump.set_active(False)
+        #     self.hillary.set_active(True)
+        # else:
+        #     self.trump.set_active(True)
+        #     self.hillary.set_active(False)
+
+        if bot_name == 'trump':
             self.trump.set_active(False)
             self.hillary.set_active(True)
-        else:
+        elif bot_name == 'hillary':
             self.trump.set_active(True)
             self.hillary.set_active(False)
+
 
         # shuffle Decks
         self.trump.get_deck().shuffle()
@@ -121,6 +127,7 @@ class ElectionsGame(Screen):
         self.sm.current = 'endscreen'
         print 'END GAME'
 
+
     def declare_victory(self):
         """checks if victory is achieved
        !! Current problem - what if both players are hit with one card?"""
@@ -132,16 +139,16 @@ class ElectionsGame(Screen):
             if self.hillary.get_voters() <= 0:
                 self.trump.set_winner(True)
                 print 'Trump won'
-                return 'Trump'
+                return True, 'Trump'
             # if Hillary wins
             elif self.trump.get_voters() <= 0:
                 self.hillary.set_winner(True)
                 print 'Hillary won'
-                return 'Hillary'
+                return True, 'Hillary'
             # No winner yet
             else:
                 # print 'No winner yet'
-                return False
+                return False, None
         else:
             print 'No victory condition set!'
 
@@ -150,9 +157,7 @@ class ElectionsGame(Screen):
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
         if player.get_active():
-            print '\nBegin new turn'
-            print card.description
-
+            print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
@@ -166,28 +171,25 @@ class ElectionsGame(Screen):
             for action in actions['opponent']:
                 opponent.apply_card(*action)
 
-            if self.declare_victory():
-                self.end_game(self.declare_victory())
+            is_victory, winner = self.declare_victory()
+            if is_victory:
+                self.end_game(winner)
                 return True
 
             if free_turn:
-                player.set_active(True)
                 if player.is_bot():
-                    player.play()
+                    player.get_hand().refill()
+                    player.set_active(True)
+                else:
+                    player.get_hand().refill()
+                    player.get_hand().render_cards()
             else:
                 player.set_active(False)
-
-            player.get_hand().refill()
-
-            if free_turn:
-                opponent.set_active(False)
-            else:
                 opponent.update_resources()
+                player.get_hand().refill()
                 opponent.set_active(True)
-                if opponent.is_bot():
-                    opponent.play()
-            opponent.get_hand().render_cards()
-            player.get_hand().render_cards()
+                opponent.get_hand().render_cards()
+                player.get_hand().render_cards()
 
             return True
         else:
@@ -195,7 +197,6 @@ class ElectionsGame(Screen):
             return False
 
     def card_dropped(self, card):
-
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():

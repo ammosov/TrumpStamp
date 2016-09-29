@@ -97,7 +97,18 @@ class AbstractBot(Player):
             'opp_cards': self.opponent.hand.cards
         }
 
+        print ('################')
+        print ('opp cards:')
+        for card in game_info['opp_cards']:
+            print (card)
+        print ('----------------')
+        print ('bots cards:')
+        for card in game_info['cards']:
+            print (card)
+        print ('################')
         card, action = self.analysis(game_info)  # this function gives card and action, which we have to use on it
+
+        print ('bot made its choice')
 
         if action == TO_PRESS:
             card.use()

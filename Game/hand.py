@@ -4,10 +4,10 @@ from kivy.logger import Logger
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 class Hand():
-    POSITIONS_X = {0: [414 / 2048.0, 682 / 2048.0, 950 / 2048.0, 1218 / 2048.0, 1486 / 2048.0, 1754 / 2048.0], 
-    				1: [34 / 2048.0, 302 / 2048.0, 570 / 2048.0, 838 / 2048.0, 1106 / 2048.0, 1374 / 2048.0]}
+    POSITIONS_X = {0: list(map(lambda x: x / 2048.0, [522, 790, 1058, 1326, 1594, 1862])),
+    				1: list(map(lambda x: x / 2048.0, [182, 450, 718, 986, 1254, 1522]))}
     POSITIONS_Y = {0: (1536.0 - 1488.0) / 1536.0,
-                   1: (1536.0 - 500.0) / 1536.0}
+                   1: (1536.0 - 150.0) / 1536.0}
 
     def __init__(self, deck):
         self.deck = deck
@@ -32,8 +32,12 @@ class Hand():
                 card.show()
             else:
                 card.hide()
-            card.pos_hint = {'x': self.POSITIONS_X[self.player.player_id][i],
-                             'y': self.POSITIONS_Y[self.player.player_id]}
+            pos_hint = {'center_x': self.POSITIONS_X[self.player.player_id][i]}
+            if self.player.player_id == 1:
+                pos_hint['top'] = self.POSITIONS_Y[1]
+            else:
+                pos_hint['y'] = self.POSITIONS_Y[0]
+            card.pos_hint = pos_hint
             card.render()
 
     def refill(self):

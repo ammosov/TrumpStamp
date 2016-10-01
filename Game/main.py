@@ -24,6 +24,9 @@ class ElectionsApp(App):
         StartScreen(sm, name=self.start_screen_name)
         return sm
 
+    def on_pause(self):
+        """Handle suspend on android."""
+        return True
 
 if __name__ == '__main__':
     kwad.attach()

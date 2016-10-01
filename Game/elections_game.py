@@ -1,3 +1,4 @@
+"""Game logic module."""
 import kivy
 import os
 import csv
@@ -5,7 +6,7 @@ from collections import defaultdict
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 
-from card import CardFabric
+from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 from end_screen import EndScreen
@@ -23,15 +24,19 @@ cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 class ElectionsGame(Screen):
     """
        This class represents the game.
-       As a Kivy object it represents the game field and is a root for all other
-       objects. As a general class it stores all the stuff in the game.
+
+    As a Kivy object it represents the game field and is a root for all other
+    objects. As a general class it stores all the stuff in the game.
     """
+
     def __init__(self, sm, **kwargs):
+        """Init game."""
         super(ElectionsGame, self).__init__(**kwargs)
-        self.card_fabric = CardFabric(self, cards_csv)
+        self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
 
     def set_bot(self, bot_name):
+        """Set bot player."""
         round_id = 0
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
@@ -42,7 +47,7 @@ class ElectionsGame(Screen):
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
-        # self.card_fabric = CardFabric(self, cards_csv)
+        # self.card_factory = CardFactory(self, cards_csv)
 
         round_db = []
         with open(round_csv) as round_file:
@@ -65,7 +70,7 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['t6'],
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
-            card_fabric=self.card_fabric,
+            card_factory=self.card_factory,
             is_bot=False if bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
@@ -77,7 +82,7 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['h6'],
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
-            card_fabric=self.card_fabric,
+            card_factory=self.card_factory,
             is_bot=False if bot_name == 'trump' else True)
 
         if bot_name == 'trump':
@@ -101,8 +106,6 @@ class ElectionsGame(Screen):
         elif bot_name == 'hillary':
             self.trump.set_active(True)
             self.hillary.set_active(False)
-
-
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
@@ -119,7 +122,7 @@ class ElectionsGame(Screen):
             self.trump.play()
 
     def end_game(self, winner_name):
-        """Sets both Players to active=False to prevent playing further cards"""
+        """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
         end_screen = EndScreen(winner_name, name='endscreen')
@@ -127,10 +130,11 @@ class ElectionsGame(Screen):
         self.sm.current = 'endscreen'
         print 'END GAME'
 
-
     def declare_victory(self):
-        """checks if victory is achieved
-       !! Current problem - what if both players are hit with one card?"""
+        """Check if victory is achieved.
+
+        !! Current problem - what if both players are hit with one card?
+        """
         #
         # Use any() function + 2 dictionaries of victory that are updated from card turn
         #
@@ -153,10 +157,11 @@ class ElectionsGame(Screen):
             print 'No victory condition set!'
 
     def card_clicked(self, card):
+        """Card click callback."""
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
-        if player.get_active():
+        if player.get_active() and player.hand.card_in_hand(card):
             print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
             if not player.pay_for_card(*card.get_cost()):
                 return False
@@ -197,9 +202,10 @@ class ElectionsGame(Screen):
             return False
 
     def card_dropped(self, card):
+        """Card drop callback."""
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
-        if player.get_active():
+        if player.get_active() and player.hand.card_in_hand(card):
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
             player.set_active(False)

@@ -1,5 +1,7 @@
+"""Card module."""
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
 from kivy.uix.button import Button
 import csv
 import os
@@ -7,48 +9,63 @@ import os
 ZOOM_SCALE_FACTOR = 1.5
 DELAY_TIME = 0.5
 
+
 class Card(Button):
+    """Card class.
+
+    Represents card.
+    """
+
     # Workaround, need to use Deck instead
     current_zoomed_in_card = None
 
     def __init__(self, **kwargs):
+        """Set card attributes."""
         self.card_id = kwargs.pop('id')
-        self.description = kwargs['description']
-        self.name = kwargs['title']
-        self.cost_color = kwargs['cost_color']
-        self.cost_value = kwargs['cost_value']
+        self.description = kwargs.pop('description')
+        self.name = kwargs.pop('title')
+        self.cost_color = kwargs.pop('cost_color')
+        self.cost_value = kwargs.pop('cost_value')
+        self.game = kwargs.pop('game')
+        self.owner_id = kwargs.pop('owner_id')
+        self.actions = kwargs.pop('actions')
+        self.image = kwargs.pop('image_path')
+        self.background = kwargs.pop('background')
+        self.sound = SoundLoader.load(kwargs.pop('sound'))
         super(Card, self).__init__(**kwargs)
-        self.game = kwargs['game']
-        self.owner_id = kwargs['owner_id']
-        self.actions = kwargs['actions']
-        self.image = kwargs['image_path']
-        self.background = kwargs['background']
-        self.counter_for_expand = 0
-        self.touch_moving = False
 
         self.background_normal = self.background
         self.background_down = self.background
-        self.sound = SoundLoader.load(kwargs['sound'])
+        self.counter_for_expand = 0
+        self.touch_moving = False
         self.touch_moving = False
         self.size = [self.size_hint[0], self.size_hint[1]]
+        # Zoom animation parameters
+        self.normal_size = (self.size_hint[0], self.size_hint[1])
+        self.zoomed_size = (ZOOM_SCALE_FACTOR * self.normal_size[0],
+                            ZOOM_SCALE_FACTOR * self.normal_size[1])
+        # end zoom animation parameters
         self.zoomed_in = False
         self.is_bot = self.game.PLAYERS[self.owner_id].is_bot()
-        super(Card, self).__init__()
 
     def __repr__(self):
+        """String representation of the card."""
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
                                                self.cost_color, self.cost_value,
                                                self.description)
 
     def __eq__(self, other):
+        """Check equality."""
         return (isinstance(other, Card) and other.card_id == self.card_id and
                 other.owner_id == self.owner_id)
 
     def render(self):
+        """Render card."""
         if not self.parent:
             self.game.add_widget(self)
 
     def delete(self, *args, **kwargs):
+        """Remove card from the screen."""
         if self.parent:
             self.game.remove_widget(self)
 
@@ -65,8 +82,9 @@ class Card(Button):
         self.background_down = self.background
 
     def use(self):
-        print ('this card was selected to USE on this turn')
-        print (self)
+        """Perform usage animation."""
+        print('this card was selected to USE on this turn')
+        print(self)
         if self.game.card_clicked(self):
             self.bring_to_front()
             if self.is_bot:
@@ -81,8 +99,9 @@ class Card(Button):
             self.on_deny()
 
     def drop(self):
-        print ('this card was selected to DROP on this turn')
-        print (self)
+        """Perform drop animation."""
+        print('this card was selected to DROP on this turn')
+        print(self)
         if self.game.card_dropped(self):
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()
@@ -90,13 +109,14 @@ class Card(Button):
                 anim = Animation(d=DELAY_TIME) + self._build_drop_anim()
             else:
                 anim = self._build_drop_anim()
-            anim.bind(on_complete=self.delete)
+            # anim.bind(on_complete=self.delete)
             anim.start(self)
             self.play_sound()
         else:
             self.on_deny()
 
     def zoom_in(self):
+        """Perform zoom in animation."""
         if not self.zoomed_in:
             self.bring_to_front()
             self._build_zoom_in_anim().start(self)
@@ -107,6 +127,7 @@ class Card(Button):
             return False
 
     def zoom_out(self):
+        """Perform zoom out animation."""
         if self.zoomed_in:
             self._build_zoom_out_anim().start(self)
             Card.current_zoomed_in_card = None
@@ -116,57 +137,104 @@ class Card(Button):
             return False
 
     def _build_zoom_in_anim(self):
+        """Build zoom in animation object."""
         card = self
-        delta_x = self.size_hint[0] * ZOOM_SCALE_FACTOR / 5
-        return (Animation(size_hint=(card.size_hint[0] * ZOOM_SCALE_FACTOR,
-                                     card.size_hint[1] * ZOOM_SCALE_FACTOR),
-                          duration=0.25) &
-                Animation(pos_hint={'x': card.pos_hint['x'] - delta_x,
-                          'y': card.pos_hint['y']}, duration=0.25))
+        delta_x = self.zoomed_size[0] / 5
+        return (Animation(size_hint=self.zoomed_size,
+                          duration=0.25))
 
     def _build_zoom_out_anim(self):
+        """Build zoom out animation object."""
         card = self
-        delta_x = self.size_hint[0] / 5
-        return (Animation(size_hint=(card.size_hint[0] / ZOOM_SCALE_FACTOR,
-                                     card.size_hint[1] / ZOOM_SCALE_FACTOR),
-                          duration=0.25) &
-                Animation(pos_hint={'x': card.pos_hint['x'] + delta_x,
-                                    'y': card.pos_hint['y']}, duration=0.25))
+        delta_x = self.zoomed_size[0] / 5
+        return (Animation(size_hint=self.normal_size,
+                          duration=0.25))
 
     def _build_use_anim(self):
+        """Build usage animation object."""
+        x_key, x_val = self.get_x_key_val()
+        y_key, y_val = self.get_y_key_val()
+        if x_key == "x":
+            x_val += self.size_hint[0] / 2
+        if x_key == "right":
+            x_val -= self.size_hint[0] / 2
+        if y_key == "y":
+            y_val += self.size_hint[1] / 2
+        if y_key == "top":
+            y_val -= self.size_hint[1] / 2
+        self.pos_hint = {
+            "center_x": x_val,
+            "center_y": y_val
+        }
         if self.owner_id:
-            x_pos = 720.0
+            x_pos = 848.0
         else:
-            x_pos = 1070.0
-        y_pos = 536.0
-        return Animation(pos_hint={'x': x_pos / 2048.0,
-                                   'y':  y_pos / 1536.0},
+            x_pos = 1198.0
+        y_pos = 728.0
+        return Animation(pos_hint={'center_x': x_pos / 2048.0,
+                                   'center_y':  y_pos / 1536.0},
                          duration=0.5)
 
     def _build_drop_anim(self):
-        x, y = self.pos_hint["x"], self.pos_hint["y"]
+        """Build drop animation object."""
+        y_key, y_val = self.get_y_key_val()
         if self.owner_id:
-            return (Animation(pos_hint={"x": x, "y": y + 0.1}, duration=0.2) +
-                Animation(opacity=0, duration=0.2))
+            return (Animation(pos_hint={y_key: y_val + 0.1}, duration=0.2) +
+                    Animation(opacity=0, duration=0.2))
         else:
-            return (Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) +
-                Animation(opacity=0, duration=0.2))
+            return (Animation(pos_hint={y_key: y_val - 0.1}, duration=0.2) +
+                    Animation(opacity=0, duration=0.2))
 
     def _build_deny_anim(self):
-        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+        """Build 'deny playing' animation object."""
+        x_key, x_val = self.get_x_key_val()
+        anim = Animation(pos_hint={x_key: x_val + 15 / 2048.0},
                          duration=0.025)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val - 15 / 2048.0},
                           duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val + 15 / 2048.0},
                           duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val},
                           duration=0.025)
         return anim
 
+    def get_x_key_val(self):
+        possible_keys = ["x", "center_x", "right"]
+        key_values = []
+        for key, val in self.pos_hint.items():
+            if key in possible_keys:
+                key_values.append((key, val))
+        if len(key_values) == 1:
+            return key_values[0]
+        elif len(key_values) == 0:
+            raise RuntimeError("No information about x in pos_hint")
+        else:
+            raise RuntimeError("Ambiguous information\
+about x in pos_hint, possible key_value pairs: {}".format(key_values))
+
+    def get_y_key_val(self):
+        possible_keys = ["y", "center_y", "top"]
+        key_values = []
+        for key, val in self.pos_hint.items():
+            if key in possible_keys:
+                key_values.append((key, val))
+        if len(key_values) == 1:
+            return key_values[0]
+        elif len(key_values) == 0:
+            raise RuntimeError("No information about y in pos_hint")
+        else:
+            raise RuntimeError("Ambiguous information\
+about y in pos_hint, possible key_value pairs: {}".format(key_values))
+
     def get_owner(self):
+        """Get card owner id."""
         return self.owner_id
 
     def get_cost(self):
+        """Get card cost.
+
+        Returns resource color number and amount of resource needed to play card.
+        """
         return self.cost_color, self.cost_value
 
     def on_touch_down(self, touch):
@@ -178,7 +246,7 @@ class Card(Button):
     def on_touch_up(self, touch):
         if self.touch_moving:
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
-                    (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
+                    (touch.pos[1] - self.orig_pos[1]) ** 2) < 400:
                 pass
                 if self.zoomed_in:
                     self.zoom_out()
@@ -189,7 +257,7 @@ class Card(Button):
             if touch.pos[1] - self.orig_pos[1] > 20:
                 if self.owner_id:
                     self.drop()
-                else:    
+                else:
                     self.use()
             if self.orig_pos[1] - touch.pos[1] > 20:
                 if self.owner_id:
@@ -200,10 +268,15 @@ class Card(Button):
             return True
 
     def on_deny(self):
+        """Perform 'deny playing' animation."""
         self._build_deny_anim().start(self)
 
     def get_actions(self):
-        # {'player': [(type, value)], 'opponent': [(type, value)]}
+        """Get card actions.
+
+        Return a dictionary of card actions:
+        {'player': [(type, value)], 'opponent': [(type, value)]}
+        """
         actions = {'player': [],
                    'opponent': []}
         for action in self.actions:
@@ -221,11 +294,25 @@ class Card(Button):
         return actions
 
     def play_sound(self):
+        """Play sound."""
         self.sound.play()
 
+    def set_disabled(self):
+        """Make card to look disabled."""
+        # self.opacity = 0.5
+        self.background_color = (0.5, 0.5, 0.5, 1)
 
-class CardFabric(object):
+    def set_enabled(self):
+        """Reenable card."""
+        # self.opacity = 1
+        self.background_color = (1, 1, 1, 1)
+
+
+class CardFactory(object):
+    """Card factory class."""
+
     def __init__(self, game, card_db, images_path=None, sound_path=None, background_path=None):
+        """Init factory."""
         self.db = []
         with open(card_db) as card_file:
             reader = csv.DictReader(card_file)
@@ -240,6 +327,7 @@ class CardFabric(object):
         self.game = game
 
     def get_card(self, card_id, owner_id):
+        """Create card."""
         card_data = dict(self.db[card_id - 1])
         card_data['owner_id'] = owner_id
         card_data['description'] = card_data['description'].replace('*', '; ')
@@ -266,4 +354,4 @@ class CardFabric(object):
 
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-    cards = CardFabric(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
+    cards = CardFactory(None, os.path.join(SCRIPT_DIR, 'cards.csv'))

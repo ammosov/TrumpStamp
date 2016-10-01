@@ -92,7 +92,7 @@ class Player(Widget):
 
     def pay_for_card(self, card_color, card_value):
         """If possible pay for card."""
-        if card_color:
+        if card_color != 0 and card_color != 4:
             property = self.property(self.RESOURSES[card_color])
             property_value = property.get(self)
             if (property_value - card_value) >= 0:

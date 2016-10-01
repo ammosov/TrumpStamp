@@ -13,27 +13,31 @@ class Card(Button):
 
     def __init__(self, **kwargs):
         self.card_id = kwargs.pop('id')
-        self.description = kwargs['description']
-        self.name = kwargs['title']
-        self.cost_color = kwargs['cost_color']
-        self.cost_value = kwargs['cost_value']
+        self.description = kwargs.pop('description')
+        self.name = kwargs.pop('title')
+        self.cost_color = kwargs.pop('cost_color')
+        self.cost_value = kwargs.pop('cost_value')
+        self.game = kwargs.pop('game')
+        self.owner_id = kwargs.pop('owner_id')
+        self.actions = kwargs.pop('actions')
+        self.image = kwargs.pop('image_path')
+        self.background = kwargs.pop('background')
+        self.sound = SoundLoader.load(kwargs.pop('sound'))
         super(Card, self).__init__(**kwargs)
-        self.game = kwargs['game']
-        self.owner_id = kwargs['owner_id']
-        self.actions = kwargs['actions']
-        self.image = kwargs['image_path']
-        self.background = kwargs['background']
-        self.counter_for_expand = 0
-        self.touch_moving = False
 
         self.background_normal = self.background
         self.background_down = self.background
-        self.sound = SoundLoader.load(kwargs['sound'])
+        self.counter_for_expand = 0
+        self.touch_moving = False
         self.touch_moving = False
         self.size = [self.size_hint[0], self.size_hint[1]]
+        # Zoom animation parameters
+        self.normal_size = (self.size_hint[0], self.size_hint[1])
+        self.zoomed_size = (ZOOM_SCALE_FACTOR * self.normal_size[0],
+                            ZOOM_SCALE_FACTOR * self.normal_size[1])
+        # end zoom animation parameters
         self.zoomed_in = False
         self.is_bot = self.game.PLAYERS[self.owner_id].is_bot()
-        super(Card, self).__init__()
 
     def __repr__(self):
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
@@ -117,51 +121,88 @@ class Card(Button):
 
     def _build_zoom_in_anim(self):
         card = self
-        delta_x = self.size_hint[0] * ZOOM_SCALE_FACTOR / 5
-        return (Animation(size_hint=(card.size_hint[0] * ZOOM_SCALE_FACTOR,
-                                     card.size_hint[1] * ZOOM_SCALE_FACTOR),
-                          duration=0.25) &
-                Animation(pos_hint={'x': card.pos_hint['x'] - delta_x,
-                          'y': card.pos_hint['y']}, duration=0.25))
+        delta_x = self.zoomed_size[0] / 5
+        return (Animation(size_hint=self.zoomed_size,
+                          duration=0.25))
 
     def _build_zoom_out_anim(self):
         card = self
-        delta_x = self.size_hint[0] / 5
-        return (Animation(size_hint=(card.size_hint[0] / ZOOM_SCALE_FACTOR,
-                                     card.size_hint[1] / ZOOM_SCALE_FACTOR),
-                          duration=0.25) &
-                Animation(pos_hint={'x': card.pos_hint['x'] + delta_x,
-                                    'y': card.pos_hint['y']}, duration=0.25))
+        delta_x = self.zoomed_size[0] / 5
+        return (Animation(size_hint=self.normal_size,
+                          duration=0.25))
 
     def _build_use_anim(self):
+        x_key, x_val = self.get_x_key_val()
+        y_key, y_val = self.get_y_key_val()
+        if x_key == "x":
+            x_val += self.size_hint[0] / 2
+        if x_key == "right":
+            x_val -= self.size_hint[0] / 2
+        if y_key == "y":
+            y_val += self.size_hint[1] / 2
+        if y_key == "top":
+            y_val -= self.size_hint[1] / 2
+        self.pos_hint = {
+            "center_x": x_val,
+            "center_y": y_val
+        }
         if self.owner_id:
-            x_pos = 720.0
+            x_pos = 848.0
         else:
-            x_pos = 1070.0
-        y_pos = 536.0
-        return Animation(pos_hint={'x': x_pos / 2048.0,
-                                   'y':  y_pos / 1536.0},
+            x_pos = 1198.0
+        y_pos = 728.0
+        return Animation(pos_hint={'center_x': x_pos / 2048.0,
+                                   'center_y':  y_pos / 1536.0},
                          duration=0.5)
 
     def _build_drop_anim(self):
-        x, y = self.pos_hint["x"], self.pos_hint["y"]
+        y_key, y_val = self.get_y_key_val()
         if self.owner_id:
-            return (Animation(pos_hint={"x": x, "y": y + 0.1}, duration=0.2) +
+            return (Animation(pos_hint={y_key: y_val + 0.1}, duration=0.2) +
                 Animation(opacity=0, duration=0.2))
         else:
-            return (Animation(pos_hint={"x": x, "y": y - 0.1}, duration=0.2) +
+            return (Animation(pos_hint={y_key: y_val - 0.1}, duration=0.2) +
                 Animation(opacity=0, duration=0.2))
 
     def _build_deny_anim(self):
-        anim = Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+        x_key, x_val = self.get_x_key_val()
+        anim = Animation(pos_hint={x_key: x_val + 15 / 2048.0},
                          duration=0.025)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] - 15 / 2048.0, 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val - 15 / 2048.0},
                           duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'] + 15 / 2048.0, 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val + 15 / 2048.0},
                           duration=0.05)
-        anim += Animation(pos_hint={'x': self.pos_hint['x'], 'y': self.pos_hint['y']},
+        anim += Animation(pos_hint={x_key: x_val},
                           duration=0.025)
         return anim
+
+    def get_x_key_val(self):
+        possible_keys = ["x", "center_x", "right"]
+        key_values = []
+        for key, val in self.pos_hint.items():
+            if key in possible_keys:
+                key_values.append((key, val))
+        if len(key_values) == 1:
+            return key_values[0]
+        elif len(key_values) == 0:
+            raise RuntimeError("No information about x in pos_hint")
+        else:
+            raise RuntimeError("Ambiguous information\
+about x in pos_hint, possible key_value pairs: {}".format(key_values))
+
+    def get_y_key_val(self):
+        possible_keys = ["y", "center_y", "top"]
+        key_values = []
+        for key, val in self.pos_hint.items():
+            if key in possible_keys:
+                key_values.append((key, val))
+        if len(key_values) == 1:
+            return key_values[0]
+        elif len(key_values) == 0:
+            raise RuntimeError("No information about y in pos_hint")
+        else:
+            raise RuntimeError("Ambiguous information\
+about y in pos_hint, possible key_value pairs: {}".format(key_values))
 
     def get_owner(self):
         return self.owner_id
@@ -189,7 +230,7 @@ class Card(Button):
             if touch.pos[1] - self.orig_pos[1] > 20:
                 if self.owner_id:
                     self.drop()
-                else:    
+                else:
                     self.use()
             if self.orig_pos[1] - touch.pos[1] > 20:
                 if self.owner_id:

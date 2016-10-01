@@ -65,6 +65,8 @@ class Card(Button):
         self.background_down = self.background
 
     def use(self):
+        print ('this card was selected to USE on this turn')
+        print (self)
         if self.game.card_clicked(self):
             self.bring_to_front()
             if self.is_bot:
@@ -79,6 +81,8 @@ class Card(Button):
             self.on_deny()
 
     def drop(self):
+        print ('this card was selected to DROP on this turn')
+        print (self)
         if self.game.card_dropped(self):
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()

@@ -208,6 +208,8 @@ class ElectionsGame(Screen):
             opponent.set_active(True)
             if opponent.is_bot():
                 opponent.play()
+                if self.declare_victory():
+                    return True
             player.get_hand().render_cards()
             opponent.get_hand().render_cards()
             return True

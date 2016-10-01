@@ -1,11 +1,12 @@
+"""Hand module."""
 import os
-from kivy.logger import Logger
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 class Hand():
+
     POSITIONS_X = {0: list(map(lambda x: x / 2048.0, [522, 790, 1058, 1326, 1594, 1862])),
-    				1: list(map(lambda x: x / 2048.0, [182, 450, 718, 986, 1254, 1522]))}
+                   1: list(map(lambda x: x / 2048.0, [182, 450, 718, 986, 1254, 1522]))}
     POSITIONS_Y = {0: (1536.0 - 1488.0) / 1536.0,
                    1: (1536.0 - 150.0) / 1536.0}
 
@@ -27,6 +28,7 @@ class Hand():
     """
 
     def render_cards(self):
+        self.update_available_cards()
         for i, card in enumerate(self.cards):
             if self.player.active:
                 card.show()
@@ -43,5 +45,33 @@ class Hand():
     def refill(self):
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
-                new_card  = self.deck.pop_card()
+                new_card = self.deck.pop_card()
                 self.cards[i] = new_card
+
+    def update_available_cards(self):
+        print('updating cards')
+        # print("cash: {}, hype: {}, news: {}".format(cash, hype, news))
+        if not self.player.is_bot():
+            for card in self.cards:
+                if card:
+                    cost_color, cost_value = card.get_cost()
+                    if cost_color != 0 and cost_color != 4:
+                        property_value = self.player.property(
+                                         self.player.RESOURSES[cost_color]).get(self.player)
+                        if property_value < cost_value:
+                            card.set_disabled()
+                            print("Disabled card " + str(card))
+                        else:
+                            card.set_enabled()
+                            print("Enabled card " + str(card))
+                    elif cost_color == 4:
+                        hype_value = self.player.property('hype').get(self.player)
+                        news_value = self.player.property('news').get(self.player)
+                        cash_value = self.player.property('cash').get(self.player)
+                        if (news_value < cost_value and hype_value < cost_value and
+                                cash_value < cost_value):
+                            card.set_disabled()
+                            print("Disabled card " + str(card))
+                        else:
+                            card.set_enabled()
+                            print("Enabled card " + str(card))

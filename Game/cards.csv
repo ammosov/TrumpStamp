@@ -51,4 +51,4 @@ id,t_title,h_title,cost_color,cost_value,description,act1_value,act1_type,act1_s
 50,Emailgate,Immigration*Reform,3,25,+15 Swing Voters to you*-25 Voters to opp,15,1,0,-25,0,1,0,0,0,050,150
 51,Denver Airport,Denver Airport,0,0,-10 Voters to both*-4 all resources to both,-10,0,2,-4,9,2,0,0,0,051,151
 52,Snowden,Snowden,0,0,-15 Voters to both*-1 all assetsto both,-15,0,2,-1,10,2,0,0,0,052,152
-99,Election Fraud,Election Fraud,0,99,-999 Voters to both*Both players lose*Game over,-999,0,2,0,0,0,0,0,0,099,199
+99,Election Fraud,Election Fraud,4,99,-999 Voters to both*Both players lose*Game over,-999,0,2,0,0,0,0,0,0,099,199

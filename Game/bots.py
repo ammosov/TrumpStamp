@@ -145,7 +145,7 @@ class RandomPressBot(AbstractBot):
     and return some random available card with label TO_PRESS, if that is possible, otherwise we
     return some random card with label TO_DROP
     '''
-    
+
     def analysis(self, game_info):
         available_cards_indices = []
         for card_index in range(len(game_info['cards'])):

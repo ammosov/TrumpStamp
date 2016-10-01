@@ -101,8 +101,6 @@ class ElectionsGame(Screen):
         elif bot_name == 'hillary':
             self.trump.set_active(True)
             self.hillary.set_active(False)
-
-
         # shuffle Decks
         self.trump.get_deck().shuffle()
         self.hillary.get_deck().shuffle()
@@ -170,6 +168,7 @@ class ElectionsGame(Screen):
                     free_turn = True
             for action in actions['opponent']:
                 opponent.apply_card(*action)
+
 
             is_victory, winner = self.declare_victory()
             if is_victory:

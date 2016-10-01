@@ -161,7 +161,7 @@ class ElectionsGame(Screen):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
-        if player.get_active():
+        if player.get_active() and player.hand.card_in_hand(card):
             print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
             if not player.pay_for_card(*card.get_cost()):
                 return False
@@ -205,7 +205,7 @@ class ElectionsGame(Screen):
         """Card drop callback."""
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
-        if player.get_active():
+        if player.get_active() and player.hand.card_in_hand(card):
             player.get_hand().pop_card(card)
             player.get_deck().drop_card(card)
             player.set_active(False)

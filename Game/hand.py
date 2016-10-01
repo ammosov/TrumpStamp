@@ -30,6 +30,9 @@ class Hand():
                              'y': self.POSITIONS_Y[self.player.player_id]}
             card.render()
     """
+    def card_in_hand(self, card):
+        """Check if card is in hand."""
+        return card in self.cards
 
     def render_cards(self):
         """Render hand cards."""

@@ -5,7 +5,7 @@ from collections import defaultdict
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 
-from card import CardFabric
+from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 from end_screen import EndScreen
@@ -28,7 +28,7 @@ class ElectionsGame(Screen):
     """
     def __init__(self, sm, **kwargs):
         super(ElectionsGame, self).__init__(**kwargs)
-        self.card_fabric = CardFabric(self, cards_csv)
+        self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
 
     def set_bot(self, bot_name):
@@ -42,7 +42,7 @@ class ElectionsGame(Screen):
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
-        # self.card_fabric = CardFabric(self, cards_csv)
+        # self.card_factory = CardFactory(self, cards_csv)
 
         round_db = []
         with open(round_csv) as round_file:
@@ -65,7 +65,7 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['t6'],
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
-            card_fabric=self.card_fabric,
+            card_factory=self.card_factory,
             is_bot=False if bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
@@ -77,7 +77,7 @@ class ElectionsGame(Screen):
             media=round_db[round_id]['h6'],
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
-            card_fabric=self.card_fabric,
+            card_factory=self.card_factory,
             is_bot=False if bot_name == 'trump' else True)
 
         if bot_name == 'trump':

@@ -189,7 +189,7 @@ class Card(Button):
             if touch.pos[1] - self.orig_pos[1] > 20:
                 if self.owner_id:
                     self.drop()
-                else:    
+                else:
                     self.use()
             if self.orig_pos[1] - touch.pos[1] > 20:
                 if self.owner_id:
@@ -224,7 +224,7 @@ class Card(Button):
         self.sound.play()
 
 
-class CardFabric(object):
+class CardFactory(object):
     def __init__(self, game, card_db, images_path=None, sound_path=None, background_path=None):
         self.db = []
         with open(card_db) as card_file:
@@ -266,4 +266,4 @@ class CardFabric(object):
 
 if __name__ == '__main__':
     SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-    cards = CardFabric(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
+    cards = CardFactory(None, os.path.join(SCRIPT_DIR, 'cards.csv'))

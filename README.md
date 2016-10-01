@@ -2,3 +2,16 @@
 Trump-Hillary card game
 
 May 6 - project created
+
+## How to build apk
+
+* Install [python-for-android](https://python-for-android.readthedocs.io/en/latest/quickstart/#installation) and dependencies.
+* Download [Android SDK](https://developer.android.com/studio/index.html) and [NDK](https://developer.android.com/ndk/downloads/index.html)
+* Export all necessary environment variables:
+```
+export ANDROIDSDK="path_to_your_sdk"
+export ANDROIDNDK="path_to_your_ndk"
+export ANDROIDAPI="21"  # Target API version
+export ANDROIDNDKVER="r12b"  # Version of NDK you installed
+```
+* Run `./build_apk.sh APK_VERSION` in project directory

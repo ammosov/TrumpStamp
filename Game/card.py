@@ -1,3 +1,4 @@
+"""Card module."""
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
@@ -8,11 +9,18 @@ import os
 ZOOM_SCALE_FACTOR = 1.5
 DELAY_TIME = 0.5
 
+
 class Card(Button):
+    """Card class.
+
+    Represents card.
+    """
+
     # Workaround, need to use Deck instead
     current_zoomed_in_card = None
 
     def __init__(self, **kwargs):
+        """Set card attributes."""
         self.card_id = kwargs.pop('id')
         self.description = kwargs.pop('description')
         self.name = kwargs.pop('title')
@@ -41,19 +49,23 @@ class Card(Button):
         self.is_bot = self.game.PLAYERS[self.owner_id].is_bot()
 
     def __repr__(self):
+        """String representation of the card."""
         return '{0} = {4}{1} ({2}/{3})'.format(self.card_id, self.name,
                                                self.cost_color, self.cost_value,
                                                self.description)
 
     def __eq__(self, other):
+        """Check equality."""
         return (isinstance(other, Card) and other.card_id == self.card_id and
                 other.owner_id == self.owner_id)
 
     def render(self):
+        """Render card."""
         if not self.parent:
             self.game.add_widget(self)
 
     def delete(self, *args, **kwargs):
+        """Remove card from the screen."""
         if self.parent:
             self.game.remove_widget(self)
 
@@ -70,6 +82,7 @@ class Card(Button):
         self.background_down = self.background
 
     def use(self):
+        """Perform usage animation."""
         print('this card was selected to USE on this turn')
         print(self)
         if self.game.card_clicked(self):
@@ -86,6 +99,7 @@ class Card(Button):
             self.on_deny()
 
     def drop(self):
+        """Perform drop animation."""
         print('this card was selected to DROP on this turn')
         print(self)
         if self.game.card_dropped(self):
@@ -102,6 +116,7 @@ class Card(Button):
             self.on_deny()
 
     def zoom_in(self):
+        """Perform zoom in animation."""
         if not self.zoomed_in:
             self.bring_to_front()
             self._build_zoom_in_anim().start(self)
@@ -112,6 +127,7 @@ class Card(Button):
             return False
 
     def zoom_out(self):
+        """Perform zoom out animation."""
         if self.zoomed_in:
             self._build_zoom_out_anim().start(self)
             Card.current_zoomed_in_card = None
@@ -121,18 +137,21 @@ class Card(Button):
             return False
 
     def _build_zoom_in_anim(self):
+        """Build zoom in animation object."""
         card = self
         delta_x = self.zoomed_size[0] / 5
         return (Animation(size_hint=self.zoomed_size,
                           duration=0.25))
 
     def _build_zoom_out_anim(self):
+        """Build zoom out animation object."""
         card = self
         delta_x = self.zoomed_size[0] / 5
         return (Animation(size_hint=self.normal_size,
                           duration=0.25))
 
     def _build_use_anim(self):
+        """Build usage animation object."""
         x_key, x_val = self.get_x_key_val()
         y_key, y_val = self.get_y_key_val()
         if x_key == "x":
@@ -157,15 +176,17 @@ class Card(Button):
                          duration=0.5)
 
     def _build_drop_anim(self):
+        """Build drop animation object."""
         y_key, y_val = self.get_y_key_val()
         if self.owner_id:
             return (Animation(pos_hint={y_key: y_val + 0.1}, duration=0.2) +
-                Animation(opacity=0, duration=0.2))
+                    Animation(opacity=0, duration=0.2))
         else:
             return (Animation(pos_hint={y_key: y_val - 0.1}, duration=0.2) +
-                Animation(opacity=0, duration=0.2))
+                    Animation(opacity=0, duration=0.2))
 
     def _build_deny_anim(self):
+        """Build 'deny playing' animation object."""
         x_key, x_val = self.get_x_key_val()
         anim = Animation(pos_hint={x_key: x_val + 15 / 2048.0},
                          duration=0.025)
@@ -206,9 +227,14 @@ about x in pos_hint, possible key_value pairs: {}".format(key_values))
 about y in pos_hint, possible key_value pairs: {}".format(key_values))
 
     def get_owner(self):
+        """Get card owner id."""
         return self.owner_id
 
     def get_cost(self):
+        """Get card cost.
+
+        Returns resource color number and amount of resource needed to play card.
+        """
         return self.cost_color, self.cost_value
 
     def on_touch_down(self, touch):
@@ -242,10 +268,15 @@ about y in pos_hint, possible key_value pairs: {}".format(key_values))
             return True
 
     def on_deny(self):
+        """Perform 'deny playing' animation."""
         self._build_deny_anim().start(self)
 
     def get_actions(self):
-        # {'player': [(type, value)], 'opponent': [(type, value)]}
+        """Get card actions.
+
+        Return a dictionary of card actions:
+        {'player': [(type, value)], 'opponent': [(type, value)]}
+        """
         actions = {'player': [],
                    'opponent': []}
         for action in self.actions:
@@ -263,17 +294,23 @@ about y in pos_hint, possible key_value pairs: {}".format(key_values))
         return actions
 
     def play_sound(self):
+        """Play sound."""
         self.sound.play()
 
     def set_disabled(self):
+        """Make card to look disabled."""
         self.opacity = 0.5
 
     def set_enabled(self):
+        """Reenable card."""
         self.opacity = 1
 
 
 class CardFactory(object):
+    """Card factory class."""
+
     def __init__(self, game, card_db, images_path=None, sound_path=None, background_path=None):
+        """Init factory."""
         self.db = []
         with open(card_db) as card_file:
             reader = csv.DictReader(card_file)
@@ -288,6 +325,7 @@ class CardFactory(object):
         self.game = game
 
     def get_card(self, card_id, owner_id):
+        """Create card."""
         card_data = dict(self.db[card_id - 1])
         card_data['owner_id'] = owner_id
         card_data['description'] = card_data['description'].replace('*', '; ')

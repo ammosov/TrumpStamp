@@ -5,6 +5,8 @@ kivy.require('1.7.2')
 
 
 class Deck():
+    """Deck class."""
+
     def __init__(self, player, card_factory):
         """Init deck."""
         self.player = player
@@ -20,6 +22,7 @@ class Deck():
         random.shuffle(self.cards)
 
     def pop_card(self):
+        """Remove card from deck."""
         if len(self.cards) == 0:
             self.cards = self.discard
             self.discard = []
@@ -27,6 +30,8 @@ class Deck():
         return self.cards.pop()
 
     def drop_card(self, card):
-        """Drop card."""
-        # played cards should be in discard too
+        """Drop card.
+
+        Played cards should be in discard too.
+        """
         self.discard.append(card)

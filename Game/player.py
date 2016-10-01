@@ -72,21 +72,26 @@ class Player(Widget):
         self.winner = winner
 
     def get_deck(self):
+        """Get deck."""
         return self.deck
 
     def get_hand(self):
+        """Get player hand."""
         return self.hand
 
     def get_player_id(self):
+        """Get player id."""
         return self.player_id
 
     def get_voters(self):
+        """Get number of partisans."""
         return self.partisans
 
     def play(self):
         pass
 
     def pay_for_card(self, card_color, card_value):
+        """If possible pay for card."""
         if card_color:
             property = self.property(self.RESOURSES[card_color])
             property_value = property.get(self)
@@ -104,7 +109,12 @@ class Player(Widget):
                     return False
         return True
 
-    def apply_card(self, type, value):  # return True if after applying this card the turn doesn't change
+    def apply_card(self, type, value):
+        """
+        Apply card actions.
+
+        Return True if after applying this card the turn doesn't change.
+        """
         if type == 0:
             if value > 0:
                 self.swing += value
@@ -126,7 +136,8 @@ class Player(Widget):
                 self.property(res).set(self, max(min_value, old_value + value))
         return False
 
-    def update_resources(self):  # at the end of turn, update resources of players
+    def update_resources(self):
+        """Update resources of players at the end of the turn."""
         for increment, resource in (('media', 'news'), ('mojo', 'hype'), ('money', 'cash')):
             increment_property = self.property(increment)
             increment_property_value = increment_property.get(self)

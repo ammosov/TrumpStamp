@@ -1,3 +1,4 @@
+"""Bots module."""
 from player import Player
 from random import randint
 from kivy.logger import Logger
@@ -7,10 +8,14 @@ TO_DROP = 265
 
 
 class AbstractBot(Player):
+    """Abstract bot class."""
+
     def __init__(self, *args, **kwargs):
+        """Init bot player."""
         super(AbstractBot, self).__init__(**kwargs)
 
     def set_updaters(self, *args):
+        """Set update callbacks for all resources."""
         if len(args) and isinstance(args[0], dict) and isinstance(args[1], str):
             player_id = args[1]
             # player = args[0][player_id]
@@ -29,43 +34,56 @@ class AbstractBot(Player):
             #     updater(None, None)
             #     self.bind(**{key: prop})
             # BIND DOESN'T WORK INSIDE LOOPS. FUCK THIS FRAMEWORK!!!
+
             def upd_partisans(instance, value):
                 args[0][player_id.replace('player', '') + 'partisans'].text = str(self.partisans)
             upd_partisans(None, None)
             self.bind(partisans=upd_partisans)
+
             def upd_swing(instance, value):
                 args[0][player_id.replace('player', '') + 'swing'].text = str(self.swing)
             upd_swing(None, None)
             self.bind(swing=upd_swing)
+
             def upd_news(instance, value):
                 args[0][player_id.replace('player', '') + 'news'].text = str(self.news)
             upd_news(None, None)
             self.bind(news=upd_news)
+
             def upd_hype(instance, value):
                 args[0][player_id.replace('player', '') + 'hype'].text = str(self.hype)
             upd_hype(None, None)
             self.bind(hype=upd_hype)
+
             def upd_media(instance, value):
                 args[0][player_id.replace('player', '') + 'media'].text = str(self.media)
             upd_media(None, None)
             self.bind(media=upd_media)
+
             def upd_cash(instance, value):
-                args[0][player_id.replace('player','') + 'cash'].text = str(self.cash)
+                args[0][player_id.replace('player', '') + 'cash'].text = str(self.cash)
             upd_cash(None, None)
             self.bind(cash=upd_cash)
+
             def upd_mojo(instance, value):
-                args[0][player_id.replace('player','') + 'mojo'].text = str(self.mojo)
+                args[0][player_id.replace('player', '') + 'mojo'].text = str(self.mojo)
             upd_mojo(None, None)
             self.bind(mojo=upd_mojo)
+
             def upd_money(instance, value):
                 args[0][player_id.replace('player', '') + 'money'].text = str(self.money)
             upd_money(None, None)
             self.bind(money=upd_money)
 
     def analysis(self, game_info):
+        """Analyse game state and return next card to play.
+
+        Should be overriden in child classes.
+        """
         pass
 
     def set_active(self, active):
+        """Activate/ deactivate player."""
         self.active = active
         if not self.active:
             return
@@ -73,6 +91,7 @@ class AbstractBot(Player):
         self.play()
 
     def play(self):
+        """Choose card and play it."""
         if not self.active:
             return
         game_info = {
@@ -97,18 +116,18 @@ class AbstractBot(Player):
             'opp_cards': self.opponent.hand.cards
         }
 
-        print ('################')
-        print ('opp cards:')
+        print('################')
+        print('opp cards:')
         for card in game_info['opp_cards']:
-            print (card)
-        print ('----------------')
-        print ('bots cards:')
+            print(card)
+        print('----------------')
+        print('bots cards:')
         for card in game_info['cards']:
-            print (card)
-        print ('################')
-        card, action = self.analysis(game_info)  # this function gives card and action, which we have to use on it
+            print(card)
+        print('################')
+        card, action = self.analysis(game_info)
 
-        print ('bot made its choice')
+        print('bot made its choice')
 
         if action == TO_PRESS:
             card.use()
@@ -117,18 +136,23 @@ class AbstractBot(Player):
 
 
 class DropBot(AbstractBot):
+    """Bot that always drops his cards."""
 
     def analysis(self, game_info):
+        """Return card to drop."""
         return game_info['cards'][0], TO_DROP
 
 
 class RandomDropBot(AbstractBot):
+    """Bot that always drops his cards randomly."""
 
     def analysis(self, game_info):
+        """Return random card to drop."""
         return game_info['cards'][randint(0, 5)], TO_DROP
 
 
 def getResourceName(color):
+    """Get resource name by color id."""
     if color == 1:
         return 'news'
     if color == 2:
@@ -137,16 +161,17 @@ def getResourceName(color):
         return 'hype'
 
 
-
 class RandomPressBot(AbstractBot):
+    """
+    Random press bot.
 
-    '''
     available_cards_indices -- numbers of cards in this.hand.cards, which we can use.
     and return some random available card with label TO_PRESS, if that is possible, otherwise we
     return some random card with label TO_DROP
-    '''
+    """
 
     def analysis(self, game_info):
+        """Return randomly cards to press or to drop."""
         available_cards_indices = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]
@@ -168,8 +193,10 @@ class RandomPressBot(AbstractBot):
 
 
 class GreedyBot(AbstractBot):
+    """Bot that uses greedy strategy."""
 
     def analysis(self, game_info):
+        """Analyse game state using greedy strategy."""
         available_cards_indices = []
         for card_index in range(len(game_info['cards'])):
             card = game_info['cards'][card_index]

@@ -1,3 +1,4 @@
+"""Game logic module."""
 import kivy
 import os
 import csv
@@ -23,15 +24,19 @@ cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 class ElectionsGame(Screen):
     """
        This class represents the game.
-       As a Kivy object it represents the game field and is a root for all other
-       objects. As a general class it stores all the stuff in the game.
+
+    As a Kivy object it represents the game field and is a root for all other
+    objects. As a general class it stores all the stuff in the game.
     """
+
     def __init__(self, sm, **kwargs):
+        """Init game."""
         super(ElectionsGame, self).__init__(**kwargs)
         self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
 
     def set_bot(self, bot_name):
+        """Set bot player."""
         round_id = 0
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
@@ -117,7 +122,7 @@ class ElectionsGame(Screen):
             self.trump.play()
 
     def end_game(self, winner_name):
-        """Sets both Players to active=False to prevent playing further cards"""
+        """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
         end_screen = EndScreen(winner_name, name='endscreen')
@@ -125,10 +130,11 @@ class ElectionsGame(Screen):
         self.sm.current = 'endscreen'
         print 'END GAME'
 
-
     def declare_victory(self):
-        """checks if victory is achieved
-       !! Current problem - what if both players are hit with one card?"""
+        """Check if victory is achieved.
+
+        !! Current problem - what if both players are hit with one card?
+        """
         #
         # Use any() function + 2 dictionaries of victory that are updated from card turn
         #
@@ -151,6 +157,7 @@ class ElectionsGame(Screen):
             print 'No victory condition set!'
 
     def card_clicked(self, card):
+        """Card click callback."""
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
@@ -168,7 +175,6 @@ class ElectionsGame(Screen):
                     free_turn = True
             for action in actions['opponent']:
                 opponent.apply_card(*action)
-
 
             is_victory, winner = self.declare_victory()
             if is_victory:
@@ -196,6 +202,7 @@ class ElectionsGame(Screen):
             return False
 
     def card_dropped(self, card):
+        """Card drop callback."""
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active():

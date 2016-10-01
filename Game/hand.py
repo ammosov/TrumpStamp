@@ -3,7 +3,9 @@ import os
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
+
 class Hand():
+    """Hand class."""
 
     POSITIONS_X = {0: list(map(lambda x: x / 2048.0, [522, 790, 1058, 1326, 1594, 1862])),
                    1: list(map(lambda x: x / 2048.0, [182, 450, 718, 986, 1254, 1522]))}
@@ -11,11 +13,13 @@ class Hand():
                    1: (1536.0 - 150.0) / 1536.0}
 
     def __init__(self, deck):
+        """Init hand."""
         self.deck = deck
         self.player = deck.get_owner()
         self.cards = [None] * 6
 
     def pop_card(self, popped_card):
+        """Remove card from hand."""
         for i in xrange(len(self.cards)):
             if self.cards[i] == popped_card:
                 self.cards[i] = None
@@ -28,6 +32,7 @@ class Hand():
     """
 
     def render_cards(self):
+        """Render hand cards."""
         self.update_available_cards()
         for i, card in enumerate(self.cards):
             if self.player.active:
@@ -43,12 +48,20 @@ class Hand():
             card.render()
 
     def refill(self):
+        """Refill hand.
+
+        Draw missing cards from deck.
+        """
         for i in xrange(len(self.cards)):
             if not self.cards[i]:
                 new_card = self.deck.pop_card()
                 self.cards[i] = new_card
 
     def update_available_cards(self):
+        """Update opacity of cards.
+
+        Make unavailable cards transparent.
+        """
         print('updating cards')
         # print("cash: {}, hype: {}, news: {}".format(cash, hype, news))
         if not self.player.is_bot():

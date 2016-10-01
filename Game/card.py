@@ -1,5 +1,6 @@
 from kivy.animation import Animation
 from kivy.core.audio import SoundLoader
+from kivy.core.window import Window
 from kivy.uix.button import Button
 import csv
 import os
@@ -219,7 +220,7 @@ about y in pos_hint, possible key_value pairs: {}".format(key_values))
     def on_touch_up(self, touch):
         if self.touch_moving:
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
-                    (touch.pos[1] - self.orig_pos[1]) ** 2) < 25:
+                    (touch.pos[1] - self.orig_pos[1]) ** 2) < 400:
                 pass
                 if self.zoomed_in:
                     self.zoom_out()

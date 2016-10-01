@@ -24,9 +24,12 @@ class Deck():
     def pop_card(self):
         """Remove card from deck."""
         if len(self.cards) == 0:
-            self.cards = self.discard
+            self.cards = self.discard[:]
             self.discard = []
             self.shuffle()
+            print "New deck!"
+            print "Cards:", self.cards
+            print "Discard:", self.discard
         return self.cards.pop()
 
     def drop_card(self, card):

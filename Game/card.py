@@ -109,7 +109,7 @@ class Card(Button):
                 anim = Animation(d=DELAY_TIME) + self._build_drop_anim()
             else:
                 anim = self._build_drop_anim()
-            anim.bind(on_complete=self.delete)
+            # anim.bind(on_complete=self.delete)
             anim.start(self)
             self.play_sound()
         else:

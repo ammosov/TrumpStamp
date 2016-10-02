@@ -10,8 +10,9 @@ class Deck():
     def __init__(self, player, card_factory):
         """Init deck."""
         self.player = player
+        self.num_deals = 0
         self.cards = [card_factory.get_card(i, player.get_player_id()) for i in xrange(1, 54)]
-        self.discard = []
+        self.returned_cards = []
 
     def get_owner(self):
         """Return deck owner."""
@@ -23,18 +24,12 @@ class Deck():
 
     def pop_card(self):
         """Remove card from deck."""
-        if len(self.cards) == 0:
-            self.cards = self.discard[:]
-            self.discard = []
+        if self.num_deals % 30 == 0:
+            self.cards.extend(self.returned_cards)
+            self.returned_cards = []
             self.shuffle()
-            print "New deck!"
-            print "Cards:", self.cards
-            print "Discard:", self.discard
+        self.num_deals += 1
         return self.cards.pop()
 
-    def drop_card(self, card):
-        """Drop card.
-
-        Played cards should be in discard too.
-        """
-        self.discard.append(card)
+    def return_card_to_deck(self, card):
+        self.returned_cards.append(card)

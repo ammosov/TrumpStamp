@@ -20,16 +20,11 @@ class Hand():
 
     def pop_card(self, popped_card):
         """Remove card from hand."""
+        self.deck.return_card_to_deck(popped_card)
         for i in xrange(len(self.cards)):
             if self.cards[i] == popped_card:
                 self.cards[i] = None
-    """
-    def render_cards(self):
-        for i, card in enumerate(self.cards):
-            card.pos_hint = {'x': self.POSITIONS_X[self.player.player_id][i],
-                             'y': self.POSITIONS_Y[self.player.player_id]}
-            card.render()
-    """
+
     def card_in_hand(self, card):
         """Check if card is in hand."""
         return card in self.cards
@@ -38,7 +33,7 @@ class Hand():
         """Render hand cards."""
         self.update_available_cards()
         for i, card in enumerate(self.cards):
-            if self.player.active:
+            if self.player.active and not self.player.is_bot():
                 card.show()
             else:
                 card.hide()
@@ -61,9 +56,9 @@ class Hand():
                 self.cards[i] = new_card
 
     def update_available_cards(self):
-        """Update opacity of cards.
+        """Update color of cards.
 
-        Make unavailable cards transparent.
+        Make unavailable cards more dark.
         """
         print('updating cards')
         # print("cash: {}, hype: {}, news: {}".format(cash, hype, news))

@@ -61,9 +61,10 @@ class Card(Button):
 
     def render(self):
         """Render card."""
+        self.opacity = 1
+        self.disabled = False
         if not self.parent:
             self.game.add_widget(self)
-            self.opacity = 1
 
     def delete(self, *args, **kwargs):
         """Remove card from the screen."""
@@ -81,7 +82,6 @@ class Card(Button):
     def hide(self):
         self.background_normal = self.background
         self.background_down = self.background
-        self.opacity = 1
 
     def use(self):
         """Perform usage animation."""
@@ -111,7 +111,9 @@ class Card(Button):
                 anim = Animation(d=DELAY_TIME) + self._build_drop_anim()
             else:
                 anim = self._build_drop_anim()
-            # anim.bind(on_complete=self.delete)
+            def on_complete(*args, **kwargs):
+                self.disabled = True
+            anim.bind(on_complete=on_complete)
             anim.start(self)
             self.play_sound()
         else:
@@ -240,13 +242,13 @@ about y in pos_hint, possible key_value pairs: {}".format(key_values))
         return self.cost_color, self.cost_value
 
     def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
+        if self.collide_point(*touch.pos) and not self.disabled:
             self.orig_pos = touch.pos
             self.touch_moving = True
             return True
 
     def on_touch_up(self, touch):
-        if self.touch_moving:
+        if self.touch_moving and not self.disabled:
             if ((touch.pos[0] - self.orig_pos[0]) ** 2 +
                     (touch.pos[1] - self.orig_pos[1]) ** 2) < 400:
                 pass

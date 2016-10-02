@@ -38,7 +38,7 @@ class Hand():
         """Render hand cards."""
         self.update_available_cards()
         for i, card in enumerate(self.cards):
-            if self.player.active:
+            if self.player.active and not self.player.is_bot():
                 card.show()
             else:
                 card.hide()

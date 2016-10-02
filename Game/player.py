@@ -116,20 +116,20 @@ class Player(Widget):
         Return True if after applying this card the turn doesn't change.
         """
         if type == 0:
-            if value > 0:
+            if value >= 0:
                 self.swing += value
             # lose voters branch
             elif value < 0:
-                self.partisans = max(0, self.partisans + self.swing + value)
+                diff = self.swing + value
                 self.swing = max(0, self.swing + value)
-            else:
-                pass
+                if diff < 0:
+                    self.partisans = max(0, self.partisans + diff)
         elif type == 11:
             return True
         else:
             for res in self.ACTIONS[type]:
                 # TODO:
-                # check with -value, it's seem it doesn't work((
+                # check with -value, it seems that it doesn't work((
                 old_value = self.property(res).get(self)
                 min_value = self.property(res).get_min(self)
                 # print self.player_id, res, type, value, old_value, min_value

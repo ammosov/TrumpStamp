@@ -11,7 +11,7 @@ May 6 - project created
 ```
 export ANDROIDSDK="path_to_your_sdk"
 export ANDROIDNDK="path_to_your_ndk"
-export ANDROIDAPI="21"  # Target API version, better use v.21 beacause it failed in my case with ANDROIDAPI > 21
+export ANDROIDAPI="21"  # Target API version, better use v.21 because it failed in my case with ANDROIDAPI > 21
 export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ```
 * Add path to $ANDROIDSDK/tools and $ANDROIDSDK/platform-tools to your $PATH
@@ -21,7 +21,4 @@ export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ## How to build Xcode project
 
 * Install Xcode
-* Clone kivy-ios project: `git clone git://github.com/kivy/kivy-ios`
-* In `kivy-ios`  directory run `./toolchain.py build kivy`
-* Run `./toolchain.py create TrumpStamp <path_to_trumpstamp_repo/Game>`
-* Run `open trumpstamp-ios/trumpstamp.xcodeproj` - this will open Xcode project
+* Run `./build_xcode_project.sh` in project directory

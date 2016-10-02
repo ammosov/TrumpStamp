@@ -10,3 +10,6 @@ __pycache__
 
 # Builds
 build
+*.apk
+kivy-ios
+trumpstamp-ios

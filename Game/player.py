@@ -129,7 +129,7 @@ class Player(Widget):
         else:
             for res in self.ACTIONS[type]:
                 # TODO:
-                # check with -value, it's seem it doesn't work((
+                # check with -value, it seems that it doesn't work((
                 old_value = self.property(res).get(self)
                 min_value = self.property(res).get_min(self)
                 # print self.player_id, res, type, value, old_value, min_value

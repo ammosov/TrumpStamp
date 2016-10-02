@@ -93,13 +93,6 @@ class ElectionsGame(Screen):
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        # if round_db[round_id]['turn']:
-        #     self.trump.set_active(False)
-        #     self.hillary.set_active(True)
-        # else:
-        #     self.trump.set_active(True)
-        #     self.hillary.set_active(False)
-
         if bot_name == 'trump':
             self.trump.set_active(False)
             self.hillary.set_active(True)
@@ -126,7 +119,7 @@ class ElectionsGame(Screen):
         self.trump.set_active(False)
         self.hillary.set_active(False)
         end_screen = EndScreen(winner_name, name='endscreen')
-        #self.sm.add_widget(end_screen)
+        # self.sm.add_widget(end_screen)
         self.sm.switch_to(end_screen)
         print 'END GAME'
 
@@ -166,10 +159,9 @@ class ElectionsGame(Screen):
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
-            player.get_deck().drop_card(card)  # even played card should be in discard
             if player.is_bot():
                 card.show()
-            actions = card.get_actions()  # {'player': [(type, value)], 'opponent': [(type, value)]}
+            actions = card.get_actions()
             for action in actions['player']:
                 if player.apply_card(*action):
                     free_turn = True
@@ -209,7 +201,6 @@ class ElectionsGame(Screen):
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active() and player.hand.card_in_hand(card):
             player.get_hand().pop_card(card)
-            player.get_deck().drop_card(card)
             player.set_active(False)
             player.get_hand().refill()
             opponent.update_resources()

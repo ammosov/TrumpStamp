@@ -19,7 +19,7 @@ export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ## How to build Xcode project
 
 * Install Xcode
-* Clone [kivy-ios project](git clone git://github.com/kivy/kivy-ios)
+* Clone kivy-ios project: `git clone git://github.com/kivy/kivy-ios`
 * In `kivy-ios`  directory run `./toolchain.py build kivy`
 * Run `./toolchain.py create TrumpStamp <path_to_trumpstamp_repo/Game>`
 * Run `open trumpstamp-ios/trumpstamp.xcodeproj` - this will open Xcode project

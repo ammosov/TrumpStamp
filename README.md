@@ -15,7 +15,8 @@ export ANDROIDAPI="21"  # Target API version, better use v.21 beacause it failed
 export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ```
 * Add path to $ANDROIDSDK/tools and $ANDROIDSDK/platform-tools to your $PATH
-* Run `./build_apk.sh APK_VERSION` in project directory
+* Run `./build_android_debug.sh APK_VERSION` in project directory to build debug apk and place it into build/android
+* RUN `./build_android_release.sh APK_VERSION KEYSTORE KEYNAME STOREPASS KEYPASS` to build and sign release apk and put it into build/android
 
 ## How to build Xcode project
 

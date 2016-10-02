@@ -1,9 +1,6 @@
 #! /bin/bash
-set -x
 
-echo "==================== REMOVING OLD BUILD ======================="
-
-rm -rf build/android/all build/android/x86 build/android/armeabi-v7a
+[ "$#" -ne 1 ] && { echo "Usage: $0 <apk_version>"; exit -1; }
 
 mkdir -p build/android/armeabi-v7a
 mkdir -p build/android/x86
@@ -42,3 +39,6 @@ cd build/android/all && zip -r TrumpStamp-$1-debug.apk . && mv TrumpStamp-$1-deb
 echo "==================== SIGNING FINAL APK ======================="
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore build/android/TrumpStamp-$1-debug.apk androiddebugkey -storepass android
+
+echo "==================== CLEANING UP ===================="
+rm -rf build/android/all build/android/x86 build/android/armeabi-v7a

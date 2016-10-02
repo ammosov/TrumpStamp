@@ -116,14 +116,14 @@ class Player(Widget):
         Return True if after applying this card the turn doesn't change.
         """
         if type == 0:
-            if value > 0:
+            if value >= 0:
                 self.swing += value
             # lose voters branch
             elif value < 0:
-                self.partisans = max(0, self.partisans + self.swing + value)
+                diff = self.swing + value
                 self.swing = max(0, self.swing + value)
-            else:
-                pass
+                if diff < 0:
+                    self.partisans = max(0, self.partisans + diff)
         elif type == 11:
             return True
         else:

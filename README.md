@@ -11,7 +11,7 @@ May 6 - project created
 ```
 export ANDROIDSDK="path_to_your_sdk"
 export ANDROIDNDK="path_to_your_ndk"
-export ANDROIDAPI="21"  # Target API version
+export ANDROIDAPI="21"  # Target API version, better use v.21 beacause it failed in my case with ANDROIDAPI > 21
 export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ```
 * Run `./build_apk.sh APK_VERSION` in project directory

@@ -1,8 +1,8 @@
 """Card module."""
 from kivy.animation import Animation
-from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.uix.button import Button
+from sound_manager import SoundManager
 import csv
 import os
 
@@ -31,7 +31,7 @@ class Card(Button):
         self.actions = kwargs.pop('actions')
         self.image = kwargs.pop('image_path')
         self.background = kwargs.pop('background')
-        self.sound = SoundLoader.load(kwargs.pop('sound'))
+        self.sound_path = kwargs.pop('sound')
         super(Card, self).__init__(**kwargs)
 
         self.background_normal = self.background
@@ -295,7 +295,7 @@ about y in pos_hint, possible key_value pairs: {}".format(key_values))
 
     def play_sound(self):
         """Play sound."""
-        self.sound.play()
+        SoundManager.play_audio(self.sound_path)
 
     def set_disabled(self):
         """Make card to look disabled."""

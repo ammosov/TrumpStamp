@@ -1,7 +1,15 @@
+# Idea
 .idea
+
+# Python
 *.py[cod]
 __pycache__
+
+# MacOS
 .DS_Store
+
+# Builds
+build
 *.apk
 kivy-ios
 trumpstamp-ios

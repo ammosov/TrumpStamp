@@ -24,6 +24,8 @@ class ElectionsApp(App):
         sm = ScreenManager()
         start_screen_ = start_screen.StartScreen(sm, name=self.start_screen_name)
         sm.switch_to(start_screen_)
+        #end_screen_ = end_screen.EndScreen(sm, 'Trump')
+        #sm.switch_to(end_screen_)
         return sm
 
     def on_pause(self):

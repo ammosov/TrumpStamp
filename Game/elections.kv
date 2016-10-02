@@ -30,7 +30,7 @@
     Icon:
         id: IconHillary
 
-<NewGameIcon>:
+<EndGameIcon>:
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
     on_press: app.root.current = "startscreen"
@@ -44,8 +44,10 @@
             source: 'assets/green.png'
             size: self.size
 
-    NewGameIcon:
+    EndGameIcon:
         id: NewGame
+    EndGameIcon:
+        id: Winner
 
 <Card>:
     border: [0,0,0,0]

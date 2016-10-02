@@ -63,6 +63,7 @@ class Card(Button):
         """Render card."""
         if not self.parent:
             self.game.add_widget(self)
+            self.opacity = 1
 
     def delete(self, *args, **kwargs):
         """Remove card from the screen."""
@@ -80,6 +81,7 @@ class Card(Button):
     def hide(self):
         self.background_normal = self.background
         self.background_down = self.background
+        self.opacity = 1
 
     def use(self):
         """Perform usage animation."""

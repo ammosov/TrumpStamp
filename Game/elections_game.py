@@ -9,7 +9,7 @@ from kivy.uix.label import Label
 from card import CardFactory
 from kivy.animation import Animation
 from player import Player
-from end_screen import EndScreen
+import end_screen
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
 
@@ -47,7 +47,6 @@ class ElectionsGame(Screen):
 
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
-        # self.card_factory = CardFactory(self, cards_csv)
 
         round_db = []
         with open(round_csv) as round_file:
@@ -118,9 +117,8 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
-        end_screen = EndScreen(winner_name, name='endscreen')
-        # self.sm.add_widget(end_screen)
-        self.sm.switch_to(end_screen)
+        end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
+        self.sm.switch_to(end_screen_)
         print 'END GAME'
 
     def declare_victory(self):
@@ -192,7 +190,7 @@ class ElectionsGame(Screen):
 
             return True
         else:
-            print 'IT IS NOT YOUR TURN!!!!', player.get_active()
+            print 'IT IS NOT YOUR TURN!!!!'
             return False
 
     def card_dropped(self, card):

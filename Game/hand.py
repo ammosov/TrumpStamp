@@ -79,7 +79,7 @@ class Hand():
                         hype_value = self.player.property('hype').get(self.player)
                         news_value = self.player.property('news').get(self.player)
                         cash_value = self.player.property('cash').get(self.player)
-                        if (news_value < cost_value and hype_value < cost_value and
+                        if (news_value < cost_value or hype_value < cost_value or
                                 cash_value < cost_value):
                             card.set_disabled()
                             print("Disabled card " + str(card))

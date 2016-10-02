@@ -11,7 +11,14 @@ May 6 - project created
 ```
 export ANDROIDSDK="path_to_your_sdk"
 export ANDROIDNDK="path_to_your_ndk"
-export ANDROIDAPI="21"  # Target API version
+export ANDROIDAPI="21"  # Target API version, better use v.21 because it failed in my case with ANDROIDAPI > 21
 export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 ```
-* Run `./build_apk.sh APK_VERSION` in project directory
+* Add path to $ANDROIDSDK/tools and $ANDROIDSDK/platform-tools to your $PATH
+* Run `./build_android_debug.sh APK_VERSION` in project directory to build debug apk and place it into build/android
+* RUN `./build_android_release.sh APK_VERSION KEYSTORE KEYNAME STOREPASS KEYPASS` to build and sign release apk and put it into build/android
+
+## How to build Xcode project
+
+* Install Xcode
+* Run `./build_xcode_project.sh` in project directory

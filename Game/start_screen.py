@@ -33,8 +33,8 @@ class Icon(Button):
 class StartScreen(Screen):
     """Start screen class."""
 
-    POSITIONS_X = {0: 190 / 2048.0,
-                   1: 1128 / 2048.0}
+    POSITIONS_X = {0: 1128 / 2048.0,
+                   1: 190 / 2048.0}
     POSITIONS_Y = {0: (1536.0 - 730.0) / 1536.0,
                    1: (1536.0 - 730.0) / 1536.0}
 

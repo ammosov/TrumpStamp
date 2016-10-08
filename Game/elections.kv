@@ -8,7 +8,7 @@
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
     on_press: app.root.current = "electionsgame"
-    opacity: 0.
+    opacity: 1.
 
 <StartScreen>:
     rotation: 90
@@ -30,6 +30,18 @@
 
     Icon:
         id: IconHillary
+
+    Icon:
+        id: Settings
+
+<SettingsScreen>:
+    rotation: 90
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/green.png'
+            size: self.size
 
 <EndGameIcon>:
     border: [0,0,0,0]

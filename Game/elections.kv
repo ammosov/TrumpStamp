@@ -8,6 +8,7 @@
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
     on_press: app.root.current = "electionsgame"
+    opacity: 0.
 
 <StartScreen>:
     rotation: 90
@@ -15,7 +16,7 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/green.png'
+            source: 'assets/mockup_start_3_0.png'
             size: self.size
 
     Label:
@@ -32,7 +33,7 @@
 
 <EndGameIcon>:
     border: [0,0,0,0]
-    size_hint: 0.125, 0.23
+    size_hint: 1., 1.
     on_press: app.root.current = "startscreen"
 
 <EndScreen>
@@ -46,6 +47,7 @@
 
     EndGameIcon:
         id: NewGame
+
     EndGameIcon:
         id: Winner
 

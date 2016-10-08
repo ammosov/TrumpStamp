@@ -17,7 +17,7 @@ class Icon(Button):
     def late_init(self, **kwargs):
         """Populate icon."""
         self.name = kwargs['name']
-        self.image = kwargs['image']
+        #self.image = kwargs['image']
 
     def render(self):
         if not self.parent:
@@ -25,19 +25,20 @@ class Icon(Button):
 
     def show(self):
         """Set background image."""
-        self.background_normal = self.image
-        self.background_down = self.image
+        pass
+    #    self.background_normal = self.image
+    #    self.background_down = self.image
 
 
 class StartScreen(Screen):
     """Start screen class."""
 
     POSITIONS_X = {0: 190 / 2048.0,
-                   1: 1158 / 2048.0}
-    POSITIONS_Y = {0: (1536.0 - 1400.0) / 1536.0,
-                   1: (1536.0 - 1400.0) / 1536.0}
+                   1: 1128 / 2048.0}
+    POSITIONS_Y = {0: (1536.0 - 730.0) / 1536.0,
+                   1: (1536.0 - 730.0) / 1536.0}
 
-    SIZES = {0: (700 / 2048.0, (1536 - 600) / 1536.0)}
+    SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
     def __init__(self, sm, **kwargs):
         """Init start screen."""

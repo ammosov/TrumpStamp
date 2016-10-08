@@ -337,12 +337,15 @@ class CardFactory(object):
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:
             card_data['title'] = card_data['t_title'].replace('*', ' ')
-            card_data['image_path'] = (os.path.join(self.images_path['trump'], card_data['img_t']) +
-                                       '.png')
+            print(os.path.join(self.images_path['trump'], (card_data['img_t'][0] + '0' +
+                                                                                card_data['img_t'][0:])) + '.png')
+            card_data['image_path'] = (os.path.join(self.images_path['trump'], (card_data['img_t'][0] + '0' +
+                                                                                card_data['img_t'][1:])) + '.png')
+            print("Lena")
         elif owner_id == 1:
             card_data['title'] = card_data['h_title'].replace('*', ' ')
             card_data['image_path'] = (os.path.join(self.images_path['hillary'],
-                                       card_data['img_h']) + '.png')
+                                       card_data['img_h'][0] + '0' + card_data['img_t'][1:]) + '.png')
         else:
             raise ValueError('Wrong owner_id')
         actions = [[card_data['act1_value'], card_data['act1_type'], card_data['act1_side']],

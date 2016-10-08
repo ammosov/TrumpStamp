@@ -62,7 +62,7 @@ class ElectionsGame(Screen):
         self.trump.late_init(
             player_id=0,
             swing=round_db[round_id]['t1'],
-            partisans=round_db[round_id]['t2'],
+            partisans=1,#round_db[round_id]['t2'],
             news=round_db[round_id]['t3'],
             hype=round_db[round_id]['t4'],
             cash=round_db[round_id]['t5'],

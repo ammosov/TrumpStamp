@@ -41,6 +41,8 @@ class EndScreen(Screen):
             winner_image['image'] = 'assets/win_hillary.png'
         self.new_game_icon = self.ids['NewGame']
         self.winner_icon = self.ids['Winner']
+        self.next_game_icon = self.ids['NextGame']
+        self.restart_game_icon = self.ids['RestartGame']
 
         self.sm = sm
 
@@ -59,6 +61,18 @@ class EndScreen(Screen):
                                      'y': 0}
         self.winner_icon.size_hint = self.SIZES[2]
         self.winner_icon.render()
+
+        self.next_game_icon.pos_hint = {'x': 0.28,
+                                        'y': 0.18}
+        self.next_game_icon.size_hint = (0.45, 0.08)
+        self.next_game_icon.background_color = (0, 0, 0, 0)
+        self.next_game_icon.bind(on_press=self.pressed_new_game)
+
+        self.restart_game_icon.pos_hint = {'x': 0.28,
+                                           'y': 0.28}
+        self.restart_game_icon.size_hint = (0.45, 0.08)
+        self.restart_game_icon.background_color = (0, 0, 0, 0)
+        self.restart_game_icon.bind(on_press=self.pressed_new_game)
 
     def pressed_new_game(self, *args):
         start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")

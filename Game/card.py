@@ -337,8 +337,6 @@ class CardFactory(object):
         card_data['description'] = card_data['description'].replace('*', '; ')
         if owner_id == 0:
             card_data['title'] = card_data['t_title'].replace('*', ' ')
-            print(os.path.join(self.images_path['trump'], (card_data['img_t'][0] + '0' +
-                                                                                card_data['img_t'][0:])) + '.png')
             card_data['image_path'] = (os.path.join(self.images_path['trump'], (card_data['img_t'][0] + '0' +
                                                                                 card_data['img_t'][1:])) + '.png')
         elif owner_id == 1:

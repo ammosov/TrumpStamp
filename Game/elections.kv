@@ -46,7 +46,7 @@
 <EndGameIcon>:
     border: [0,0,0,0]
     size_hint: 1., 1.
-    on_press: app.root.current = "startscreen"
+    on_press: pass
 
 <EndScreen>
     rotation: 90
@@ -62,6 +62,10 @@
 
     EndGameIcon:
         id: Winner
+    EndGameIcon:
+        id: NextGame
+    EndGameIcon:
+        id: RestartGame
 
 <Card>:
     border: [0,0,0,0]

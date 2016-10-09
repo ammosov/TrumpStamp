@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 import elections_game
 from settings_screen import SettingsScreen
+from credits_screen import CreditScreen
 
 
 class Icon(Button):
@@ -34,10 +35,12 @@ class StartScreen(Screen):
 
     POSITIONS_X = {0: 1128 / 2048.0,
                    1: 190 / 2048.0,
-                   2: 680 / 2048.}
+                   2: 680 / 2048.,
+                   3: 680 / 2048.}
     POSITIONS_Y = {0: (1536.0 - 730.0) / 1536.0,
                    1: (1536.0 - 730.0) / 1536.0,
-                   2: (1536 - 1130) / 1536.}
+                   2: (1536 - 1130) / 1536.,
+                   3: (1536 - 1400) / 1536.}
 
     SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
@@ -47,18 +50,21 @@ class StartScreen(Screen):
         trump_data = {'name': 'Trump'}
         hillary_data = {'name': 'Hillary'}
         settings_data = {'name': 'Settings'}
+        credits_data = {'name': 'Credit'}
 
-        datas = [trump_data, hillary_data, settings_data]
+        datas = [trump_data, hillary_data, settings_data, credits_data]
         self.icon_trump = self.ids['IconTrump']
         self.icon_hillary = self.ids['IconHillary']
         self.icon_settings = self.ids['Settings']
-        self.icons = [self.icon_trump, self.icon_hillary, self.icon_settings]
+        self.icon_credit = self.ids['Credit']
+        self.icons = [self.icon_trump, self.icon_hillary, self.icon_settings, self.icon_credit]
 
         self.game = elections_game.ElectionsGame(sm, name="electionsgame")
         self.settings = SettingsScreen(sm, name='settings', menu=self)
+        self.credit = CreditScreen(sm, name='credit', menu=self)
         self.sm = sm
 
-        for i in [0, 1, 2]:
+        for i in range(0,4):
             self.icons[i].late_init(**datas[i])
             self.icons[i].show()
             self.icons[i].pos_hint = {'x': self.POSITIONS_X[i],
@@ -70,6 +76,7 @@ class StartScreen(Screen):
         self.icons[0].bind(on_press=self.pressed_trump)
         self.icons[1].bind(on_press=self.pressed_hillary)
         self.icons[2].bind(on_press=self.pressed_setting)
+        self.icons[3].bind(on_press=self.pressed_credit)
 
     def pressed_trump(self, *args):
         """Trump choice callback."""
@@ -82,10 +89,15 @@ class StartScreen(Screen):
         self.sm.switch_to(self.game)
 
     def pressed_setting(self, *args):
-        #print 'settings pressed'
-        #self.sm.switch_to(self.settings)
 
         if not self.sm.has_screen('settings'):
             self.sm.add_widget(self.settings)
 
         self.sm.current = 'settings'
+
+    def pressed_credit(self, *args):
+
+        if not self.sm.has_screen('credit'):
+            self.sm.add_widget(self.credit)
+
+        self.sm.current = 'credit'

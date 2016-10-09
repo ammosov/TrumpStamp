@@ -7,8 +7,8 @@
 <Icon>:
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    on_press: app.root.current = "electionsgame"
-    opacity: 1.
+    on_press: pass
+    opacity: 0.
 
 <StartScreen>:
     rotation: 90
@@ -34,14 +34,23 @@
     Icon:
         id: Settings
 
+<SettingIcon>
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+
 <SettingsScreen>:
     rotation: 90
     canvas:
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/green.png'
+            source: 'assets/settings/mockup_settings_screen_3_0.png'
             size: self.size
+
+    SettingIcon:
+        id: Back
+        opacity: 0.
+
 
 <EndGameIcon>:
     border: [0,0,0,0]
@@ -54,12 +63,11 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/green.png'
+            source: 'assets/settings/mockup_settings_screen_3_0.png'
             size: self.size
 
     EndGameIcon:
         id: NewGame
-
     EndGameIcon:
         id: Winner
     EndGameIcon:

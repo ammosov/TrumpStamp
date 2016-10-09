@@ -27,8 +27,6 @@ class Icon(Button):
     def show(self):
         """Set background image."""
         pass
-    #    self.background_normal = self.image
-    #    self.background_down = self.image
 
 
 class StartScreen(Screen):
@@ -36,29 +34,28 @@ class StartScreen(Screen):
 
     POSITIONS_X = {0: 1128 / 2048.0,
                    1: 190 / 2048.0,
-                   2: 1024 / 2048.}
+                   2: 680 / 2048.}
     POSITIONS_Y = {0: (1536.0 - 730.0) / 1536.0,
                    1: (1536.0 - 730.0) / 1536.0,
-                   2: 1000 / 1536.}
+                   2: (1536 - 1130) / 1536.}
 
     SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
     def __init__(self, sm, **kwargs):
         """Init start screen."""
         super(StartScreen, self).__init__(**kwargs)
-        trump_data = {'name': 'Trump', 'image': 'assets/Trump.png'}
-        hillary_data = {'name': 'Hillary', 'image': 'assets/Hillary.png'}
+        trump_data = {'name': 'Trump'}
+        hillary_data = {'name': 'Hillary'}
         settings_data = {'name': 'Settings'}
 
         datas = [trump_data, hillary_data, settings_data]
-
         self.icon_trump = self.ids['IconTrump']
         self.icon_hillary = self.ids['IconHillary']
         self.icon_settings = self.ids['Settings']
         self.icons = [self.icon_trump, self.icon_hillary, self.icon_settings]
 
         self.game = elections_game.ElectionsGame(sm, name="electionsgame")
-        self.settings = SettingsScreen(sm, name='settings')
+        self.settings = SettingsScreen(sm, name='settings', menu=self)
         self.sm = sm
 
         for i in [0, 1, 2]:
@@ -86,4 +83,9 @@ class StartScreen(Screen):
 
     def pressed_setting(self, *args):
         #print 'settings pressed'
-        self.sm.switch_to(self.game)
+        #self.sm.switch_to(self.settings)
+
+        if not self.sm.has_screen('settings'):
+            self.sm.add_widget(self.settings)
+
+        self.sm.current = 'settings'

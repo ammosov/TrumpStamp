@@ -1,0 +1,25 @@
+#:kivy 1.0.9
+#: import Animation kivy.animation.Animation
+#: import time time
+#: import SoundLoader kivy.core.audio.SoundLoader
+
+<Card>:
+    border: [0,0,0,0]
+    size_hint: (250.0/2048.0), (350.0/1536.0)
+    on_touch_up:
+        Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))
+
+<Player>:
+    border: [0,0,0,0]
+    size_hint: (250.0/2048.0), (350.0/1536.0)
+
+<ElectionsGame>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/main_field.png'
+            size: self.size
+    Player:
+        id: playerTrump
+        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}

@@ -34,9 +34,13 @@
     Icon:
         id: Settings
 
+    Icon:
+        id: Credit
+
 <SettingIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
+    opacity: 0.
 
 <SettingsScreen>:
     rotation: 90
@@ -49,7 +53,24 @@
 
     SettingIcon:
         id: Back
-        opacity: 0.
+
+
+<CreditIcon>
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+    opacity: 0.
+
+<CreditScreen>:
+    rotation: 90
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/credits/mockup_credits_screen_3_0.png'
+            size: self.size
+
+    CreditIcon:
+        id: Back
 
 
 <EndGameIcon>:
@@ -63,7 +84,7 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/settings/mockup_settings_screen_3_0.png'
+            source: 'assets/settings/mockup_end_screen_3_0.png'
             size: self.size
 
     EndGameIcon:

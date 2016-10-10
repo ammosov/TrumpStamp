@@ -18,7 +18,7 @@ kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
+round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 

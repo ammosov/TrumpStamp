@@ -39,6 +39,7 @@ class Card(Button):
 
         self.background_normal = self.background
         self.background_down = self.background
+        self.background_disabled_normal = self.background
         self.counter_for_expand = 0
         self.touch_moving = False
         self.touch_moving = False

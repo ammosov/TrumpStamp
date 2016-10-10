@@ -12,6 +12,10 @@ from kivy.app import runTouchApp
 from kivy.uix.widget import Widget
 from functools import partial
 from kivy.uix.label import Label
+from kivy.storage.jsonstore import JsonStore
+from os.path import join
+
+STORE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -130,7 +134,6 @@ class DistrictsScroll(ScrollView):
         print(default_button.text)
         default_button.background_color = [255, 255, 255, 0.5]
         self.area_selected = default_button.text
-        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
         self.round_selected = 1
         for i in range(len(self.states_db)):
             if self.states_db[i]['state'] == state:
@@ -200,6 +203,8 @@ class RoundsScreen(Screen):
         self.game = None
         self.bot_name = None
 
+        self.store = JsonStore(join(STORE_DIR, 'user.dat'))
+
         states_db = []
         with open(states_csv) as states_file:
             reader = csv.DictReader(states_file)
@@ -241,5 +246,6 @@ class RoundsScreen(Screen):
         state = self.states_scroll.state_selected
         area = self.dist_scroll.area_selected
         round_id = self.dist_scroll.round_selected
+        self.game.set_store(self.store)
         self.game.set_round(round_id, state, area)
         self.sm.switch_to(self.game)

@@ -12,7 +12,6 @@ from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 import end_screen
-import main.store
 import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
@@ -20,8 +19,6 @@ from bots import *
 kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-
-from kivy.storage.jsonstore import JsonStore
 
 round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
@@ -47,6 +44,11 @@ class ElectionsGame(Screen):
         self.bot_name = None
         self.area = None
         self.state = None
+        self.store = None
+        self.round_id = None
+
+    def set_store(self, store):
+        self.store = store
 
     def set_bot(self, bot_name):
         """Set bot player."""
@@ -64,6 +66,7 @@ class ElectionsGame(Screen):
     def set_round(self, round_id, state, area):
         self.area = area
         self.state = state
+        self.round_id = round_id
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -134,7 +137,7 @@ class ElectionsGame(Screen):
         self.trump.set_active(False)
         self.hillary.set_active(False)
         if not self.bot_name == winner_name:
-            pass
+            self.store.put(self.round_id, won=True)
         end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
         self.sm.switch_to(end_screen_)
         print 'END GAME'

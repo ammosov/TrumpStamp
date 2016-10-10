@@ -97,11 +97,12 @@ class DistrictsScroll(ScrollView):
 
         self.add_widget(curr_state_layout)
 
-    def late_init(self, desc_scroll, **kwargs):
+    def late_init(self, desc_scroll, store, **kwargs):
         self.desc_scroll = desc_scroll
         self.states_db = kwargs['states_db']
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
+        self.store = store
 
         states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
@@ -112,7 +113,16 @@ class DistrictsScroll(ScrollView):
                      self.states_db[i]['state'] == state_name]
 
             for i in range(len(areas)):
-                btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+                if self.store.exists(str(areas[i][1])):
+                    color = [100, 87, 145, 1]
+                    print('kjhrebgfihgrkjnrklvjnelkvjnekjvnlelhfjb')
+                    btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
+                            background_color=[0,0,0,1], color=color)
+                
+                else:
+                    color = [255,255,255,1]
+                    btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
+                            background_color=[1,1,1,0.], text_color=color)
                 buttoncallback = partial(self.on_press, areas[i], btn)
                 btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
@@ -204,7 +214,7 @@ class RoundsScreen(Screen):
         self.game = None
         self.bot_name = None
 
-        self.store = JsonStore(join(STORE_DIR, 'user.dat'))
+        self.store = JsonStore(join(STORE_DIR, 'user.dat')) #{round_id: bool}
 
         states_db = []
         with open(states_csv) as states_file:
@@ -221,7 +231,7 @@ class RoundsScreen(Screen):
                                     pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
                                               'y': 400.0 / 1536.0},
                                     states_db=states_db)
-        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 440) / 3) / 2048.0, 880 / 2048.0),
+        self.dist_scroll.late_init(self.descr_scroll, self.store, size_hint=(((2048.0 - 440) / 3) / 2048.0, 880 / 2048.0),
                                    pos_hint={'x': (138 + ((2048.0 - 340) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
                                    states_db=states_db)
         self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 370) / 3) / 2048.0, 880 / 2048.0),

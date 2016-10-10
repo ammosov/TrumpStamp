@@ -134,7 +134,7 @@ class ElectionsGame(Screen):
         self.trump.set_active(False)
         self.hillary.set_active(False)
         if not self.bot_name == winner_name:
-            self.store.put(self.round_id, won=True)
+            self.store.put(str(self.round_id), won=True)
         end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
         self.sm.switch_to(end_screen_)
         print 'END GAME'

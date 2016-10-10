@@ -54,6 +54,35 @@
     SettingIcon:
         id: Back
 
+<RoundsIcon>
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+    opacity: 0.
+
+<StatesScroll>:
+    border: [1,1,1,1]
+
+<RoundsScreen>:
+    rotation: 90
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/settings/mockup_settings_screen_3_0.png'
+            size: self.size
+
+    RoundsIcon:
+        id: Back
+
+    StatesScroll: 
+        id: StatesScroll
+
+    DistrictsScroll:
+        id: DistrictsScroll
+
+    DescriptionScroll:
+        id: DescriptionScroll
+
 
 <CreditIcon>
     border: [0,0,0,0]

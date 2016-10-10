@@ -1,7 +1,9 @@
 import urllib
 import urllib2
+from kivy.network.urlrequest import UrlRequest
 from copy import deepcopy
 
+GA_URL = "http://www.google-analytics.com/collect"
 
 class Tracker(object):
     def __init__(self, tracker_id, client_id):
@@ -13,7 +15,7 @@ class Tracker(object):
         copy_dic.update({"tid": self.tracker_id, "cid": self.client_id, "v": "1"})
         data = urllib.urlencode(copy_dic)
         print(data)
-        urllib2.urlopen("http://www.google-analytics.com/collect", data=data).read()
+        req = UrlRequest(GA_URL, req_body=data)
 
 
 class BuilderMeta(type):

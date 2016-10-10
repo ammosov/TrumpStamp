@@ -1,5 +1,5 @@
 """Player module."""
-from kivy.properties import BoundedNumericProperty, ListProperty
+from kivy.properties import BoundedNumericProperty, ListProperty, ObjectProperty
 from kivy.uix.widget import Widget
 from deck import Deck
 from hand import Hand
@@ -19,6 +19,7 @@ class Player(Widget):
     hype = BoundedNumericProperty(1, min=0)
     money = BoundedNumericProperty(1, min=1)
     cash = BoundedNumericProperty(1, min=0)
+    state_area = ObjectProperty(None)
 
     cards_actions = ListProperty([])
 
@@ -28,6 +29,7 @@ class Player(Widget):
         self.player_id = None
         self.player_name = None
         self.stats = None
+        #self.state_area = None
 
     def late_init(self, **kwargs):
         """Init player resources."""
@@ -37,6 +39,7 @@ class Player(Widget):
         self.human = False if is_bot else True
         self.bot = True if is_bot else False
         self.player_name = PLAYERS[self.player_id]
+        #self.state_area = kwargs.pop('state_area')
         self.stats = kwargs
         for prop_name, value in self.stats.items():
             self.property(prop_name).set(self, value)

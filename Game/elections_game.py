@@ -42,8 +42,6 @@ class ElectionsGame(Screen):
         self.trump = None
         self.hillary = None
         self.bot_name = None
-        self.area = None
-        self.state = None
 
     def set_bot(self, bot_name):
         """Set bot player."""
@@ -61,6 +59,7 @@ class ElectionsGame(Screen):
     def set_round(self, round_id, state, area):
         self.area = area
         self.state = state
+        self.state_area = self.ids['state_area']
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -83,6 +82,7 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
             card_factory=self.card_factory,
+            state_area= str(area + ',   ' + state),
             is_bot=False if self.bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
@@ -95,6 +95,7 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
             card_factory=self.card_factory,
+            state_area= str(area + ',   ' + state),
             is_bot=False if self.bot_name == 'trump' else True)
 
         if self.bot_name == 'trump':

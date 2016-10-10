@@ -42,6 +42,11 @@ class ElectionsGame(Screen):
         self.trump = None
         self.hillary = None
         self.bot_name = None
+        self.store = None
+        self.round_id = None
+
+    def set_store(self, store):
+        self.store = store
 
     def set_bot(self, bot_name):
         """Set bot player."""
@@ -57,9 +62,7 @@ class ElectionsGame(Screen):
                         1: self.hillary}
 
     def set_round(self, round_id, state, area):
-        self.area = area
-        self.state = state
-        self.state_area = self.ids['state_area']
+        self.round_id = round_id
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -131,6 +134,8 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
+        if not self.bot_name == winner_name:
+            self.store.put(self.round_id, won=True)
         end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
         self.sm.switch_to(end_screen_)
         print 'END GAME'

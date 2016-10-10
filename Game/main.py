@@ -7,11 +7,11 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.utils import platform
 import start_screen
 import end_screen
+from kivy.storage.jsonstore import JsonStore
 
 
 kivy.require('1.7.2')
 Config.set('kivy', 'log_level', 'debug')
-
 
 class ElectionsApp(App):
     """Main app."""

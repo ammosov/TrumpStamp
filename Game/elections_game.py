@@ -39,6 +39,8 @@ class ElectionsGame(Screen):
         self.trump = None
         self.hillary = None
         self.bot_name = None
+        self.area = None
+        self.state = None
 
     def set_bot(self, bot_name):
         """Set bot player."""

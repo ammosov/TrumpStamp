@@ -18,7 +18,7 @@ kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
+round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 
@@ -39,7 +39,6 @@ class ElectionsGame(Screen):
 
     def set_bot(self, bot_name):
         """Set bot player."""
-        round_id = 0
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
             self.hillary = self.ids['hillary_player']
@@ -50,6 +49,7 @@ class ElectionsGame(Screen):
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
 
+    def set_round(self, round_id):
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)

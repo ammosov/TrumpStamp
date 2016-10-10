@@ -4,14 +4,14 @@ from kivy.uix.button import Button
 import elections_game
 from settings_screen import SettingsScreen
 from credits_screen import CreditScreen
-
+from rounds_screen import RoundsScreen
 
 class Icon(Button):
     """Icon class."""
 
     def __init__(self, **kwargs):
         """Init icon."""
-        self.game = None
+        #self.game = None
         self.name = None
         self.image = None
         super(Icon, self).__init__()
@@ -59,7 +59,8 @@ class StartScreen(Screen):
         self.icon_credit = self.ids['Credit']
         self.icons = [self.icon_trump, self.icon_hillary, self.icon_settings, self.icon_credit]
 
-        self.game = elections_game.ElectionsGame(sm, name="electionsgame")
+        #self.game = elections_game.ElectionsGame(sm, name="electionsgame")
+        self.rounds = RoundsScreen(sm, name='rounds', menu=self)
         self.settings = SettingsScreen(sm, name='settings', menu=self)
         self.credit = CreditScreen(sm, name='credit', menu=self)
         self.sm = sm
@@ -80,13 +81,16 @@ class StartScreen(Screen):
 
     def pressed_trump(self, *args):
         """Trump choice callback."""
-        self.game.set_bot('hillary')
-        self.sm.switch_to(self.game)
+        #self.game.set_bot('hillary')
+        #self.sm.switch_to(self.game)
+        self.pressed_round('hillary')
+
 
     def pressed_hillary(self, *args):
         """Hillary choice callback."""
-        self.game.set_bot('trump')
-        self.sm.switch_to(self.game)
+        #self.game.set_bot('trump')
+        #self.sm.switch_to(self.game)
+        self.pressed_round('trump')
 
     def pressed_setting(self, *args):
 
@@ -101,3 +105,14 @@ class StartScreen(Screen):
             self.sm.add_widget(self.credit)
 
         self.sm.current = 'credit'
+
+    def pressed_round(self, bot_name):
+
+        if not self.sm.has_screen('rounds'):
+            self.sm.add_widget(self.rounds)
+
+        self.sm.current = 'rounds'
+        self.rounds.set_bot(bot_name)
+
+
+

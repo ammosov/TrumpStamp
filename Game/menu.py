@@ -1,4 +1,4 @@
-from kivy.uix.behaviors.button import ButtonBehavior
+from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.widget import Widget
 from kivy.vector import Vector
 from kivy.graphics import Ellipse, Rectangle

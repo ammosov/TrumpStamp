@@ -10,6 +10,7 @@ from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 import end_screen
+import main.store
 import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
@@ -17,6 +18,8 @@ from bots import *
 kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+from kivy.storage.jsonstore import JsonStore
 
 round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
@@ -125,6 +128,8 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
+        if not self.bot_name == winner_name:
+            pass
         end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
         self.sm.switch_to(end_screen_)
         print 'END GAME'

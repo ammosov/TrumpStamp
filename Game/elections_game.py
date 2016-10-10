@@ -2,10 +2,12 @@
 import kivy
 import os
 import csv
+from urllib import urlencode
+from urllib2 import urlopen
 from collections import defaultdict
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
-
+from kivy.network.urlrequest import UrlRequest
 from card import CardFactory
 from kivy.animation import Animation
 from player import Player
@@ -24,6 +26,7 @@ from kivy.storage.jsonstore import JsonStore
 round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
+GA_URL = "https://www.google-analytics.com/collect"
 
 class ElectionsGame(Screen):
     """
@@ -42,6 +45,8 @@ class ElectionsGame(Screen):
         self.trump = None
         self.hillary = None
         self.bot_name = None
+        self.area = None
+        self.state = None
 
     def set_bot(self, bot_name):
         """Set bot player."""
@@ -162,6 +167,15 @@ class ElectionsGame(Screen):
 
     def card_clicked(self, card):
         """Card click callback."""
+        # this is just for google analytics test, don't delete it pls :)
+        data = urlencode({"v": "1", "tid": "UA-73301637-3",
+                          "cid": "555", "t": "screenview", "cd": str(card),
+                          "an": "TrumpStamp", "av": "4.2.0",
+                          "aid": "com.trumpstamp.trumpstamp",
+                          "aiid": "com.android.vending"})
+        def on_success(req, result):
+            print(result)
+        req = UrlRequest(GA_URL, on_success=on_success, req_body=data)
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False

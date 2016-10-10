@@ -24,21 +24,21 @@ p4a apk --private $PWD/Game --orientation landscape --icon $PWD/Game/assets/icon
 
 mv TrumpStamp-$1-debug.apk build/android/x86
 
-echo "==================== MERGING APKS TOGETHER ======================="
-
-unzip build/android/armeabi-v7a/TrumpStamp-$1-debug.apk -d build/android/armeabi-v7a
-rm build/android/armeabi-v7a/TrumpStamp-$1-debug.apk
-unzip build/android/x86/TrumpStamp-$1-debug.apk -d build/android/x86
-rm build/android/x86/TrumpStamp-$1-debug.apk
-cp -r build/android/armeabi-v7a/. build/android/all
-cp -r build/android/x86/. build/android/all
-rm build/android/all/META-INF/CERT.RSA
-rm build/android/all/META-INF/CERT.SF
-cd build/android/all && zip -r TrumpStamp-$1-debug.apk . && mv TrumpStamp-$1-debug.apk .. && cd ../../..
-
-echo "==================== SIGNING FINAL APK ======================="
-
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore build/android/TrumpStamp-$1-debug.apk androiddebugkey -storepass android
-
-echo "==================== CLEANING UP ===================="
-rm -rf build/android/all build/android/x86 build/android/armeabi-v7a
+# echo "==================== MERGING APKS TOGETHER ======================="
+#
+# unzip build/android/armeabi-v7a/TrumpStamp-$1-debug.apk -d build/android/armeabi-v7a
+# rm build/android/armeabi-v7a/TrumpStamp-$1-debug.apk
+# unzip build/android/x86/TrumpStamp-$1-debug.apk -d build/android/x86
+# rm build/android/x86/TrumpStamp-$1-debug.apk
+# cp -r build/android/armeabi-v7a/. build/android/all
+# cp -r build/android/x86/. build/android/all
+# rm build/android/all/META-INF/CERT.RSA
+# rm build/android/all/META-INF/CERT.SF
+# cd build/android/all && zip -r TrumpStamp-$1-debug.apk . && mv TrumpStamp-$1-debug.apk .. && cd ../../..
+#
+# echo "==================== SIGNING FINAL APK ======================="
+#
+# jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ~/.android/debug.keystore build/android/TrumpStamp-$1-debug.apk androiddebugkey -storepass android
+#
+# echo "==================== CLEANING UP ===================="
+# rm -rf build/android/all build/android/x86 build/android/armeabi-v7a

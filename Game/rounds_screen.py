@@ -13,8 +13,6 @@ from kivy.uix.widget import Widget
 from functools import partial
 from kivy.uix.label import Label
 
-import numpy as np
-
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 states_csv = os.path.join(SCRIPT_DIR, 'db_states.csv')
@@ -54,7 +52,7 @@ class StatesScroll(ScrollView):
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
-        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         for i in range(len(states)):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
@@ -63,14 +61,24 @@ class StatesScroll(ScrollView):
             self.layout.add_widget(btn)
 
         self.add_widget(self.layout)
+        self.set_default_btn(states[0])
 
     def on_press(self, *args):
+        self.set_btn_selected(args[1])
         self.dist_scroll.update_widgets(args[0])
+        self.dist_scroll.set_default_btn(args[0])
+
+    def set_btn_selected(self, button):
         for btn in self.layout.children[:]:
             btn.background_color = [1, 1, 1, 0.]
-        button = args[1]
         button.background_color = [255, 255, 255, 0.5]
         self.state_selected = button.text
+
+    def set_default_btn(self, state):
+        self.state_selected = state
+        self.layout.children[-1].background_color = [255, 255, 255, 0.5]
+        self.dist_scroll.set_default_btn(state)        
+
 
 
 class DistrictsScroll(ScrollView):
@@ -91,7 +99,7 @@ class DistrictsScroll(ScrollView):
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
-        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         self.layouts = {states[i]: GridLayout(cols=1, spacing=0, size_hint_y=None) for i in range(len(states))}
         for state_name, layout in self.layouts.items():
@@ -116,6 +124,20 @@ class DistrictsScroll(ScrollView):
         button.background_color = [255, 255, 255, 0.5]
         self.area_selected = button.text
         self.round_selected = args[0][1]
+
+    def set_default_btn(self, state):
+        default_button = self.layouts[state].children[-1]
+        print(default_button.text)
+        default_button.background_color = [255, 255, 255, 0.5]
+        self.area_selected = default_button.text
+        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        self.round_selected = 1
+        for i in range(len(self.states_db)):
+            if self.states_db[i]['state'] == state:
+                 self.round_selected = i
+                 break
+        
+
 
 class DescriptionScroll(ScrollView):
     def __init__(self, **kwargs):
@@ -189,17 +211,17 @@ class RoundsScreen(Screen):
         self.dist_scroll = self.ids['DistrictsScroll']
         self.descr_scroll = self.ids['DescriptionScroll']
 
-        self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+        self.descr_scroll.late_init(size_hint=(((2048.0 - 340) / 3) / 2048.0, 880 / 2048.0),
                                     pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
                                               'y': 400.0 / 1536.0},
                                     states_db=states_db)
-        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
-                                   pos_hint={'x': (138 + ((2048.0 - 400) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
+        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 440) / 3) / 2048.0, 880 / 2048.0),
+                                   pos_hint={'x': (138 + ((2048.0 - 340) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
                                    states_db=states_db)
-        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 370) / 3) / 2048.0, 880 / 2048.0),
                                      pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
                                      states_db=states_db)
-      
+
         self.set_new_game()
 
 

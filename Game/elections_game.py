@@ -174,6 +174,7 @@ class ElectionsGame(Screen):
                 return True
 
             if free_turn:
+                card.set_free_turn(True)
                 if player.is_bot():
                     player.get_hand().refill()
                     player.get_hand().render_cards()

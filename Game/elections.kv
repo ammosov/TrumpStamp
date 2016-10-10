@@ -54,13 +54,19 @@
     SettingIcon:
         id: Back
 
+
 <RoundsIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
     opacity: 0.
 
 <StatesScroll>:
-    border: [1,1,1,1]
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <RoundsScreen>:
     rotation: 90
@@ -68,7 +74,7 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/settings/mockup_settings_screen_3_0.png'
+            source: 'assets/settings/rounds_screen_3_4.png'
             size: self.size
 
     RoundsIcon:
@@ -82,6 +88,9 @@
 
     DescriptionScroll:
         id: DescriptionScroll
+
+    RoundsIcon:
+        id: Play
 
 
 <CreditIcon>

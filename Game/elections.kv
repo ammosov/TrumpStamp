@@ -5,10 +5,11 @@
 
 
 <Icon>:
+    rotation: 90
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    on_press: pass
-    opacity: 0.
+    pos_hint: self.pos_hint
+    size: self.size
 
 <StartScreen>:
     rotation: 90
@@ -16,31 +17,32 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/mockup_start_3_0.png'
+            source: 'assets/start/start_3_0.png'
             size: self.size
 
-    Label:
-        id: ChoodeThePlayer
-        pos_hint: {'x': 0.0005, 'y': 0.31}
-        font_size: 40
-        text: 'Choose the player'
+    Icon:
+        id: Trump
+        background_normal: 'assets/start/btn_play_trump_active.png'
+        background_down: 'assets/start/btn_play_trump_inactive.png'
 
     Icon:
-        id: IconTrump
-
-    Icon:
-        id: IconHillary
+        id: Hillary
+        background_normal: 'assets/start/btn_play_hillary_active.png'
+        background_down: 'assets/start/btn_play_hillary_inactive.png'
 
     Icon:
         id: Settings
+        background_normal: 'assets/start/btn_settings_active.png'
+        background_down: 'assets/start/btn_settings_inactive.png'
 
     Icon:
         id: Credit
+        background_normal: 'assets/start/btn_credits_active.png'
+        background_down: 'assets/start/btn_credits_inactive.png'
 
 <SettingIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    opacity: 0.
 
 <SettingsScreen>:
     rotation: 90
@@ -48,17 +50,56 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/settings/mockup_settings_screen_3_0.png'
+            source: 'assets/settings/settings_screen_3_0.png'
             size: self.size
 
     SettingIcon:
         id: Back
+        background_normal: 'assets/settings/btn_back_active.png'
+        background_down: 'assets/settings/btn_back_inactive.png'
+
+
+<RoundsIcon>
+    border: [0,0,0,0]
+    size_hint: 0.125, 0.23
+    opacity: 0.
+
+<StatesScroll>:
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<RoundsScreen>:
+    rotation: 90
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/settings/rounds_screen_3_4.png'
+            size: self.size
+
+    RoundsIcon:
+        id: Back
+
+    StatesScroll: 
+        id: StatesScroll
+
+    DistrictsScroll:
+        id: DistrictsScroll
+
+    DescriptionScroll:
+        id: DescriptionScroll
+
+    RoundsIcon:
+        id: Play
 
 
 <CreditIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    opacity: 0.
 
 <CreditScreen>:
     rotation: 90
@@ -66,11 +107,13 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/credits/mockup_credits_screen_3_0.png'
+            source: 'assets/credits/credits_screen_3_0.png'
             size: self.size
 
     CreditIcon:
         id: Back
+        background_normal: 'assets/credits/btn_back_active.png'
+        background_down: 'assets/credits/btn_back_inactive.png'
 
 
 <EndGameIcon>:
@@ -99,10 +142,25 @@
 <Card>:
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: root.angle
+            axis: 0, 0, 1
+            origin: root.center
+    canvas.after:
+        PopMatrix
 
 <Player>:
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
+
+<MenuButton>:
+    canvas:
+        Ellipse:
+            pos: self.pos
+            size: self.size
+            source: 'assets/buttons/btn_menu_inactive.png'
 
 <ElectionsGame>:
     rotation: 90
@@ -112,6 +170,10 @@
         Rectangle:
             source: 'assets/main_field.png'
             size: self.size
+    MenuButton:
+        id: Menu
+        size_hint: 0.04, 0.05
+        pos_hint: {'x':0.94, 'y':0.93}
     Player:
         id: trump_player
         pos_hint: {'x':.2, 'y':0.03}
@@ -140,42 +202,42 @@
         id: trump_news
         pos_hint: {'x': 0.18, 'y': 0.53}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.news)
     Label:
         id: trump_hype
         pos_hint: {'x':370.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.hype)
     Label:
         id: trump_cash
         pos_hint: {'x':370.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.cash)
     Label:
         id: trump_media
         pos_hint: {'x': 95.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.media)
     Label:
         id: trump_mojo
         pos_hint: {'x':95.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.mojo)
     Label:
         id: trump_money
         pos_hint: {'x':95.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(trump_player.money)
     Label:
@@ -196,7 +258,7 @@
         id: hillary_news
         pos_hint: {'x': 1790.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.news)
         # text: str('nw')
@@ -204,34 +266,42 @@
         id: hillary_hype
         pos_hint: {'x':1790.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.hype)
     Label:
         id: hillary_cash
         pos_hint: {'x':1790.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.cash)
     Label:
         id: hillary_media
         pos_hint: {'x': 1515.0/2048.0, 'y': 814.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.media)
     Label:
         id: hillary_mojo
         pos_hint: {'x':1515.0/2048.0, 'y':689.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.mojo)
     Label:
         id: hillary_money
         pos_hint: {'x':1515.0/2048.0, 'y':564.0/1536.0}
         size_hint: (50.0/2048.0), (50.0/1536.0)
-        font_size: '18 sp'
+        font_size: '15 sp'
         bold: True
         text: str(hillary_player.money)
+    Label:
+        id: state_area
+        size_hint: 0.4, 0.05
+        pos_hint: {'x':0., 'y':0.93}
+        font_size: '22 sp'
+        bold: True
+        text: str(hillary_player.state_area)
+

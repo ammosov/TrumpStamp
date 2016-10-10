@@ -2,14 +2,17 @@
 import kivy
 import os
 import csv
+from urllib import urlencode
+from urllib2 import urlopen
 from collections import defaultdict
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
-
+from kivy.network.urlrequest import UrlRequest
 from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 import end_screen
+import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
 
@@ -17,9 +20,10 @@ kivy.require('1.7.2')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-round_csv = os.path.join(SCRIPT_DIR, 'rounds.csv')
+round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
+GA_URL = "https://www.google-analytics.com/collect"
 
 class ElectionsGame(Screen):
     """
@@ -34,10 +38,19 @@ class ElectionsGame(Screen):
         super(ElectionsGame, self).__init__(**kwargs)
         self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
+        self.menu_icon = self.ids['Menu']
+        self.trump = None
+        self.hillary = None
+        self.bot_name = None
+        self.store = None
+        self.round_id = None
+
+    def set_store(self, store):
+        self.store = store
 
     def set_bot(self, bot_name):
         """Set bot player."""
-        round_id = 0
+        self.bot_name = bot_name
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
             self.hillary = self.ids['hillary_player']
@@ -48,6 +61,8 @@ class ElectionsGame(Screen):
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
 
+    def set_round(self, round_id, state, area):
+        self.round_id = round_id
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -70,7 +85,8 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
             card_factory=self.card_factory,
-            is_bot=False if bot_name == 'hillary' else True)
+            state_area= str(area + ',   ' + state),
+            is_bot=False if self.bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
             swing=round_db[round_id]['h1'],
@@ -82,20 +98,21 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
             card_factory=self.card_factory,
-            is_bot=False if bot_name == 'trump' else True)
+            state_area= str(area + ',   ' + state),
+            is_bot=False if self.bot_name == 'trump' else True)
 
-        if bot_name == 'trump':
+        if self.bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
-        elif bot_name == 'hillary':
+        elif self.bot_name == 'hillary':
             self.hillary.set_updaters(self.ids, 'hillary_player')
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        if bot_name == 'trump':
+        if self.bot_name == 'trump':
             self.trump.set_active(False)
             self.hillary.set_active(True)
-        elif bot_name == 'hillary':
+        elif self.bot_name == 'hillary':
             self.trump.set_active(True)
             self.hillary.set_active(False)
         # shuffle Decks
@@ -108,15 +125,17 @@ class ElectionsGame(Screen):
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
 
-        if round_db[round_id]['turn'] and bot_name == 'hillary':
+        if round_db[round_id]['turn'] and self.bot_name == 'hillary':
             self.hillary.play()
-        elif not round_db[round_id]['turn'] and bot_name == 'trump':
+        elif not round_db[round_id]['turn'] and self.bot_name == 'trump':
             self.trump.play()
 
     def end_game(self, winner_name):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
+        if not self.bot_name == winner_name:
+            self.store.put(self.round_id, won=True)
         end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
         self.sm.switch_to(end_screen_)
         print 'END GAME'
@@ -149,6 +168,15 @@ class ElectionsGame(Screen):
 
     def card_clicked(self, card):
         """Card click callback."""
+        # this is just for google analytics test, don't delete it pls :)
+        data = urlencode({"v": "1", "tid": "UA-73301637-3",
+                          "cid": "555", "t": "screenview", "cd": str(card),
+                          "an": "TrumpStamp", "av": "4.2.0",
+                          "aid": "com.trumpstamp.trumpstamp",
+                          "aiid": "com.android.vending"})
+        def on_success(req, result):
+            print(result)
+        req = UrlRequest(GA_URL, on_success=on_success, req_body=data)
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
@@ -172,6 +200,7 @@ class ElectionsGame(Screen):
                 return True
 
             if free_turn:
+                card.set_free_turn(True)
                 if player.is_bot():
                     player.get_hand().refill()
                     player.get_hand().render_cards()

@@ -23,7 +23,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
-GA_URL = "https://www.google-analytics.com/collect"
+GA_URL = "http://www.google-analytics.com/collect"
 
 class ElectionsGame(Screen):
     """
@@ -174,9 +174,11 @@ class ElectionsGame(Screen):
                           "an": "TrumpStamp", "av": "4.2.0",
                           "aid": "com.trumpstamp.trumpstamp",
                           "aiid": "com.android.vending"})
+
         def on_success(req, result):
             print(result)
-        req = UrlRequest(GA_URL, on_success=on_success, req_body=data)
+
+        req = UrlRequest(GA_URL, req_body=data, method='POST')
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False

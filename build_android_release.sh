@@ -8,6 +8,7 @@ mkdir -p build/android/all
 echo "==================== BUILDING APK FOR armeabi-v7a ======================="
 
 p4a apk --private $PWD/Game --orientation landscape --icon $PWD/Game/assets/icon.png \
+        --permission INTERNET \
         --package=org.trumpstamp.trumpstamp --name "TrumpStamp" \
 	--dist-name trumpstamp-armeabi-v7a --release \
         --version $1 --bootstrap=sdl2 --requirements=python2,kivy --arch=armeabi-v7a \
@@ -18,6 +19,7 @@ mv TrumpStamp-$1-release.apk build/android/armeabi-v7a
 echo "==================== BUILDING APK FOR x86 ======================="
 
 p4a apk --private $PWD/Game --orientation landscape --icon $PWD/Game/assets/icon.png \
+    --permission INTERNET \
 	--package=org.trumpstamp.trumpstamp --name "TrumpStamp" \
 	--dist-name trumpstamp-x86 --release \
 	--version $1 --bootstrap=sdl2 --requirements=python2,kivy --arch=x86 \

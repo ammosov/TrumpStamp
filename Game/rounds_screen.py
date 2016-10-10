@@ -11,6 +11,7 @@ from kivy.core.window import Window
 from kivy.app import runTouchApp
 from kivy.uix.widget import Widget
 from functools import partial
+from kivy.uix.label import Label
 
 import numpy as np
 
@@ -54,18 +55,16 @@ class StatesScroll(ScrollView):
         self.size_hint = kwargs['size_hint']
 
         states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
-        # states = np.unique(np.array(states_db[[1]]))
+
         for i in range(len(states)):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
-            #g = TextInput(i)
-
             buttoncallback = partial(self.on_press, states[i], btn)
             btn.bind(on_press=buttoncallback)
             self.layout.add_widget(btn)
+
         self.add_widget(self.layout)
 
     def on_press(self, *args):
-        print("ARGS:", args[0])
         self.dist_scroll.update_widgets(args[0])
         for btn in self.layout.children[:]:
             btn.background_color = [1, 1, 1, 0.]
@@ -81,8 +80,6 @@ class DistrictsScroll(ScrollView):
     def update_widgets(self, state_name):
         for child in self.children[:]:
             self.remove_widget(child)
-        print("CURR STATE NAME:", state_name)
-        print("BUTTONS NUM:", len(self.layouts[state_name].children))
         curr_state_layout = self.layouts[state_name]
 
         self.add_widget(curr_state_layout)
@@ -98,28 +95,42 @@ class DistrictsScroll(ScrollView):
         self.layouts = {states[i]: GridLayout(cols=1, spacing=0, size_hint_y=None) for i in range(len(states))}
         for state_name, layout in self.layouts.items():
             layout.bind(minimum_height=layout.setter('height'))
-            areas = [self.states_db[i]['district'] for i in range(len(self.states_db)) if
+            areas = [(self.states_db[i]['district'], i) for i in range(len(self.states_db)) if
                      self.states_db[i]['state'] == state_name]
-            print(len(areas))
+
             for i in range(len(areas)):
-                btn = Button(text=str(areas[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
-                # btn.bind(on_press=setattr(self.desc_scroll, '_district_selected', self.states_db[i]['state']))
+                btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+                buttoncallback = partial(self.on_press, areas[i])
+                btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
+
+    def on_press(self, *args):
+        self.desc_scroll.update_widgets(args[0])
 
 class DescriptionScroll(ScrollView):
     def __init__(self, **kwargs):
         super(DescriptionScroll, self).__init__(**kwargs)
-        layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
-        layout.bind(minimum_height=layout.setter('height'))
-        for i in range(100):
-            btn = Button(text=str(i), size_hint_y=None, height=40)
-            layout.add_widget(btn)
-        self.add_widget(layout)
+        self.layouts = None
+
+    def update_widgets(self, area):
+        for child in self.children[:]:
+            self.remove_widget(child)
+        curr_area_layout = self.layouts[area[1]]
+
+        self.add_widget(curr_area_layout)
 
     def late_init(self, **kwargs):
         self.states_db = kwargs['states_db']
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
+
+        self.layouts = {i: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(self.states_db))}
+
+        for i, layout in self.layouts.items():
+            label = Label(text=str(self.states_db[i]['descr']), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            layout.add_widget(label)
+
+
 
 class RoundsScreen(Screen):
 

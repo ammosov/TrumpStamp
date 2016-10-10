@@ -39,9 +39,13 @@ class ElectionsGame(Screen):
         self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
         self.menu_icon = self.ids['Menu']
+        self.trump = None
+        self.hillary = None
+        self.bot_name = None
 
     def set_bot(self, bot_name):
         """Set bot player."""
+        self.bot_name = bot_name
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
             self.hillary = self.ids['hillary_player']
@@ -52,7 +56,9 @@ class ElectionsGame(Screen):
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
 
-    def set_round(self, round_id):
+    def set_round(self, round_id, state, area):
+        self.area = area
+        self.state = state
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -75,7 +81,7 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['t7'],
             money=round_db[round_id]['t8'],
             card_factory=self.card_factory,
-            is_bot=False if bot_name == 'hillary' else True)
+            is_bot=False if self.bot_name == 'hillary' else True)
         self.hillary.late_init(
             player_id=1,
             swing=round_db[round_id]['h1'],
@@ -87,20 +93,20 @@ class ElectionsGame(Screen):
             mojo=round_db[round_id]['h7'],
             money=round_db[round_id]['h8'],
             card_factory=self.card_factory,
-            is_bot=False if bot_name == 'trump' else True)
+            is_bot=False if self.bot_name == 'trump' else True)
 
-        if bot_name == 'trump':
+        if self.bot_name == 'trump':
             self.trump.set_updaters(self.ids, 'trump_player')
-        elif bot_name == 'hillary':
+        elif self.bot_name == 'hillary':
             self.hillary.set_updaters(self.ids, 'hillary_player')
 
         self.trump.set_opponent(self.hillary)
         self.hillary.set_opponent(self.trump)
 
-        if bot_name == 'trump':
+        if self.bot_name == 'trump':
             self.trump.set_active(False)
             self.hillary.set_active(True)
-        elif bot_name == 'hillary':
+        elif self.bot_name == 'hillary':
             self.trump.set_active(True)
             self.hillary.set_active(False)
         # shuffle Decks
@@ -113,9 +119,9 @@ class ElectionsGame(Screen):
         self.hillary.get_hand().refill()
         self.hillary.get_hand().render_cards()
 
-        if round_db[round_id]['turn'] and bot_name == 'hillary':
+        if round_db[round_id]['turn'] and self.bot_name == 'hillary':
             self.hillary.play()
-        elif not round_db[round_id]['turn'] and bot_name == 'trump':
+        elif not round_db[round_id]['turn'] and self.bot_name == 'trump':
             self.trump.play()
 
     def end_game(self, winner_name):

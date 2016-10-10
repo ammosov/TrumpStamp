@@ -68,6 +68,7 @@ class StatesScroll(ScrollView):
             btn.background_color = [1, 1, 1, 0.]
         button = args[1]
         button.background_color = [255, 255, 255, 0.5]
+        self.state_selected = button.text
 
 
 class DistrictsScroll(ScrollView):
@@ -98,12 +99,21 @@ class DistrictsScroll(ScrollView):
 
             for i in range(len(areas)):
                 btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
-                buttoncallback = partial(self.on_press, areas[i])
+                buttoncallback = partial(self.on_press, areas[i], btn)
                 btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
 
+        self.update_widgets(self.states_db[0]['state'])
+
     def on_press(self, *args):
         self.desc_scroll.update_widgets(args[0])
+        for _, layout in self.layouts.items():
+            for btn in layout.children[:]:
+                btn.background_color = [1, 1, 1, 0.]
+        button = args[1]
+        button.background_color = [255, 255, 255, 0.5]
+        self.area_selected = button.text
+        self.round_selected = args[0][1]
 
 class DescriptionScroll(ScrollView):
     def __init__(self, **kwargs):
@@ -125,8 +135,10 @@ class DescriptionScroll(ScrollView):
         self.layouts = {i: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(self.states_db))}
 
         for i, layout in self.layouts.items():
-            label = Label(text=str(self.states_db[i]['descr']), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            label = Label(text=str(self.states_db[i]['descr']), text_size=(self.width, None), size_hint_y=None, background_color=[1,1,1,0.])
             layout.add_widget(label)
+
+        self.update_widgets((self.states_db[0]['district'], 0))
 
 
 
@@ -162,6 +174,8 @@ class RoundsScreen(Screen):
         self.play_button.size_hint = self.SIZES[0]
 
         self.game = None
+        self.bot_name = None
+
         states_db = []
         with open(states_csv) as states_file:
             reader = csv.DictReader(states_file)
@@ -173,9 +187,6 @@ class RoundsScreen(Screen):
         self.dist_scroll = self.ids['DistrictsScroll']
         self.descr_scroll = self.ids['DescriptionScroll']
 
-        self.state_selected = 'Alabama'
-        self.area_selected = 'District 1'
-        # self.states_scroll.late_init(size=(Window.width / 4, Window.height/ 2), pos=(Window.width / 6, Window.height/ 3))
         self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
                                     pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
                                               'y': 400.0 / 1536.0},
@@ -191,19 +202,20 @@ class RoundsScreen(Screen):
 
 
     def pressed_back(self, *args):
-        # self.sm.add_widget(self.menu_screen)
         self.sm.current = 'startscreen'
-        # print "pressed back"
-        # self.sm.switch_to(self.menu_screen)
 
     def set_new_game(self):
         self.game = elections_game.ElectionsGame(self.sm, name="electionsgame")
+        #self.game.set_bot(self.bot_name)
 
     def set_bot(self, bot_name):
-        self.game.set_bot(bot_name)
+        self.bot_name = bot_name
+        if self.game:
+            self.game.set_bot(self.bot_name)
 
     def pressed_play(self, *args):
+        state = self.states_scroll.state_selected
+        area = self.dist_scroll.area_selected
+        round_id = self.dist_scroll.round_selected
+        self.game.set_round(round_id, state, area)
         self.sm.switch_to(self.game)
-
-    def set_round(self, round_id):
-        self.game.set_round(round_id)

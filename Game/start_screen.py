@@ -113,6 +113,3 @@ class StartScreen(Screen):
 
         self.sm.current = 'rounds'
         self.rounds.set_bot(bot_name)
-
-
-

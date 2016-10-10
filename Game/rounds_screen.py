@@ -44,7 +44,7 @@ class RoundsIcon(Button):
 class StatesScroll(ScrollView):
     def __init__(self, **kwargs):
         super(StatesScroll, self).__init__(**kwargs)
-        self.layout = GridLayout(cols=1, spacing=5, size_hint_y=None)
+        self.layout = GridLayout(cols=1, spacing=0, size_hint_y=None)
         self.layout.bind(minimum_height=self.layout.setter('height'))
 
     def late_init(self, dist_scroll, **kwargs):
@@ -59,7 +59,7 @@ class StatesScroll(ScrollView):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
             #g = TextInput(i)
 
-            buttoncallback = partial(self.on_press, states[i])
+            buttoncallback = partial(self.on_press, states[i], btn)
             btn.bind(on_press=buttoncallback)
             self.layout.add_widget(btn)
         self.add_widget(self.layout)
@@ -67,6 +67,10 @@ class StatesScroll(ScrollView):
     def on_press(self, *args):
         print("ARGS:", args[0])
         self.dist_scroll.update_widgets(args[0])
+        for btn in self.layout.children[:]:
+            btn.background_color = [1, 1, 1, 0.]
+        button = args[1]
+        button.background_color = [255, 255, 255, 0.5]
 
 
 class DistrictsScroll(ScrollView):
@@ -91,7 +95,7 @@ class DistrictsScroll(ScrollView):
 
         states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
-        self.layouts = {states[i]: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(states))}
+        self.layouts = {states[i]: GridLayout(cols=1, spacing=0, size_hint_y=None) for i in range(len(states))}
         for state_name, layout in self.layouts.items():
             layout.bind(minimum_height=layout.setter('height'))
             areas = [self.states_db[i]['district'] for i in range(len(self.states_db)) if
@@ -160,8 +164,8 @@ class RoundsScreen(Screen):
         self.dist_scroll = self.ids['DistrictsScroll']
         self.descr_scroll = self.ids['DescriptionScroll']
 
-        self.state_selected = None
-        self.area_selected = None
+        self.state_selected = 'Alabama'
+        self.area_selected = 'District 1'
         # self.states_scroll.late_init(size=(Window.width / 4, Window.height/ 2), pos=(Window.width / 6, Window.height/ 3))
         self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
                                     pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
@@ -175,6 +179,7 @@ class RoundsScreen(Screen):
                                      states_db=states_db)
       
         self.set_new_game()
+
 
     def pressed_back(self, *args):
         # self.sm.add_widget(self.menu_screen)

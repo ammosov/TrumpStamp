@@ -53,7 +53,9 @@ class ElectionsGame(Screen):
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
 
-    def set_round(self, round_id):
+    def set_round(self, round_id, state, area):
+        self.area = area
+        self.state = state
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)

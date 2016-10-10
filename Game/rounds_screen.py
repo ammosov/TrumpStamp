@@ -215,5 +215,5 @@ class RoundsScreen(Screen):
         state = self.states_scroll.state_selected
         area = self.dist_scroll.area_selected
         round_id = self.dist_scroll.round_selected
-        self.game.set_round(round_id)
+        self.game.set_round(round_id, state, area)
         self.sm.switch_to(self.game)

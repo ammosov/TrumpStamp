@@ -113,11 +113,11 @@ class DistrictsScroll(ScrollView):
                      self.states_db[i]['state'] == state_name]
 
             for i in range(len(areas)):
-                if self.store.exists(areas[i][1]):
+                if self.store.exists(str(areas[i][1])):
                     color = [100, 87, 145, 1]
                     print('kjhrebgfihgrkjnrklvjnelkvjnekjvnlelhfjb')
                     btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
-                            background_color=[0,0,0,1])
+                            background_color=[0,0,0,1], color=color)
                 
                 else:
                     color = [255,255,255,1]

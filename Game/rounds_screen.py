@@ -56,7 +56,7 @@ class StatesScroll(ScrollView):
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
-        states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        states = sorted(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         for i in range(len(states)):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
@@ -134,6 +134,7 @@ class DistrictsScroll(ScrollView):
         print(default_button.text)
         default_button.background_color = [255, 255, 255, 0.5]
         self.area_selected = default_button.text
+        states = sorted(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
         self.round_selected = 1
         for i in range(len(self.states_db)):
             if self.states_db[i]['state'] == state:

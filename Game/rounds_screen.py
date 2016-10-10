@@ -59,13 +59,14 @@ class StatesScroll(ScrollView):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40)
             #g = TextInput(i)
 
-            buttoncallback = partial(self.on_press, i)
+            buttoncallback = partial(self.on_press, states[i])
             btn.bind(on_press=buttoncallback)
             self.layout.add_widget(btn)
         self.add_widget(self.layout)
 
     def on_press(self, *args):
-        self.dist_scroll.update_widgets(self.states_db[args[0]]['state'])
+        print("ARGS:", args[0])
+        self.dist_scroll.update_widgets(args[0])
 
 
 class DistrictsScroll(ScrollView):
@@ -76,6 +77,8 @@ class DistrictsScroll(ScrollView):
     def update_widgets(self, state_name):
         for child in self.children[:]:
             self.remove_widget(child)
+        print("CURR STATE NAME:", state_name)
+        print("BUTTONS NUM:", len(self.layouts[state_name].children))
         curr_state_layout = self.layouts[state_name]
 
         self.add_widget(curr_state_layout)
@@ -93,7 +96,7 @@ class DistrictsScroll(ScrollView):
             layout.bind(minimum_height=layout.setter('height'))
             areas = [self.states_db[i]['district'] for i in range(len(self.states_db)) if
                      self.states_db[i]['state'] == state_name]
-            print (len(areas))
+            print(len(areas))
             for i in range(len(areas)):
                 btn = Button(text=str(areas[i]), size_hint_y=None, height=40)
                 # btn.bind(on_press=setattr(self.desc_scroll, '_district_selected', self.states_db[i]['state']))

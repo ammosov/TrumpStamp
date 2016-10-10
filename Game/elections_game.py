@@ -10,6 +10,7 @@ from card import CardFactory
 from kivy.animation import Animation
 from player import Player
 import end_screen
+import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
 
@@ -34,6 +35,7 @@ class ElectionsGame(Screen):
         super(ElectionsGame, self).__init__(**kwargs)
         self.card_factory = CardFactory(self, cards_csv)
         self.sm = sm
+        self.menu_icon = self.ids['Menu']
 
     def set_bot(self, bot_name):
         """Set bot player."""
@@ -172,6 +174,7 @@ class ElectionsGame(Screen):
                 return True
 
             if free_turn:
+                card.set_free_turn(True)
                 if player.is_bot():
                     player.get_hand().refill()
                     player.get_hand().render_cards()

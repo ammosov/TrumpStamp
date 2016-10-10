@@ -1,5 +1,6 @@
 """Card module."""
 from kivy.animation import Animation
+from kivy.properties import NumericProperty
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from sound_manager import SoundManager
@@ -8,6 +9,7 @@ import os
 
 ZOOM_SCALE_FACTOR = 1.5
 DELAY_TIME = 0.5
+ROTATE_ANGEL = 10
 
 
 class Card(Button):
@@ -18,6 +20,7 @@ class Card(Button):
 
     # Workaround, need to use Deck instead
     current_zoomed_in_card = None
+    angle = NumericProperty(0)
 
     def __init__(self, **kwargs):
         """Set card attributes."""
@@ -47,6 +50,7 @@ class Card(Button):
         # end zoom animation parameters
         self.zoomed_in = False
         self.is_bot = self.game.PLAYERS[self.owner_id].is_bot()
+        self.free_turn = False
 
     def __repr__(self):
         """String representation of the card."""
@@ -83,6 +87,8 @@ class Card(Button):
         self.background_normal = self.background
         self.background_down = self.background
 
+    def set_free_turn(self, is_free_turn):
+        self.free_turn = is_free_turn
     def use(self):
         """Perform usage animation."""
         print('this card was selected to USE on this turn')
@@ -170,14 +176,30 @@ class Card(Button):
             "center_x": x_val,
             "center_y": y_val
         }
+        y_pos = 728.0
+        anim = Animation(d=0.1)        
+        if self.free_turn:
+            if self.owner_id:
+                x_first_pos = 718.0
+                rotate_angle = ROTATE_ANGEL
+
+            else:
+                x_first_pos = 1328.0
+                rotate_angle = -ROTATE_ANGEL
+
+            anim += Animation(pos_hint={'center_x': x_first_pos / 2048.0,
+                                   'center_y':  y_pos / 1536.0}, 
+                              angle=rotate_angle,
+                              duration=0.5) + Animation(duration=5)
         if self.owner_id:
             x_pos = 848.0
         else:
-            x_pos = 1198.0
-        y_pos = 728.0
-        return Animation(pos_hint={'center_x': x_pos / 2048.0,
+            x_pos = 1194.0
+        anim += Animation(pos_hint={'center_x': x_pos / 2048.0,
                                    'center_y':  y_pos / 1536.0},
-                         duration=0.5)
+                          angle=0,
+                          duration=0.5)
+        return anim
 
     def _build_drop_anim(self):
         """Build drop animation object."""

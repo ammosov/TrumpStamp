@@ -25,8 +25,8 @@ class CreditIcon(Button):
 
 class CreditScreen(Screen):
 
-    POSITIONS_X = {0: 780 / 2048.0}
-    POSITIONS_Y = {0: (1536. - 1450) / 1536.0}
+    POSITIONS_X = {0: 700 / 2048.0}
+    POSITIONS_Y = {0: (1536. - 1400) / 1536.0}
     SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
     def __init__(self, sm, **kwargs):

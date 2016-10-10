@@ -1,3 +1,4 @@
+from __future__ import print_function
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.button import Button
 import elections_game
@@ -9,6 +10,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.app import runTouchApp
 from kivy.uix.widget import Widget
+from functools import partial
 
 import numpy as np
 
@@ -16,18 +18,19 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 states_csv = os.path.join(SCRIPT_DIR, 'db_states.csv')
 
+
 class RoundsIcon(Button):
     """Icon class."""
 
     def __init__(self, **kwargs):
         """Init icon."""
-        self.name = None# kwargs['name']
+        self.name = None  # kwargs['name']
         super(RoundsIcon, self).__init__()
 
     def late_init(self, **kwargs):
         """Populate icon."""
         self.name = kwargs['name']
-        #self.image = kwargs['image']
+        # self.image = kwargs['image']
 
     def render(self):
         if not self.parent:
@@ -41,8 +44,8 @@ class RoundsIcon(Button):
 class StatesScroll(ScrollView):
     def __init__(self, **kwargs):
         super(StatesScroll, self).__init__(**kwargs)
-        layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
-        layout.bind(minimum_height=layout.setter('height'))
+        self.layout = GridLayout(cols=1, spacing=5, size_hint_y=None)
+        self.layout.bind(minimum_height=self.layout.setter('height'))
 
     def late_init(self, dist_scroll, **kwargs):
         self.dist_scroll = dist_scroll
@@ -54,21 +57,20 @@ class StatesScroll(ScrollView):
         # states = np.unique(np.array(states_db[[1]]))
         for i in range(len(states)):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
-            btn.bind(on_press=setattr(self.dist_scroll, '_state_selected', self.states_db[i]['state']))
-            layout.add_widget(btn)
-        self.add_widget(layout)
+            #g = TextInput(i)
+
+            buttoncallback = partial(self.on_press, i)
+            btn.bind(on_press=buttoncallback)
+            self.layout.add_widget(btn)
+        self.add_widget(self.layout)
+
+    def on_press(self, *args):
+        self.dist_scroll.update_widgets(self.states_db[args[0]]['state'])
 
 
 class DistrictsScroll(ScrollView):
     def __init__(self, **kwargs):
         super(DistrictsScroll, self).__init__(**kwargs)
-        self._state_selected = None
-        '''
-        for i in range(100):
-            btn = Button(text=str(i), size_hint_y=None, height=40)
-            layout.add_widget(btn)
-        self.add_widget(layout)
-        '''
         self.layouts = None
 
     def update_widgets(self, state_name):
@@ -77,15 +79,6 @@ class DistrictsScroll(ScrollView):
         curr_state_layout = self.layouts[state_name]
 
         self.add_widget(curr_state_layout)
-
-    @property
-    def state_selected(self):
-        return self._state_selected
-
-    @state_selected.setter
-    def state_selected(self, state_name):
-        self._state_selected = state_name
-        self.update_widgets(self._state_selected)
 
     def late_init(self, desc_scroll, **kwargs):
         self.desc_scroll = desc_scroll
@@ -100,6 +93,7 @@ class DistrictsScroll(ScrollView):
             layout.bind(minimum_height=layout.setter('height'))
             areas = [self.states_db[i]['district'] for i in range(len(self.states_db)) if
                      self.states_db[i]['state'] == state_name]
+            print (len(areas))
             for i in range(len(areas)):
                 btn = Button(text=str(areas[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
                 # btn.bind(on_press=setattr(self.desc_scroll, '_district_selected', self.states_db[i]['state']))
@@ -165,26 +159,28 @@ class RoundsScreen(Screen):
 
         self.state_selected = None
         self.area_selected = None
-
-        #self.states_scroll.late_init(size=(Window.width / 4, Window.height/ 2), pos=(Window.width / 6, Window.height/ 3))
-        self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0), 
-                                    pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0, 'y': 400.0 / 1536.0},
+        # self.states_scroll.late_init(size=(Window.width / 4, Window.height/ 2), pos=(Window.width / 6, Window.height/ 3))
+        self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                    pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
+                                              'y': 400.0 / 1536.0},
                                     states_db=states_db)
-        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0), 
-                                    pos_hint={'x': (138 + ((2048.0 - 400) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
-                                    states_db=states_db)        
-        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0), 
-                                    pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
-                                    states_db=states_db)
-        
+        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                   pos_hint={'x': (138 + ((2048.0 - 400) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
+                                   states_db=states_db)
+        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                     pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
+                                     states_db=states_db)
+      
         self.set_new_game()
 
     def pressed_back(self, *args):
+        # self.sm.add_widget(self.menu_screen)
         self.sm.current = 'startscreen'
+        # print "pressed back"
+        # self.sm.switch_to(self.menu_screen)
 
     def set_new_game(self):
         self.game = elections_game.ElectionsGame(self.sm, name="electionsgame")
-
 
     def set_bot(self, bot_name):
         self.game.set_bot(bot_name)

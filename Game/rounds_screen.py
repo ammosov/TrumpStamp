@@ -100,6 +100,8 @@ class DistrictsScroll(ScrollView):
                 btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
 
+        self.update_widgets(self.states_db[0]['state'])
+
     def on_press(self, *args):
         self.desc_scroll.update_widgets(args[0])
 
@@ -123,8 +125,10 @@ class DescriptionScroll(ScrollView):
         self.layouts = {i: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(self.states_db))}
 
         for i, layout in self.layouts.items():
-            label = Label(text=str(self.states_db[i]['descr']), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            label = Label(text=str(self.states_db[i]['descr']), text_size=(self.width, None), size_hint_y=None, background_color=[1,1,1,0.])
             layout.add_widget(label)
+
+        self.update_widgets((self.states_db[0]['district'], 0))
 
 
 

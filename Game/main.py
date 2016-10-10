@@ -4,6 +4,7 @@ import kwad
 from kivy.app import App
 from kivy.config import Config
 from kivy.uix.screenmanager import ScreenManager
+from kivy.utils import platform
 import start_screen
 import end_screen
 
@@ -24,8 +25,8 @@ class ElectionsApp(App):
         sm = ScreenManager()
         start_screen_ = start_screen.StartScreen(sm, name=self.start_screen_name)
         sm.switch_to(start_screen_)
-        #end_screen_ = end_screen.EndScreen(sm, 'Trump')
-        #sm.switch_to(end_screen_)
+        # end_screen_ = end_screen.EndScreen(sm, 'Trump')
+        # sm.switch_to(end_screen_)
         return sm
 
     def on_pause(self):

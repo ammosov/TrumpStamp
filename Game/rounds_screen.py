@@ -13,8 +13,6 @@ from kivy.uix.widget import Widget
 from functools import partial
 from kivy.uix.label import Label
 
-import numpy as np
-
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 states_csv = os.path.join(SCRIPT_DIR, 'db_states.csv')
@@ -54,7 +52,7 @@ class StatesScroll(ScrollView):
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
-        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         for i in range(len(states)):
             btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
@@ -101,7 +99,7 @@ class DistrictsScroll(ScrollView):
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
-        states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
+        states = list(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         self.layouts = {states[i]: GridLayout(cols=1, spacing=0, size_hint_y=None) for i in range(len(states))}
         for state_name, layout in self.layouts.items():
@@ -223,7 +221,7 @@ class RoundsScreen(Screen):
         self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 370) / 3) / 2048.0, 880 / 2048.0),
                                      pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
                                      states_db=states_db)
-      
+
         self.set_new_game()
 
 

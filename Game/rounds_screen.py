@@ -11,6 +11,7 @@ from kivy.core.window import Window
 from kivy.app import runTouchApp
 from kivy.uix.widget import Widget
 from functools import partial
+from kivy.uix.label import Label
 
 import numpy as np
 
@@ -44,7 +45,7 @@ class RoundsIcon(Button):
 class StatesScroll(ScrollView):
     def __init__(self, **kwargs):
         super(StatesScroll, self).__init__(**kwargs)
-        self.layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.layout = GridLayout(cols=1, spacing=0, size_hint_y=None)
         self.layout.bind(minimum_height=self.layout.setter('height'))
 
     def late_init(self, dist_scroll, **kwargs):
@@ -54,18 +55,21 @@ class StatesScroll(ScrollView):
         self.size_hint = kwargs['size_hint']
 
         states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
-        # states = np.unique(np.array(states_db[[1]]))
-        for i in range(len(states)):
-            btn = Button(text=str(states[i]), size_hint_y=None, height=40)
-            #g = TextInput(i)
 
-            buttoncallback = partial(self.on_press, i)
+        for i in range(len(states)):
+            btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            buttoncallback = partial(self.on_press, states[i], btn)
             btn.bind(on_press=buttoncallback)
             self.layout.add_widget(btn)
+
         self.add_widget(self.layout)
 
     def on_press(self, *args):
-        self.dist_scroll.update_widgets(self.states_db[args[0]]['state'])
+        self.dist_scroll.update_widgets(args[0])
+        for btn in self.layout.children[:]:
+            btn.background_color = [1, 1, 1, 0.]
+        button = args[1]
+        button.background_color = [255, 255, 255, 0.5]
 
 
 class DistrictsScroll(ScrollView):
@@ -88,35 +92,50 @@ class DistrictsScroll(ScrollView):
 
         states = np.unique(np.array([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
-        self.layouts = {states[i]: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(states))}
+        self.layouts = {states[i]: GridLayout(cols=1, spacing=0, size_hint_y=None) for i in range(len(states))}
         for state_name, layout in self.layouts.items():
             layout.bind(minimum_height=layout.setter('height'))
-            areas = [self.states_db[i]['district'] for i in range(len(self.states_db)) if
+            areas = [(self.states_db[i]['district'], i) for i in range(len(self.states_db)) if
                      self.states_db[i]['state'] == state_name]
-            print (len(areas))
+
             for i in range(len(areas)):
-                btn = Button(text=str(areas[i]), size_hint_y=None, height=40)
-                # btn.bind(on_press=setattr(self.desc_scroll, '_district_selected', self.states_db[i]['state']))
+                btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+                buttoncallback = partial(self.on_press, areas[i])
+                btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
+
+    def on_press(self, *args):
+        self.desc_scroll.update_widgets(args[0])
 
 class DescriptionScroll(ScrollView):
     def __init__(self, **kwargs):
         super(DescriptionScroll, self).__init__(**kwargs)
-        layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
-        layout.bind(minimum_height=layout.setter('height'))
-        for i in range(100):
-            btn = Button(text=str(i), size_hint_y=None, height=40)
-            layout.add_widget(btn)
-        self.add_widget(layout)
+        self.layouts = None
+
+    def update_widgets(self, area):
+        for child in self.children[:]:
+            self.remove_widget(child)
+        curr_area_layout = self.layouts[area[1]]
+
+        self.add_widget(curr_area_layout)
 
     def late_init(self, **kwargs):
         self.states_db = kwargs['states_db']
         self.pos_hint = kwargs['pos_hint']
         self.size_hint = kwargs['size_hint']
 
+        self.layouts = {i: GridLayout(cols=1, spacing=10, size_hint_y=None) for i in range(len(self.states_db))}
+
+        for i, layout in self.layouts.items():
+            label = Label(text=str(self.states_db[i]['descr']), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            layout.add_widget(label)
+
+
 
 class RoundsScreen(Screen):
-    POSITIONS_X = {0: 728 / 2048.0}
+
+    POSITIONS_X = {0: 328 / 2048.0,
+                   1: 1228 / 2048.0}
     POSITIONS_Y = {0: (1536. - 1400) / 1536.0}
     SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
@@ -137,6 +156,13 @@ class RoundsScreen(Screen):
         self.back_button.render()
         self.back_button.show()
 
+        self.play_button = self.ids['Play']
+        self.play_button.late_init(**{'name': 'Play'})
+        self.play_button.bind(on_press=self.pressed_play)
+        self.play_button.pos_hint = {'x': self.POSITIONS_X[1],
+                                     'y': self.POSITIONS_Y[0]}
+        self.play_button.size_hint = self.SIZES[0]
+
         self.game = None
         states_db = []
         with open(states_csv) as states_file:
@@ -149,22 +175,22 @@ class RoundsScreen(Screen):
         self.dist_scroll = self.ids['DistrictsScroll']
         self.descr_scroll = self.ids['DescriptionScroll']
 
-        self.state_selected = None
-        self.area_selected = None
-
+        self.state_selected = 'Alabama'
+        self.area_selected = 'District 1'
         # self.states_scroll.late_init(size=(Window.width / 4, Window.height/ 2), pos=(Window.width / 6, Window.height/ 3))
-        self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 1000 / 2048.0),
-                                    pos_hint={'x': (128 + 2 * ((2048.0 - 400) / 3) + 140) / 2048.0,
-                                              'y': 300.0 / 1536.0},
+        self.descr_scroll.late_init(size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                    pos_hint={'x': (138 + 2 * ((2048.0 - 400) / 3) + 120) / 2048.0,
+                                              'y': 400.0 / 1536.0},
                                     states_db=states_db)
-        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 1000 / 2048.0),
-                                   pos_hint={'x': (128 + ((2048.0 - 400) / 3) + 70) / 2048.0, 'y': 300.0 / 1536.0},
+        self.dist_scroll.late_init(self.descr_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                   pos_hint={'x': (138 + ((2048.0 - 400) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
                                    states_db=states_db)
-        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 1000 / 2048.0),
-                                     pos_hint={'x': 128 / 2048.0, 'y': 300.0 / 1536.0},
+        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 400) / 3) / 2048.0, 880 / 2048.0),
+                                     pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
                                      states_db=states_db)
-
+      
         self.set_new_game()
+
 
     def pressed_back(self, *args):
         # self.sm.add_widget(self.menu_screen)
@@ -177,4 +203,9 @@ class RoundsScreen(Screen):
 
     def set_bot(self, bot_name):
         self.game.set_bot(bot_name)
-        # self.sm.switch_to(self.game)
+
+    def pressed_play(self, *args):
+        self.sm.switch_to(self.game)
+
+    def set_round(self, round_id):
+        self.game.set_round(round_id)

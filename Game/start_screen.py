@@ -53,8 +53,8 @@ class StartScreen(Screen):
         credits_data = {'name': 'Credit'}
 
         datas = [trump_data, hillary_data, settings_data, credits_data]
-        self.icon_trump = self.ids['IconTrump']
-        self.icon_hillary = self.ids['IconHillary']
+        self.icon_trump = self.ids['Trump']
+        self.icon_hillary = self.ids['Hillary']
         self.icon_settings = self.ids['Settings']
         self.icon_credit = self.ids['Credit']
         self.icons = [self.icon_trump, self.icon_hillary, self.icon_settings, self.icon_credit]

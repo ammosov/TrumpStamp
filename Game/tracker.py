@@ -39,6 +39,10 @@ class HitBuilder(object):
     def set_defaults(cls, **kwargs):
         cls.defaults.update(kwargs)
 
+    def set(self, **kwargs):
+        self.params.update(kwargs)
+        return self
+
     def check_mandatory_keys(self, current_type=None):
         if current_type is not None:
             if hasattr(current_type, "mandatory_keys"):
@@ -63,10 +67,6 @@ class ScreenViewBuilder(HitBuilder):
         super(ScreenViewBuilder, self).__init__()
         self.params.update({"t": "screenview"})
 
-    def set_screen_name(self, screen_name):
-        self.params.update({"cd": screen_name})
-        return self
-
 
 class EventBuilder(HitBuilder):
     mandatory_keys = ["ea", "ec"]
@@ -74,19 +74,3 @@ class EventBuilder(HitBuilder):
     def __init__(self):
         super(EventBuilder, self).__init__()
         self.params.update({"t": "event"})
-
-    def set_event_category(self, category):
-        self.params.update({"ec": category})
-        return self
-
-    def set_event_action(self, action):
-        self.params.update({"ea": action})
-        return self
-
-    def set_event_label(self, label):
-        self.params.update({"el": label})
-        return self
-
-    def set_event_value(self, value):
-        self.params.update({"ev": value})
-        return self

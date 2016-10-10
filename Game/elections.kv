@@ -5,10 +5,11 @@
 
 
 <Icon>:
+    rotation: 90
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    on_press: pass
-    opacity: 0.
+    pos_hint: self.pos_hint
+    size: self.size
 
 <StartScreen>:
     rotation: 90
@@ -16,31 +17,32 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/mockup_start_3_0.png'
+            source: 'assets/start/start_3_0.png'
             size: self.size
 
-    Label:
-        id: ChoodeThePlayer
-        pos_hint: {'x': 0.0005, 'y': 0.31}
-        font_size: 40
-        text: 'Choose the player'
+    Icon:
+        id: Trump
+        background_normal: 'assets/start/btn_play_trump_active.png'
+        background_down: 'assets/start/btn_play_trump_inactive.png'
 
     Icon:
-        id: IconTrump
-
-    Icon:
-        id: IconHillary
+        id: Hillary
+        background_normal: 'assets/start/btn_play_hillary_active.png'
+        background_down: 'assets/start/btn_play_hillary_inactive.png'
 
     Icon:
         id: Settings
+        background_normal: 'assets/start/btn_settings_active.png'
+        background_down: 'assets/start/btn_settings_inactive.png'
 
     Icon:
         id: Credit
+        background_normal: 'assets/start/btn_credits_active.png'
+        background_down: 'assets/start/btn_credits_inactive.png'
 
 <SettingIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    opacity: 0.
 
 <SettingsScreen>:
     rotation: 90
@@ -48,17 +50,18 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/settings/mockup_settings_screen_3_0.png'
+            source: 'assets/settings/settings_screen_3_0.png'
             size: self.size
 
     SettingIcon:
         id: Back
+        background_normal: 'assets/settings/btn_back_active.png'
+        background_down: 'assets/settings/btn_back_inactive.png'
 
 
 <CreditIcon>
     border: [0,0,0,0]
     size_hint: 0.125, 0.23
-    opacity: 0.
 
 <CreditScreen>:
     rotation: 90
@@ -66,11 +69,13 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/credits/mockup_credits_screen_3_0.png'
+            source: 'assets/credits/credits_screen_3_0.png'
             size: self.size
 
     CreditIcon:
         id: Back
+        background_normal: 'assets/credits/btn_back_active.png'
+        background_down: 'assets/credits/btn_back_inactive.png'
 
 
 <EndGameIcon>:

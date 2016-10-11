@@ -1,21 +1,25 @@
 import urllib
-import urllib2
-from kivy.network.urlrequest import UrlRequest
 from copy import deepcopy
 
 GA_URL = "http://www.google-analytics.com/collect"
 
 class Tracker(object):
-    def __init__(self, tracker_id, client_id):
+    def __init__(self, tracker_id, client_id, asynchronous=True):
         self.tracker_id = tracker_id
         self.client_id = client_id
+        self.asynchronous = asynchronous
 
     def send(self, dic):
         copy_dic = deepcopy(dic)
         copy_dic.update({"tid": self.tracker_id, "cid": self.client_id, "v": "1"})
         data = urllib.urlencode(copy_dic)
         print(data)
-        req = UrlRequest(GA_URL, req_body=data)
+        if self.asynchronous:
+            from kivy.network.urlrequest import UrlRequest
+            req = UrlRequest(GA_URL, req_body=data)
+        else:
+            import urllib2
+            urllib2.urlopen(GA_URL, data=data).read()
 
 
 class BuilderMeta(type):

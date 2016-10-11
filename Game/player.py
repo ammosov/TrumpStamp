@@ -19,7 +19,7 @@ class Player(Widget):
     hype = BoundedNumericProperty(1, min=0)
     money = BoundedNumericProperty(1, min=1)
     cash = BoundedNumericProperty(1, min=0)
-    state_area = ObjectProperty(None)
+    state_area = ObjectProperty('')
 
     cards_actions = ListProperty([])
 
@@ -29,7 +29,6 @@ class Player(Widget):
         self.player_id = None
         self.player_name = None
         self.stats = None
-        #self.state_area = None
 
     def late_init(self, **kwargs):
         """Init player resources."""
@@ -39,11 +38,10 @@ class Player(Widget):
         self.human = False if is_bot else True
         self.bot = True if is_bot else False
         self.player_name = PLAYERS[self.player_id]
-        #self.state_area = kwargs.pop('state_area')
         self.stats = kwargs
         for prop_name, value in self.stats.items():
             self.property(prop_name).set(self, value)
-
+        
         self.RESOURSES = {1: 'news', 2: 'cash', 3: 'hype'}
         self.ACTIONS = {1: ['swing'], 2: ['partisans'], 3: ['news'], 4: ['hype'], 5: ['cash'],
                         6: ['media'], 7: ['mojo'], 8: ['money'], 9:  ['news', 'hype', 'cash'],

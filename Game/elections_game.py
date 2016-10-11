@@ -35,7 +35,7 @@ class ElectionsGame(Screen):
     def __init__(self, sm, **kwargs):
         """Init game."""
         super(ElectionsGame, self).__init__(**kwargs)
-        self.card_factory = CardFactory(self, cards_csv)
+        self.card_factory = None
         self.sm = sm
         self.menu_icon = self.ids['Menu']
         self.trump = None
@@ -43,6 +43,8 @@ class ElectionsGame(Screen):
         self.bot_name = None
         self.store = None
         self.round_id = None
+        self.state = None
+        self.area = None
 
     def set_store(self, store):
         self.store = store
@@ -60,8 +62,14 @@ class ElectionsGame(Screen):
         self.PLAYERS = {0: self.trump,
                         1: self.hillary}
 
+    def get_bot(self):
+        return 1 if self.bot_name == 'hillary' else 0
+
     def set_round(self, round_id, state, area):
         self.round_id = round_id
+        self.state = state
+        self.area = area
+        print('STATE: ', self.state, "AREA: ", self.area)
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -72,7 +80,9 @@ class ElectionsGame(Screen):
         self.victory = {'destr': round_db[round_id]['destr'], 'res': round_db[round_id]['res']}
         # CREATE PLAYERS
         # parameters are labeled as t0-t1, digit points to resource code per card database
-        print(round_db)
+        #cards = CardFactory(None, os.path.join(SCRIPT_DIR, 'cards.csv'))
+        self.card_factory = CardFactory(self, cards_csv)
+
         self.trump.late_init(
             player_id=0,
             swing=round_db[round_id]['t1'],
@@ -133,7 +143,9 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
-        end_screen_ = end_screen.EndScreen(self.sm, self.bot_name, winner_name, self.round_id, name='endscreen')
+        end_screen_ = end_screen.EndScreen(self.sm, bot=self.bot_name, winner=winner_name, 
+                                           round=self.round_id, store=self.store, 
+                                           area=self.area, state=self.state, name='endscreen')
         self.sm.switch_to(end_screen_, duration=.5)
 
     def declare_victory(self):
@@ -166,7 +178,7 @@ class ElectionsGame(Screen):
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         free_turn = False
         if player.get_active() and player.hand.card_in_hand(card):
-            print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
+            #print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
@@ -204,7 +216,7 @@ class ElectionsGame(Screen):
 
             return True
         else:
-            print 'IT IS NOT YOUR TURN!!!!'
+            #print 'IT IS NOT YOUR TURN!!!!'
             return False
 
     def card_dropped(self, card):

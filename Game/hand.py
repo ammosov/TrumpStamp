@@ -60,7 +60,7 @@ class Hand():
 
         Make unavailable cards more dark.
         """
-        print('updating cards')
+        #print('updating cards')
         # print("cash: {}, hype: {}, news: {}".format(cash, hype, news))
         if not self.player.is_bot():
             for card in self.cards:
@@ -71,10 +71,10 @@ class Hand():
                                          self.player.RESOURSES[cost_color]).get(self.player)
                         if property_value < cost_value:
                             card.set_disabled()
-                            print("Disabled card " + str(card))
+                            #print("Disabled card " + str(card))
                         else:
                             card.set_enabled()
-                            print("Enabled card " + str(card))
+                            #print("Enabled card " + str(card))
                     elif cost_color == 4:
                         hype_value = self.player.property('hype').get(self.player)
                         news_value = self.player.property('news').get(self.player)
@@ -82,7 +82,7 @@ class Hand():
                         if (news_value < cost_value or hype_value < cost_value or
                                 cash_value < cost_value):
                             card.set_disabled()
-                            print("Disabled card " + str(card))
+                            #print("Disabled card " + str(card))
                         else:
                             card.set_enabled()
-                            print("Enabled card " + str(card))
+                            #print("Enabled card " + str(card))

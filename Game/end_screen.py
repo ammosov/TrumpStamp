@@ -1,7 +1,7 @@
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.button import Button
 import start_screen
-
+import elections_game
 
 class EndGameIcon(Button):
     def __init__(self, **kwargs):
@@ -30,16 +30,20 @@ class EndScreen(Screen):
              1: (715 / 2048.0, 157 / 1536.0),
              2: (1, 1)}
 
-    def __init__(self, sm, bot_name, winner_name, round_id, **kwargs):
+    def __init__(self, sm, **kwargs):
         super(EndScreen, self).__init__(**kwargs)
-        self.winner_name = winner_name
-        self.bot_name = bot_name
-        self.round_id = round_id
+        self.winner_name = kwargs['winner']
+        self.bot_name = kwargs['bot']
+        self.round_id = kwargs['round']
+        self.store = kwargs['store']
+        self.state = kwargs['state']
+        self.area = kwargs['area']
+        print("STATE: ", self.state, "  AREA:  ", self.area)
         new_game_image = {'image': 'assets/out.png'}
         winner_image = dict()
-        if winner_name == 'Trump':
+        if self.winner_name == 'Trump':
             winner_image['image'] = 'assets/win_trump.png'
-        elif winner_name == 'Hillary':
+        elif self.winner_name == 'Hillary':
             winner_image['image'] = 'assets/win_hillary.png'
         self.new_game_icon = self.ids['NewGame']
         self.winner_icon = self.ids['Winner']
@@ -76,11 +80,14 @@ class EndScreen(Screen):
         self.restart_game_icon.background_color = (0, 0, 0, 0)
         self.restart_game_icon.bind(on_press=self.pressed_restart_game)
 
-    def pressed_new_game(self, *args):
-        start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")
-        self.sm.switch_to(start_screen_)
-
     def pressed_restart_game(self, *args):
+        self.game = elections_game.ElectionsGame(self.sm, name="electionsgame")
+        self.game.set_bot(self.bot_name)
+        self.game.set_store(self.store)
+        self.game.set_round(self.round_id, self.state, self.area)
+        self.sm.switch_to(self.game)
+
+    def pressed_new_game(self, *args):
         if not self.bot_name == self.winner_name.lower():
             self.store.put(str(self.round_id), won=True)
         start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")

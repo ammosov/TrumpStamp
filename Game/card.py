@@ -92,8 +92,8 @@ class Card(Button):
         self.free_turn = is_free_turn
     def use(self):
         """Perform usage animation."""
-        print('this card was selected to USE on this turn')
-        print(self)
+        # print('this card was selected to USE on this turn')
+        # print(self)
         if self.game.card_clicked(self):
             self.bring_to_front()
             if self.is_bot:
@@ -109,8 +109,8 @@ class Card(Button):
 
     def drop(self):
         """Perform drop animation."""
-        print('this card was selected to DROP on this turn')
-        print(self)
+        # print('this card was selected to DROP on this turn')
+        # print(self)
         if self.game.card_dropped(self):
             if Card.current_zoomed_in_card is not None:
                 Card.current_zoomed_in_card.zoom_out()
@@ -350,7 +350,8 @@ class CardFactory(object):
         self.images_path = images_path or {'trump': 'assets/cards/trump',
                                            'hillary': 'assets/cards/hillary'}
         self.sound_path = sound_path or 'assets/stubs/Sounds/card.wav'
-        self.background_path = background_path or 'assets/card00.png'
+        #self.background_path = background_path or 'assets/card00.png'
+        self.background_path = background_path or 'assets/' + str(game.get_bot()) + '000.png'
         self.game = game
 
     def get_card(self, card_id, owner_id):

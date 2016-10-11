@@ -1,5 +1,6 @@
 from __future__ import print_function
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.properties import BoundedNumericProperty
 from kivy.uix.button import Button
 import elections_game
 import os
@@ -43,8 +44,21 @@ class RoundsIcon(Button):
         """Set background image."""
         pass
 
+class RoundsStats(Label):
+    won_states = BoundedNumericProperty(0, min=0)
+    won_districts = BoundedNumericProperty(0, min=0)
+
+    def __init__(self, **kwargs):
+        super(RoundsStats, self).__init__(**kwargs)
+
+    def late_init(self, store, won_states):
+        self.property('won_districts').set(self, len(set(store.keys())))
+        self.property('won_states').set(self, len(set(won_states)))
+        
+
 
 class StatesScroll(ScrollView):
+
     def __init__(self, **kwargs):
         super(StatesScroll, self).__init__(**kwargs)
         self.layout = GridLayout(cols=1, spacing=0, size_hint_y=None)
@@ -75,17 +89,18 @@ class StatesScroll(ScrollView):
     def set_btn_selected(self, button):
         for btn in self.layout.children[:]:
             btn.background_color = [1, 1, 1, 0.]
-        button.background_color = [255, 255, 255, 0.5]
+        button.background_color = [255, 255, 255, 0.3]
         self.state_selected = button.text
 
     def set_default_btn(self, state):
         self.state_selected = state
-        self.layout.children[-1].background_color = [255, 255, 255, 0.5]
-        self.dist_scroll.set_default_btn(state)        
+        self.layout.children[-1].background_color = [255, 255, 255, 0.3]
+        self.dist_scroll.set_default_btn(state)
 
 
 
 class DistrictsScroll(ScrollView):
+
     def __init__(self, **kwargs):
         super(DistrictsScroll, self).__init__(**kwargs)
         self.layouts = None
@@ -113,16 +128,13 @@ class DistrictsScroll(ScrollView):
                      self.states_db[i]['state'] == state_name]
 
             for i in range(len(areas)):
-                if self.store.exists(areas[i][1]):
-                    color = [100, 87, 145, 1]
-                    print('kjhrebgfihgrkjnrklvjnelkvjnekjvnlelhfjb')
-                    btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
-                            background_color=[0,0,0,1])
-                
+                if self.store.exists(str(areas[i][1])):
+                    #print(areas[i][1])
+                    color = '00ff00'
                 else:
-                    color = [255,255,255,1]
-                    btn = Button(text=str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
-                            background_color=[1,1,1,0.], text_color=color)
+                    color = 'ffffff'
+                btn = Button(text='[color=' + color + ']' + str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
+                            background_color=[1,1,1,0.], markup = True)
                 buttoncallback = partial(self.on_press, areas[i], btn)
                 btn.bind(on_press=buttoncallback)
                 layout.add_widget(btn)
@@ -135,14 +147,14 @@ class DistrictsScroll(ScrollView):
             for btn in layout.children[:]:
                 btn.background_color = [1, 1, 1, 0.]
         button = args[1]
-        button.background_color = [255, 255, 255, 0.5]
+        button.background_color = [255, 255, 255, 0.3]
         self.area_selected = button.text
         self.round_selected = args[0][1]
 
     def set_default_btn(self, state):
         default_button = self.layouts[state].children[-1]
         print(default_button.text)
-        default_button.background_color = [255, 255, 255, 0.5]
+        default_button.background_color = [255, 255, 255, 0.3]
         self.area_selected = default_button.text
         states = sorted(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
         self.round_selected = 1
@@ -154,6 +166,7 @@ class DistrictsScroll(ScrollView):
 
 
 class DescriptionScroll(ScrollView):
+    
     def __init__(self, **kwargs):
         super(DescriptionScroll, self).__init__(**kwargs)
         self.layouts = None
@@ -187,6 +200,7 @@ class RoundsScreen(Screen):
     POSITIONS_Y = {0: (1536. - 1400) / 1536.0}
     SIZES = {0: (730 / 2048.0, (1536 - 1340) / 1536.0)}
 
+
     def __init__(self, sm, **kwargs):
         """Init start screen."""
         super(RoundsScreen, self).__init__(**kwargs)
@@ -215,13 +229,37 @@ class RoundsScreen(Screen):
         self.bot_name = None
 
         self.store = JsonStore(join(STORE_DIR, 'user.dat')) #{round_id: bool}
+        self.rounds_stats = self.ids['rounds_stats']
+        
 
         states_db = []
+        dist_cnt = {}
+        dist_won_cnt = {}
+        won_states = []
         with open(states_csv) as states_file:
             reader = csv.DictReader(states_file)
             for row in reader:
                 row_ = {k: v for k, v in row.iteritems()}
                 states_db.append(row_)
+                if row_['state'] in dist_cnt.keys():
+                    dist_cnt[row_['state']] += 1
+                else:
+                    dist_cnt[row_['state']] = 1
+                if self.store.exists(str(row_['id'])):
+                    #print(row_['id'])
+                    if row_['state'] in dist_won_cnt.keys():
+                        dist_won_cnt[row_['state']] += 1
+                    else:
+                        dist_won_cnt[row_['state']] = 1
+        for state in dist_won_cnt.keys():
+            if dist_cnt[state] == dist_won_cnt[state]:
+                won_states.append(state)
+                    
+        # print(dist_cnt)
+        # print(dist_won_cnt)
+
+
+        self.rounds_stats.late_init(self.store, won_states)
 
         self.states_scroll = self.ids['StatesScroll']
         self.dist_scroll = self.ids['DistrictsScroll']

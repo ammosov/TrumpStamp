@@ -83,14 +83,16 @@ class StartScreen(Screen):
         """Trump choice callback."""
         #self.game.set_bot('hillary')
         #self.sm.switch_to(self.game)
-        self.pressed_round('hillary')
+        self.rounds.set_bot('hillary')
+        self.pressed_round()
 
 
     def pressed_hillary(self, *args):
         """Hillary choice callback."""
         #self.game.set_bot('trump')
         #self.sm.switch_to(self.game)
-        self.pressed_round('trump')
+        self.rounds.set_bot('trump')
+        self.pressed_round()
 
     def pressed_setting(self, *args):
 
@@ -106,10 +108,10 @@ class StartScreen(Screen):
 
         self.sm.current = 'credit'
 
-    def pressed_round(self, bot_name):
+    def pressed_round(self):
 
         if not self.sm.has_screen('rounds'):
             self.sm.add_widget(self.rounds)
 
         self.sm.current = 'rounds'
-        self.rounds.set_bot(bot_name)
+        

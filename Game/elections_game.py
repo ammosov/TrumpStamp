@@ -38,6 +38,7 @@ class ElectionsGame(Screen):
         self.card_factory = None
         self.sm = sm
         self.menu_icon = self.ids['Menu']
+        self.menu_screen = None
         self.trump = None
         self.hillary = None
         self.bot_name = None
@@ -49,8 +50,13 @@ class ElectionsGame(Screen):
     def set_store(self, store):
         self.store = store
 
+    def set_start_screen(self, menu_screen):
+        self.menu_screen = menu_screen
+        print('SEEEEETTTT STAAART SCREEEEn')
+
     def set_bot(self, bot_name):
         """Set bot player."""
+        print(self.bot_name, bot_name)
         self.bot_name = bot_name
         if bot_name == 'trump':
             self.trump = RandomPressBot(self.ids['trump_player'])
@@ -69,7 +75,6 @@ class ElectionsGame(Screen):
         self.round_id = round_id
         self.state = state
         self.area = area
-        print('STATE: ', self.state, "AREA: ", self.area)
         round_db = []
         with open(round_csv) as round_file:
             reader = csv.DictReader(round_file)
@@ -145,7 +150,8 @@ class ElectionsGame(Screen):
         self.hillary.set_active(False)
         end_screen_ = end_screen.EndScreen(self.sm, bot=self.bot_name, winner=winner_name, 
                                            round=self.round_id, store=self.store, 
-                                           area=self.area, state=self.state, name='endscreen')
+                                           area=self.area, state=self.state, 
+                                           menu_screen=self.menu_screen, name='endscreen')
         self.sm.switch_to(end_screen_, duration=.5)
 
     def declare_victory(self):

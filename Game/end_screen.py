@@ -1,7 +1,6 @@
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.button import Button
-import start_screen
-import elections_game
+import start_screen, rounds_screen, elections_game
 
 class EndGameIcon(Button):
     def __init__(self, **kwargs):
@@ -38,7 +37,7 @@ class EndScreen(Screen):
         self.store = kwargs['store']
         self.state = kwargs['state']
         self.area = kwargs['area']
-        print("STATE: ", self.state, "  AREA:  ", self.area)
+        self.menu_screen = kwargs['menu_screen']
         new_game_image = {'image': 'assets/out.png'}
         winner_image = dict()
         if self.winner_name == 'Trump':
@@ -83,6 +82,7 @@ class EndScreen(Screen):
     def pressed_restart_game(self, *args):
         self.game = elections_game.ElectionsGame(self.sm, name="electionsgame")
         self.game.set_bot(self.bot_name)
+        print('pressed_restart_game')
         self.game.set_store(self.store)
         self.game.set_round(self.round_id, self.state, self.area)
         self.sm.switch_to(self.game)
@@ -90,5 +90,8 @@ class EndScreen(Screen):
     def pressed_new_game(self, *args):
         if not self.bot_name == self.winner_name.lower():
             self.store.put(str(self.round_id), won=True)
-        start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")
-        self.sm.switch_to(start_screen_)
+        print('pressed_new_game')
+        #start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")
+        self.menu_screen.rounds = rounds_screen.RoundsScreen(self.sm, name='rounds', menu=self.menu_screen)
+        self.menu_screen.rounds.set_bot(self.bot_name)
+        self.sm.switch_to(self.menu_screen.rounds)

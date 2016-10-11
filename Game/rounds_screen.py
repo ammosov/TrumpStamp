@@ -282,17 +282,20 @@ class RoundsScreen(Screen):
 
     def set_new_game(self):
         self.game = elections_game.ElectionsGame(self.sm, name="electionsgame")
-        #self.game.set_bot(self.bot_name)
+        self.game.set_start_screen(self.menu_screen)
 
     def set_bot(self, bot_name):
         self.bot_name = bot_name
-        if self.game:
-            self.game.set_bot(self.bot_name)
+        print('reounds:set_bot: ', bot_name, self.bot_name)
+        # if self.game:
+        #     self.game.set_bot(self.bot_name)
 
     def pressed_play(self, *args):
         state = self.states_scroll.state_selected
         area = self.dist_scroll.area_selected
         round_id = self.dist_scroll.round_selected
+        print('pressed_play: ', self.bot_name)
+        self.game.set_bot(self.bot_name)
         self.game.set_store(self.store)
         self.game.set_round(round_id, state, area)
         self.sm.switch_to(self.game)

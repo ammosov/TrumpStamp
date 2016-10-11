@@ -78,7 +78,7 @@
         Color:
             rgb: 1, 1, 1
         Rectangle:
-            source: 'assets/settings/rounds_screen_3_4.png'
+            source: 'assets/settings/rounds_screen_3_5.png'
             size: self.size
 
     RoundsIcon:
@@ -95,6 +95,24 @@
 
     RoundsIcon:
         id: Play
+
+    RoundsStats:
+        id: rounds_stats
+
+    Label:
+        id: won_states
+        pos_hint: {'x': 550 / 2048.0, 'y': 1150 / 1536.0}
+        size_hint: 0.025, 0.033
+        font_size: '30 sp'
+        bold: True
+        text: str(rounds_stats.won_states)
+    Label:
+        id: won_districts
+        pos_hint: {'x': 1670 / 2048.0, 'y': 1150 / 1536.0}
+        size_hint: 0.025, 0.033
+        font_size: '30 sp'
+        bold: True
+        text: str(rounds_stats.won_districts)
 
 
 <CreditIcon>

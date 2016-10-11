@@ -129,7 +129,6 @@ class DistrictsScroll(ScrollView):
 
             for i in range(len(areas)):
                 if self.store.exists(str(areas[i][1])):
-                    #print(areas[i][1])
                     color = '00ff00'
                 else:
                     color = 'ffffff'

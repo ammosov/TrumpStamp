@@ -30,9 +30,11 @@ class EndScreen(Screen):
              1: (715 / 2048.0, 157 / 1536.0),
              2: (1, 1)}
 
-    def __init__(self, sm, winner_name, **kwargs):
+    def __init__(self, sm, bot_name, winner_name, round_id, **kwargs):
         super(EndScreen, self).__init__(**kwargs)
         self.winner_name = winner_name
+        self.bot_name = bot_name
+        self.round_id = round_id
         new_game_image = {'image': 'assets/out.png'}
         winner_image = dict()
         if winner_name == 'Trump':
@@ -72,8 +74,14 @@ class EndScreen(Screen):
                                            'y': 0.28}
         self.restart_game_icon.size_hint = (0.45, 0.08)
         self.restart_game_icon.background_color = (0, 0, 0, 0)
-        self.restart_game_icon.bind(on_press=self.pressed_new_game)
+        self.restart_game_icon.bind(on_press=self.pressed_restart_game)
 
     def pressed_new_game(self, *args):
+        start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")
+        self.sm.switch_to(start_screen_)
+
+    def pressed_restart_game(self, *args):
+        if not self.bot_name == self.winner_name.lower():
+            self.store.put(str(self.round_id), won=True)
         start_screen_ = start_screen.StartScreen(self.sm, name="startscreen")
         self.sm.switch_to(start_screen_)

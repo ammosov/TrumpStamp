@@ -133,11 +133,8 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
-        if not self.bot_name == winner_name:
-            self.store.put(str(self.round_id), won=True)
-        end_screen_ = end_screen.EndScreen(self.sm, winner_name, name='endscreen')
-        self.sm.switch_to(end_screen_)
-        print 'END GAME'
+        end_screen_ = end_screen.EndScreen(self.sm, self.bot_name, winner_name, self.round_id, name='endscreen')
+        self.sm.switch_to(end_screen_, duration=.5)
 
     def declare_victory(self):
         """Check if victory is achieved.
@@ -151,12 +148,10 @@ class ElectionsGame(Screen):
             # if Trump wins
             if self.hillary.get_voters() <= 0:
                 self.trump.set_winner(True)
-                print 'Trump won'
                 return True, 'Trump'
             # if Hillary wins
             elif self.trump.get_voters() <= 0:
                 self.hillary.set_winner(True)
-                print 'Hillary won'
                 return True, 'Hillary'
             # No winner yet
             else:

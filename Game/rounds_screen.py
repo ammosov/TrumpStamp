@@ -64,7 +64,7 @@ class StatesScroll(ScrollView):
         self.layout = GridLayout(cols=1, spacing=0, size_hint_y=None)
         self.layout.bind(minimum_height=self.layout.setter('height'))
 
-    def late_init(self, dist_scroll, **kwargs):
+    def late_init(self, dist_scroll, won_states, **kwargs):
         self.dist_scroll = dist_scroll
         self.states_db = kwargs['states_db']
         self.pos_hint = kwargs['pos_hint']
@@ -73,7 +73,12 @@ class StatesScroll(ScrollView):
         states = sorted(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
 
         for i in range(len(states)):
-            btn = Button(text=str(states[i]), size_hint_y=None, height=40, font_size=22, background_color=[1,1,1,0.])
+            if states[i] in won_states:
+                color = '00ff00'
+            else:
+                color = 'ffffff'
+            btn = Button(text='[color=' + color + ']' + str(states[i]), size_hint_y=None, height=40, font_size=22, 
+                        background_color=[1,1,1,0.], markup = True)
             buttoncallback = partial(self.on_press, states[i], btn)
             btn.bind(on_press=buttoncallback)
             self.layout.add_widget(btn)
@@ -90,7 +95,7 @@ class StatesScroll(ScrollView):
         for btn in self.layout.children[:]:
             btn.background_color = [1, 1, 1, 0.]
         button.background_color = [255, 255, 255, 0.3]
-        self.state_selected = button.text
+        self.state_selected = button.text.split(']')[1]
 
     def set_default_btn(self, state):
         self.state_selected = state
@@ -147,14 +152,13 @@ class DistrictsScroll(ScrollView):
                 btn.background_color = [1, 1, 1, 0.]
         button = args[1]
         button.background_color = [255, 255, 255, 0.3]
-        self.area_selected = button.text
+        self.area_selected = button.text.split(']')[1]
         self.round_selected = args[0][1]
 
     def set_default_btn(self, state):
         default_button = self.layouts[state].children[-1]
-        print(default_button.text)
         default_button.background_color = [255, 255, 255, 0.3]
-        self.area_selected = default_button.text
+        self.area_selected = default_button.text.split(']')[1]
         states = sorted(set([self.states_db[i]['state'] for i in range(len(self.states_db))]))
         self.round_selected = 1
         for i in range(len(self.states_db)):
@@ -244,8 +248,7 @@ class RoundsScreen(Screen):
                     dist_cnt[row_['state']] += 1
                 else:
                     dist_cnt[row_['state']] = 1
-                if self.store.exists(str(row_['id'])):
-                    #print(row_['id'])
+                if self.store.exists(str(int(row_['id'])-1)):
                     if row_['state'] in dist_won_cnt.keys():
                         dist_won_cnt[row_['state']] += 1
                     else:
@@ -253,10 +256,6 @@ class RoundsScreen(Screen):
         for state in dist_won_cnt.keys():
             if dist_cnt[state] == dist_won_cnt[state]:
                 won_states.append(state)
-                    
-        # print(dist_cnt)
-        # print(dist_won_cnt)
-
 
         self.rounds_stats.late_init(self.store, won_states)
 
@@ -271,7 +270,7 @@ class RoundsScreen(Screen):
         self.dist_scroll.late_init(self.descr_scroll, self.store, size_hint=(((2048.0 - 440) / 3) / 2048.0, 880 / 2048.0),
                                    pos_hint={'x': (138 + ((2048.0 - 340) / 3) + 60) / 2048.0, 'y': 400.0 / 1536.0},
                                    states_db=states_db)
-        self.states_scroll.late_init(self.dist_scroll, size_hint=(((2048.0 - 370) / 3) / 2048.0, 880 / 2048.0),
+        self.states_scroll.late_init(self.dist_scroll, won_states, size_hint=(((2048.0 - 370) / 3) / 2048.0, 880 / 2048.0),
                                      pos_hint={'x': 138 / 2048.0, 'y': 400.0 / 1536.0},
                                      states_db=states_db)
 

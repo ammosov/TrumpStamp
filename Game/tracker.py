@@ -1,21 +1,25 @@
 import urllib
-import urllib2
-from kivy.network.urlrequest import UrlRequest
 from copy import deepcopy
 
 GA_URL = "http://www.google-analytics.com/collect"
 
 class Tracker(object):
-    def __init__(self, tracker_id, client_id):
+    def __init__(self, tracker_id, client_id, asynchronous=True):
         self.tracker_id = tracker_id
         self.client_id = client_id
+        self.asynchronous = asynchronous
 
     def send(self, dic):
         copy_dic = deepcopy(dic)
         copy_dic.update({"tid": self.tracker_id, "cid": self.client_id, "v": "1"})
         data = urllib.urlencode(copy_dic)
         print(data)
-        req = UrlRequest(GA_URL, req_body=data)
+        if self.asynchronous:
+            from kivy.network.urlrequest import UrlRequest
+            req = UrlRequest(GA_URL, req_body=data)
+        else:
+            import urllib2
+            urllib2.urlopen(GA_URL, data=data).read()
 
 
 class BuilderMeta(type):
@@ -38,6 +42,10 @@ class HitBuilder(object):
     @classmethod
     def set_defaults(cls, **kwargs):
         cls.defaults.update(kwargs)
+
+    def set(self, **kwargs):
+        self.params.update(kwargs)
+        return self
 
     def check_mandatory_keys(self, current_type=None):
         if current_type is not None:
@@ -63,10 +71,6 @@ class ScreenViewBuilder(HitBuilder):
         super(ScreenViewBuilder, self).__init__()
         self.params.update({"t": "screenview"})
 
-    def set_screen_name(self, screen_name):
-        self.params.update({"cd": screen_name})
-        return self
-
 
 class EventBuilder(HitBuilder):
     mandatory_keys = ["ea", "ec"]
@@ -74,19 +78,3 @@ class EventBuilder(HitBuilder):
     def __init__(self):
         super(EventBuilder, self).__init__()
         self.params.update({"t": "event"})
-
-    def set_event_category(self, category):
-        self.params.update({"ec": category})
-        return self
-
-    def set_event_action(self, action):
-        self.params.update({"ea": action})
-        return self
-
-    def set_event_label(self, label):
-        self.params.update({"el": label})
-        return self
-
-    def set_event_value(self, value):
-        self.params.update({"ev": value})
-        return self

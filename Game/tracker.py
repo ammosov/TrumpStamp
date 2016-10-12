@@ -1,9 +1,73 @@
 import urllib
 from copy import deepcopy
-from plyer import uniqueid
+from kivy.utils import platform
 
 GA_URL = "http://www.google-analytics.com/collect"
 TRACKER_ID = "UA-73301637-3"
+
+
+def unique_id():
+    if platform == 'win':
+        try:
+            import _winreg as regedit
+        except:
+            try:
+                import winreg as regedit
+            except:
+                return "1"
+        hKey = regedit.OpenKey(regedit.HKEY_LOCAL_MACHINE,
+                               r"SOFTWARE\\Microsoft\\Cryptography", 0,
+                               regedit.KEY_READ | regedit.KEY_WOW64_64KEY)
+        value, _ = regedit.QueryValueEx(hKey, "MachineGuid")
+        return value
+    elif platform == 'linux':
+        from subprocess import Popen, PIPE
+        from os import environ
+        old_lang = environ.get('LANG')
+        environ['LANG'] = 'C'
+        lshw_process = Popen(["lshw", "-quiet"], stdout=PIPE, stderr=PIPE)
+        grep_process = Popen(["grep", "-m1", "serial:"],
+                             stdin=lshw_process.stdout, stdout=PIPE)
+        lshw_process.stdout.close()
+        output = grep_process.communicate()[0]
+        environ['LANG'] = old_lang
+        if output:
+            return output.split()[1]
+        else:
+            return "1"
+    elif platform == 'android':
+        from jnius import autoclass
+        Secure = autoclass('android.provider.Settings$Secure')
+        ns = 'org.kivy.android'
+        PythonActivity = autoclass(ns + '.PythonActivity')
+        activity = PythonActivity.mActivity
+        return Secure.getString(activity.getContentResolver(),
+                                Secure.ANDROID_ID)
+    elif platform == 'ios':
+        from pyobjus import autoclass
+        from pyobjus.dylib_manager import load_framework
+        load_framework('/System/Library/Frameworks/UIKit.framework')
+        UIDevice = autoclass('UIDevice')
+        uuid = UIDevice.currentDevice().identifierForVendor.UUIDString()
+        return uuid.UTF8String()
+    elif platform == 'macosx':
+        from subprocess import Popen, PIPE
+        from os import environ
+        old_lang = environ.get('LANG')
+        environ['LANG'] = 'C'
+        ioreg_process = Popen(["ioreg", "-l"], stdout=PIPE)
+        grep_process = Popen(["grep", "IOPlatformSerialNumber"],
+                             stdin=ioreg_process.stdout, stdout=PIPE)
+        ioreg_process.stdout.close()
+        output = grep_process.communicate()[0]
+
+        environ['LANG'] = old_lang
+        if output:
+            return output.split()[3][1:-1]
+        else:
+            return "1"
+    elif platform == 'unknown':
+        return "1"
 
 
 class Tracker(object):
@@ -25,7 +89,9 @@ class Tracker(object):
             urllib2.urlopen(GA_URL, data=data).read()
 
 
-tracker = Tracker(TRACKER_ID, uniqueid.id)
+uuid = unique_id()
+print(uuid)
+tracker = Tracker(TRACKER_ID, uuid)
 
 
 class BuilderMeta(type):

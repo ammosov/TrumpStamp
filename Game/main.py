@@ -38,7 +38,7 @@ class ElectionsApp(App):
 
 if __name__ == '__main__':
     kwad.attach()
-    tracker.tracker.send(tracker.EventBuilder().set(ec="io", ea="app_start").build())
+    tracker.tracker.send(tracker.EventBuilder().set(ec="app_start", ea=platform).build())
     tracker.ScreenViewBuilder.set_defaults(an="TrumpStamp",
                                            av=APP_VERSION,
                                            aid="com.trumpstamp.trumpstamp")

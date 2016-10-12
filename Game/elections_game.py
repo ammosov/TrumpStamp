@@ -1,3 +1,4 @@
+# coding=utf-8
 """Game logic module."""
 import kivy
 import os
@@ -16,6 +17,7 @@ import end_screen
 import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from bots import *
+import tracker
 
 kivy.require('1.7.2')
 
@@ -186,6 +188,9 @@ class ElectionsGame(BaseScreen):
         free_turn = False
         if player.get_active() and player.hand.card_in_hand(card):
             #print '\nBegin new turn with player ', self.PLAYERS[card.get_owner()]
+            if not player.is_bot():
+                tracker.tracker.send(tracker.EventBuilder().set(ec="user action",
+                                                                ea="clicked card {}".format(repr(card))).build())
             if not player.pay_for_card(*card.get_cost()):
                 return False
             player.get_hand().pop_card(card)
@@ -200,6 +205,13 @@ class ElectionsGame(BaseScreen):
 
             is_victory, winner = self.declare_victory()
             if is_victory:
+                if player.player_name[0] == winner.lower()[0]:
+                    winner_obj = player
+                else:
+                    winner_obj = opponent
+                bot_str = 'bot' if winner_obj.is_bot() else 'player'
+                tracker.tracker.send(tracker.EventBuilder().set(ec="victory",
+                                                                ea="{} ({}) won".format(winner, bot_str)).build())
                 self.end_game(winner)
                 return True
 
@@ -231,6 +243,9 @@ class ElectionsGame(BaseScreen):
         player = self.PLAYERS[card.get_owner()]
         opponent = self.PLAYERS[abs(card.get_owner() - 1)]
         if player.get_active() and player.hand.card_in_hand(card):
+            if not player.is_bot():
+                tracker.tracker.send(tracker.EventBuilder().set(ec="user action",
+                                                                ea="drop card {}".format(repr(card))).build())
             player.get_hand().pop_card(card)
             player.set_active(False)
             player.get_hand().refill()

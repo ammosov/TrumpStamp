@@ -85,6 +85,8 @@ class StartScreen(BaseScreen):
         """Trump choice callback."""
         #self.game.set_bot('hillary')
         #self.sm.switch_to(self.game)
+        tracker.tracker.send(tracker.EventBuilder().set(ec="user action",
+                                                        ea="selected trump").build())
         self.rounds.set_bot('hillary')
         self.pressed_round()
 
@@ -93,6 +95,8 @@ class StartScreen(BaseScreen):
         """Hillary choice callback."""
         #self.game.set_bot('trump')
         #self.sm.switch_to(self.game)
+        tracker.tracker.send(tracker.EventBuilder().set(ec="user action",
+                                                        ea="selected hillary").build())
         self.rounds.set_bot('trump')
         self.pressed_round()
 

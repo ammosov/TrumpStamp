@@ -1,4 +1,5 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
+from base_screen import BaseScreen
 from kivy.uix.button import Button
 
 class SettingIcon(Button):
@@ -22,7 +23,7 @@ class SettingIcon(Button):
         """Set background image."""
         pass
 
-class SettingsScreen(Screen):
+class SettingsScreen(BaseScreen):
 
     POSITIONS_X = {0: 728 / 2048.0}
     POSITIONS_Y = {0: (1536. - 1400) / 1536.0}

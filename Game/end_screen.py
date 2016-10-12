@@ -1,5 +1,6 @@
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.button import Button
+from base_screen import BaseScreen
 import start_screen, rounds_screen, elections_game
 
 class EndGameIcon(Button):
@@ -19,7 +20,7 @@ class EndGameIcon(Button):
         self.background_down = self.image
 
 
-class EndScreen(Screen):
+class EndScreen(BaseScreen):
     POSITIONS_X = {0: 653 / 2048.0,
                    1: 668 / 2048.0}
     POSITIONS_Y = {0: 643 / 1536.0,

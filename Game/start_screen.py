@@ -1,10 +1,11 @@
 """Start screen module."""
-from kivy.uix.screenmanager import Screen
 from kivy.uix.button import Button
 import elections_game
+from base_screen import BaseScreen
 from settings_screen import SettingsScreen
 from credits_screen import CreditScreen
 from rounds_screen import RoundsScreen
+import tracker
 
 class Icon(Button):
     """Icon class."""
@@ -30,7 +31,7 @@ class Icon(Button):
         pass
 
 
-class StartScreen(Screen):
+class StartScreen(BaseScreen):
     """Start screen class."""
 
     POSITIONS_X = {0: 1128 / 2048.0,
@@ -79,6 +80,7 @@ class StartScreen(Screen):
         self.icons[2].bind(on_press=self.pressed_setting)
         self.icons[3].bind(on_press=self.pressed_credit)
 
+
     def pressed_trump(self, *args):
         """Trump choice callback."""
         #self.game.set_bot('hillary')
@@ -114,4 +116,3 @@ class StartScreen(Screen):
             self.sm.add_widget(self.rounds)
 
         self.sm.current = 'rounds'
-        

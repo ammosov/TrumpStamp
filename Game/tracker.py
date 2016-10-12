@@ -1,7 +1,10 @@
 import urllib
 from copy import deepcopy
+from plyer import uniqueid
 
 GA_URL = "http://www.google-analytics.com/collect"
+TRACKER_ID = "UA-73301637-3"
+
 
 class Tracker(object):
     def __init__(self, tracker_id, client_id, asynchronous=True):
@@ -20,6 +23,9 @@ class Tracker(object):
         else:
             import urllib2
             urllib2.urlopen(GA_URL, data=data).read()
+
+
+tracker = Tracker(TRACKER_ID, uniqueid.id)
 
 
 class BuilderMeta(type):

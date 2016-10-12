@@ -11,6 +11,7 @@ from kivy.network.urlrequest import UrlRequest
 from card import CardFactory
 from kivy.animation import Animation
 from player import Player
+from base_screen import BaseScreen
 import end_screen
 import menu
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
@@ -24,7 +25,7 @@ round_csv = os.path.join(SCRIPT_DIR, 'rounds538.csv')
 cards_csv = os.path.join(SCRIPT_DIR, 'cards.csv')
 
 
-class ElectionsGame(Screen):
+class ElectionsGame(BaseScreen):
     """
        This class represents the game.
 
@@ -148,9 +149,9 @@ class ElectionsGame(Screen):
         """Set both Players to active=False to prevent playing further cards."""
         self.trump.set_active(False)
         self.hillary.set_active(False)
-        end_screen_ = end_screen.EndScreen(self.sm, bot=self.bot_name, winner=winner_name, 
-                                           round=self.round_id, store=self.store, 
-                                           area=self.area, state=self.state, 
+        end_screen_ = end_screen.EndScreen(self.sm, bot=self.bot_name, winner=winner_name,
+                                           round=self.round_id, store=self.store,
+                                           area=self.area, state=self.state,
                                            menu_screen=self.menu_screen, name='endscreen')
         self.sm.switch_to(end_screen_, duration=.5)
 

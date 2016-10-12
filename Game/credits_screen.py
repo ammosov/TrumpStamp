@@ -1,5 +1,6 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.button import Button
+from base_screen import BaseScreen
 
 class CreditIcon(Button):
     """Icon class."""
@@ -23,7 +24,7 @@ class CreditIcon(Button):
         """Set background image."""
         pass
 
-class CreditScreen(Screen):
+class CreditScreen(BaseScreen):
 
     POSITIONS_X = {0: 700 / 2048.0}
     POSITIONS_Y = {0: (1536. - 1400) / 1536.0}

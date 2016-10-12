@@ -2,6 +2,7 @@ from __future__ import print_function
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import BoundedNumericProperty
 from kivy.uix.button import Button
+from base_screen import BaseScreen
 import elections_game
 import os
 import csv
@@ -54,7 +55,7 @@ class RoundsStats(Label):
     def late_init(self, store, won_states):
         self.property('won_districts').set(self, len(set(store.keys())))
         self.property('won_states').set(self, len(set(won_states)))
-        
+
 
 
 class StatesScroll(ScrollView):
@@ -77,7 +78,7 @@ class StatesScroll(ScrollView):
                 color = '00ff00'
             else:
                 color = 'ffffff'
-            btn = Button(text='[color=' + color + ']' + str(states[i]), size_hint_y=None, height=40, font_size=22, 
+            btn = Button(text='[color=' + color + ']' + str(states[i]), size_hint_y=None, height=40, font_size=22,
                         background_color=[1,1,1,0.], markup = True)
             buttoncallback = partial(self.on_press, states[i], btn)
             btn.bind(on_press=buttoncallback)
@@ -137,7 +138,7 @@ class DistrictsScroll(ScrollView):
                     color = '00ff00'
                 else:
                     color = 'ffffff'
-                btn = Button(text='[color=' + color + ']' + str(areas[i][0]), size_hint_y=None, height=40, font_size=22, 
+                btn = Button(text='[color=' + color + ']' + str(areas[i][0]), size_hint_y=None, height=40, font_size=22,
                             background_color=[1,1,1,0.], markup = True)
                 buttoncallback = partial(self.on_press, areas[i], btn)
                 btn.bind(on_press=buttoncallback)
@@ -165,11 +166,11 @@ class DistrictsScroll(ScrollView):
             if self.states_db[i]['state'] == state:
                  self.round_selected = i
                  break
-        
+
 
 
 class DescriptionScroll(ScrollView):
-    
+
     def __init__(self, **kwargs):
         super(DescriptionScroll, self).__init__(**kwargs)
         self.layouts = None
@@ -196,7 +197,7 @@ class DescriptionScroll(ScrollView):
 
 
 
-class RoundsScreen(Screen):
+class RoundsScreen(BaseScreen):
 
     POSITIONS_X = {0: 328 / 2048.0,
                    1: 1228 / 2048.0}
@@ -233,7 +234,7 @@ class RoundsScreen(Screen):
 
         self.store = JsonStore(join(STORE_DIR, 'user.dat')) #{round_id: bool}
         self.rounds_stats = self.ids['rounds_stats']
-        
+
 
         states_db = []
         dist_cnt = {}

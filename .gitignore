@@ -13,3 +13,6 @@ build
 *.apk
 kivy-ios
 trumpstamp-ios
+
+# User data
+user.dat

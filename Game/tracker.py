@@ -44,12 +44,13 @@ def unique_id():
         return Secure.getString(activity.getContentResolver(),
                                 Secure.ANDROID_ID)
     elif platform == 'ios':
-        from pyobjus import autoclass
-        from pyobjus.dylib_manager import load_framework
-        load_framework('/System/Library/Frameworks/UIKit.framework')
-        UIDevice = autoclass('UIDevice')
-        uuid = UIDevice.currentDevice().identifierForVendor.UUIDString()
-        return uuid.UTF8String()
+        #from pyobjus import autoclass
+        #from pyobjus.dylib_manager import load_framework
+        #load_framework('/System/Library/Frameworks/UIKit.framework')
+        #UIDevice = autoclass('UIDevice')
+        #uuid = UIDevice.currentDevice().identifierForVendor.UUIDString()
+        #return uuid.UTF8String()
+        return "1"
     elif platform == 'macosx':
         from subprocess import Popen, PIPE
         from os import environ

@@ -3,7 +3,7 @@ from copy import deepcopy
 from kivy.utils import platform
 
 GA_URL = "http://www.google-analytics.com/collect"
-TRACKER_ID = "UA-73301637-3"
+TRACKER_ID = "UA-85607099-1"
 
 
 def unique_id():

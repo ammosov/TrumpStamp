@@ -22,3 +22,9 @@ export ANDROIDNDKVER="r12b"  # Version of NDK you installed
 
 * Install Xcode
 * Run `./build_xcode_project.sh` in project directory
+
+## How to change iOS app orientation to landscape:
+
+* navigate to `Sources/main.m` in Xcode
+* in that file find function `export_orientation`
+* follow instructions in that function

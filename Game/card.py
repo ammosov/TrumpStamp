@@ -128,6 +128,7 @@ class Card(Button):
 
     def zoom_in(self):
         """Perform zoom in animation."""
+        print(self.image)b
         if not self.zoomed_in:
             self.bring_to_front()
             self._build_zoom_in_anim().start(self)
@@ -178,7 +179,7 @@ class Card(Button):
             "center_y": y_val
         }
         y_pos = 728.0
-        anim = Animation(d=0.1)        
+        anim = Animation(d=0.1)
         if self.free_turn:
             if self.owner_id:
                 x_first_pos = 718.0
@@ -189,7 +190,7 @@ class Card(Button):
                 rotate_angle = -ROTATE_ANGEL
 
             anim += Animation(pos_hint={'center_x': x_first_pos / 2048.0,
-                                   'center_y':  y_pos / 1536.0}, 
+                                   'center_y':  y_pos / 1536.0},
                               angle=rotate_angle,
                               duration=0.5) + Animation(duration=5)
         if self.owner_id:

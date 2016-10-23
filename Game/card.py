@@ -128,7 +128,6 @@ class Card(Button):
 
     def zoom_in(self):
         """Perform zoom in animation."""
-        print(self.image)b
         if not self.zoomed_in:
             self.bring_to_front()
             self._build_zoom_in_anim().start(self)

@@ -1,0 +1,171 @@
+#:kivy 1.9.1
+#: import Animation kivy.animation.Animation
+#: import time time
+#: import SoundLoader kivy.core.audio.SoundLoader
+
+<Card>:
+    border: [0,0,0,0]
+    size_hint: (250.0/2048.0), (350.0/1536.0)
+    on_press:
+        print('Card pressed.')
+        (Animation(pos_hint={'x':1000.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5) + (Animation(size_hint=(1.0/2048.0, self.size_hint[1] ), duration=0.5) & Animation(pos_hint={'x':1125.0/2048.0, 'y':(1536.0-888.0)/1536.0}, duration=0.5))).start(self)
+        self.play_card( )
+
+<Player>:
+    border: [0,0,0,0]
+    size_hint: (250.0/2048.0), (350.0/1536.0)
+
+<ElectionsGame>:
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            source: 'assets/main_field.png'
+            size: self.size
+    Player:
+        id: PlayerTrump
+        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/101.png'
+
+    Player:
+        id: PlayerHillary
+        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/101.png'
+
+    Card:
+        pos_hint: {'x':420.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/101.png'
+    Card:
+        pos_hint: {'x':688.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+        background_normal: 'assets/cards/hillary/102.png'
+    Card:
+        pos_hint: {'x':957.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    Card:
+        pos_hint: {'x':1225.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    Card:
+        pos_hint: {'x':1495.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    Card:
+        pos_hint: {'x':1764.0/2048.0, 'y':(1536.0-1488.0)/1536.0}
+    Label:
+        id: 'trump_part'
+        pos_hint: {'x': 679.0/2048.0, 'y': 426.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerTrump.partisans)
+    Label:
+        id: 'trump_swing'
+        pos_hint: {'x':1417.0/2048.0, 'y':426.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerTrump.swing_voters)
+    Label:
+        id: 'trump_news'
+        pos_hint: {'x': 370.0/2048.0, 'y': 826.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.news)
+    Label:
+        id: 'trump_hype'
+        pos_hint: {'x':370.0/2048.0, 'y':701.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.media)
+    Label:
+        id: 'trump_cash'
+        pos_hint: {'x':370.0/2048.0, 'y':576.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.cash)
+    Label:
+        id: 'trump_media'
+        pos_hint: {'x': 95.0/2048.0, 'y': 826.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.media)
+    Label:
+        id: 'trump_mojo'
+        pos_hint: {'x':95.0/2048.0, 'y':701.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.mojo)
+    Label:
+        id: 'trump_money'
+        pos_hint: {'x':95.0/2048.0, 'y':576.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerTrump.donors)
+    Label:
+        id: 'hillary_part'
+        pos_hint: {'x':289.0/2048.0, 'y':956.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerHillary.partisans)
+    Label:
+        id: 'hillary_swing'
+        pos_hint: {'x':1032.0/2048.0, 'y':956.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 24
+        text: str(PlayerHillary.swing_voters)
+    Label:
+        id: 'hillary_news'
+        pos_hint: {'x': 1790.0/2048.0, 'y': 826.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.news)
+        # text: str('nw')
+    Label:
+        id: 'hillary_hype'
+        pos_hint: {'x':1790.0/2048.0, 'y':701.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.media)
+    Label:
+        id: 'hillary_cash'
+        pos_hint: {'x':1790.0/2048.0, 'y':576.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.cash)
+    Label:
+        id: 'hillary_media'
+        pos_hint: {'x': 1515.0/2048.0, 'y': 826.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.media)
+    Label:
+        id: 'hillary_mojo'
+        pos_hint: {'x':1515.0/2048.0, 'y':701.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.mojo)
+    Label:
+        id: 'hillary_money'
+        pos_hint: {'x':1515.0/2048.0, 'y':576.0/1536.0}
+        size_hint: (50.0/2048.0), (50.0/1536.0)
+        font_size: 18
+        text: str(PlayerHillary.donors)
+
+    Card:
+        pos_hint: {'x':34/2048.0, 'y':(1536.0-488.0)/1536.0}
+    Card:
+        pos_hint: {'x':302/2048.0, 'y':(1536.0-488.0)/1536.0}
+    Card:
+        pos_hint: {'x':570/2048.0, 'y':(1536.0-488.0)/1536.0}
+    Card:
+        pos_hint: {'x':838/2048.0, 'y':(1536.0-488.0)/1536.0}
+    Card:
+        pos_hint: {'x':1106/2048.0, 'y':(1536.0-488.0)/1536.0}
+    Card:
+        pos_hint: {'x':1374/2048.0, 'y':(1536.0-488.0)/1536.0}
+#    Label:
+#        pos_hint: {'x':720.0/2048.0, 'y':(1536.0-1085.0)/1536.0}
+#        size_hint: (50.0/2048.0), (50.0/1536.0)
+#        size_hint: 1, 1
+#        font_size: 50
+#        text: str(root.scoreTrump)
+#        text: str( 1 )
+#    Label:
+#        pos_hint: {'x':325.0/2048.0, 'y':(1536.0-570.0)/1536.0}
+#        size_hint: (50.0/2048.0), (50.0/1536.0)
+#        font_size: 50
+#        text: str(root.scoreHillary)
+#        text: str( 2 )
